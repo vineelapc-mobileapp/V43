@@ -1,0 +1,304 @@
+{
+  "subjects": [
+    {
+      "id": "power_systems",
+      "name": "Power Systems By BALAJI sir",
+      "subtopics": [
+        {
+          "id": "power_generation_methods",
+          "name": "Power Generation Methods",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "economic_factors",
+          "name": "Economic Factors",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "economic_load_dispatch",
+          "name": "Economic Load Dispatch",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "load_frequency_control",
+          "name": "Load Frequency Control",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "transmission_line_parameters",
+          "name": "Transmission Line Parameters",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "transmission_line_performance",
+          "name": "Transmission Line Performance",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "power_flow_through_transmission_line",
+          "name": "Power Flow Through Transmission Line",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "voltage_reactive_power_control",
+          "name": "Voltage / Reactive Power Control",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "surge_impedance_loading_sil",
+          "name": "Surge Impedance Loading (SIL)",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "power_factor_control",
+          "name": "Power Factor Control",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "corona",
+          "name": "Corona",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "overhead_line_insulators",
+          "name": "Overhead Line Insulators",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "distribution",
+          "name": "Distribution",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "power_cables",
+          "name": "Power Cables",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "load_flow_studies",
+          "name": "Load Flow Studies",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "symmetrical_faults",
+          "name": "Symmetrical Faults",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "symmetrical_components",
+          "name": "Symmetrical Components",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "unsymmetrical_faults",
+          "name": "Unsymmetrical Faults",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "zbus_algorithm_and_applications",
+          "name": "Z-Bus Algorithm and Applications",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "stability_basics",
+          "name": "Stability Basics",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "equal_area_criteria_cases",
+          "name": "Equal Area Criteria Cases",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "protection_basics",
+          "name": "Protection Basics",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "protective_relays",
+          "name": "Protective Relays",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "circuit_breakers",
+          "name": "Circuit Breakers",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "hvdc_basics",
+          "name": "HVDC Basics",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "facts",
+          "name": "FACTS",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "eem",
+      "name": "Electrical and Electronics Measurements By BALAJI sir",
+      "subtopics": [
+        {
+          "id": "error_analysis",
+          "name": "Error Analysis",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "analog_meters_basics",
+          "name": "Analog Meters Basics",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "measurement_of_current",
+          "name": "Measurement of Current",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "measurement_of_voltage",
+          "name": "Measurement of Voltage",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "measurement_of_power",
+          "name": "Measurement of Power",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "measurement_of_energy",
+          "name": "Measurement of Energy",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "ac_and_dc_bridges",
+          "name": "AC and DC Bridges",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "instrument_transformers",
+          "name": "Instrument Transformers",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "digital_meters",
+          "name": "Digital Meters",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        },
+        {
+          "id": "cro",
+          "name": "CRO",
+          "levels": {
+            "1": [],
+            "2": []
+          }
+        }
+      ]
+    }
+  ]
+}

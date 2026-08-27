@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Teacher Upload - EEE Practice by BALAJI Sir</title>
+<meta name="theme-color" content="#e65100">
+<link rel="manifest" href="manifest-upload.json">
+<link rel="apple-touch-icon" href="icons/icon-teacher-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="libs/katex/katex.min.css">
+<style>
+/* Teacher color theme - warm amber, distinct from the student app's blue */
+:root{
+  --primary:#e65100;
+  --primary-light:#ff9d3f;
+}
+.app-header{background:#e65100;}
+.exam-strip{background:#fff3e0;color:#e65100;}
+.self-paced-tag{background:#ffe0b2;}
+.level-btn{background:#e65100;}
+</style>
+<style>
+.upload-wrap{max-width:640px;margin:0 auto;padding:16px;padding-bottom:100px;}
+.source-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.source-btn{
+  background:#fff;border:2px solid #e0e4f0;border-radius:14px;padding:20px 12px;
+  text-align:center;cursor:pointer;color:var(--text);font-weight:600;font-size:14px;
+}
+.source-btn:active{background:#eef1fb;border-color:var(--primary);}
+.source-btn .icon{font-size:26px;display:block;margin-bottom:8px;}
+.source-btn .sub{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:3px;}
+.field-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.field-row label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600;}
+.field-row select, .field-row input[type=text], .field-row input[type=password]{
+  width:100%;padding:12px;border-radius:8px;border:1px solid #d6dbe8;font-size:15px;
+}
+.field-col{flex:1;min-width:130px;}
+.status-line{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.4;}
+.status-line.error{color:var(--wrong);}
+.status-line.ok{color:var(--correct);}
+textarea.raw-text{
+  width:100%;min-height:160px;border-radius:10px;border:1px solid #d6dbe8;
+  padding:12px;font-size:14px;font-family:monospace;margin-bottom:14px;
+}
+.qblock{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+.qblock textarea{width:100%;border:1px solid #e0e4f0;border-radius:8px;padding:10px;font-size:15px;margin-bottom:8px;min-height:54px;}
+.qblock input[type=text]{width:100%;border:1px solid #e0e4f0;border-radius:8px;padding:10px;font-size:14px;margin-bottom:6px;}
+.qblock select{width:100%;border:1px solid #e0e4f0;border-radius:8px;padding:10px;font-size:14px;margin-bottom:6px;}
+.field-error{border-color:var(--wrong) !important;background:#FBEAEA !important;box-shadow:0 0 0 2px rgba(214,69,69,0.15);}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.qblock .row-label{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:3px;display:block;}
+.remove-q{background:none;border:none;color:var(--wrong);font-size:14px;cursor:pointer;font-weight:600;padding:6px 0;}
+.progress-note{font-size:12px;color:var(--muted);margin-top:-4px;margin-bottom:14px;}
+.sticky-export{
+  position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e0e4f0;
+  padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom));z-index:20;
+  display:flex;gap:8px;
+}
+.sticky-export .btn{flex:1;max-width:640px;margin:0 auto;}
+.settings-panel{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+.settings-panel h3{font-size:15px;margin-bottom:4px;}
+.settings-panel .hint{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.4;}
+.settings-toggle{
+  background:none;border:none;color:var(--primary);font-weight:600;font-size:13px;
+  cursor:pointer;padding:0;margin-bottom:14px;display:flex;align-items:center;gap:5px;
+}
+.settings-body{display:none;}
+.settings-body.open{display:block;}
+.publish-status-badge{
+  display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;
+}
+.publish-status-badge.connected{background:#e8f5e9;color:var(--correct);}
+.publish-status-badge.not-connected{background:#f4f6fb;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- PIN lock screen: covers everything until the correct PIN is entered -->
+<div id="lockOverlay" style="position:fixed;inset:0;background:#fff3e0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;">
+  <div style="max-width:340px;width:100%;text-align:center;">
+    <img src="icons/icon-teacher-192.png" alt="Teacher" style="width:64px;height:64px;border-radius:16px;margin-bottom:16px;">
+    <h2 id="lockTitle" style="font-size:18px;margin-bottom:8px;color:#e65100;">Teacher Access</h2>
+    <p id="lockHint" style="font-size:13px;color:#6b7280;margin-bottom:18px;">Enter your PIN to continue</p>
+    <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="PIN"
+      style="width:100%;padding:14px;border-radius:10px;border:1px solid #d6dbe8;font-size:20px;text-align:center;letter-spacing:6px;margin-bottom:12px;">
+    <button id="pinSubmitBtn" style="width:100%;padding:13px;border-radius:10px;border:none;background:#e65100;color:#fff;font-weight:700;font-size:15px;cursor:pointer;">Unlock</button>
+    <div id="pinError" style="color:#c62828;font-size:12px;margin-top:10px;min-height:16px;"></div>
+    <a href="home.html" style="display:inline-block;margin-top:16px;font-size:12px;color:#6b7280;">&#8592; Back</a>
+  </div>
+</div>
+
+<div id="appContent" style="display:none;">
+<header class="app-header">
+  <a href="home.html" class="icon-btn" aria-label="Switch mode" style="text-decoration:none;display:flex;align-items:center;">&#8962;</a>
+  <img src="icons/icon-teacher-192.png" alt="EE" style="width:32px;height:32px;border-radius:8px;">
+  <h1>Teacher Upload</h1>
+</header>
+<div class="upload-wrap">
+
+  <button id="settingsToggle" class="settings-toggle">&#9881; Publish Settings <span id="settingsChev">&#9662;</span></button>
+  <div id="settingsBody" class="settings-body">
+    <div class="settings-panel">
+      <h3>Connect to your GitHub Pages site</h3>
+      <div class="hint">One-time setup. Lets you publish updates straight from your phone instead of editing files on github.com. Your token stays only on this device.</div>
+      <span id="connBadge" class="publish-status-badge not-connected">Not connected</span>
+      <div class="field-row">
+        <div class="field-col">
+          <label>GitHub Username</label>
+          <input type="text" id="ghUser" placeholder="e.g. vineelapc-mobileapp">
+        </div>
+        <div class="field-col">
+          <label>Repository Name</label>
+          <input type="text" id="ghRepo" placeholder="e.g. BALAJIPS_APP">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-col">
+          <label>Branch</label>
+          <input type="text" id="ghBranch" placeholder="main" value="main">
+        </div>
+        <div class="field-col">
+          <label>File Path</label>
+          <input type="text" id="ghPath" placeholder="data/questions.json" value="data/questions.json">
+        </div>
+      </div>
+      <label>Personal Access Token</label>
+      <input type="password" id="ghToken" placeholder="github_pat_...">
+      <button id="saveSettingsBtn" class="btn btn-secondary full-width" style="margin-top:10px;">Save Settings</button>
+    </div>
+
+    <div class="settings-panel">
+      <h3>Connect to Media Storage (Firebase)</h3>
+      <div class="hint">Optional, but recommended once your question bank grows. Videos, audio, and images upload here instead of being embedded directly in questions.json - keeps your published file small and avoids GitHub's ~1 MB Publish limit entirely. Your login stays only on this device.</div>
+      <span id="fbBadge" class="publish-status-badge not-connected">Not connected</span>
+      <div class="field-row">
+        <div class="field-col">
+          <label>Firebase API Key</label>
+          <input type="text" id="fbApiKey" placeholder="AIzaSy...">
+        </div>
+        <div class="field-col">
+          <label>Auth Domain</label>
+          <input type="text" id="fbAuthDomain" placeholder="your-project.firebaseapp.com">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-col">
+          <label>Project ID</label>
+          <input type="text" id="fbProjectId" placeholder="your-project-id">
+        </div>
+        <div class="field-col">
+          <label>Storage Bucket</label>
+          <input type="text" id="fbStorageBucket" placeholder="your-project.appspot.com">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-col">
+          <label>Messaging Sender ID</label>
+          <input type="text" id="fbSenderId" placeholder="123456789">
+        </div>
+        <div class="field-col">
+          <label>App ID</label>
+          <input type="text" id="fbAppId" placeholder="1:123456789:web:abc123">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-col">
+          <label>Teacher Email (the one you added in Firebase Auth)</label>
+          <input type="text" id="fbEmail" placeholder="you@example.com">
+        </div>
+        <div class="field-col">
+          <label>Teacher Password</label>
+          <input type="password" id="fbPassword" placeholder="Password">
+        </div>
+      </div>
+      <button id="saveFirebaseBtn" class="btn btn-secondary full-width" style="margin-top:10px;">Save &amp; Sign In</button>
+    </div>
+
+    <div class="settings-panel">
+      <h3>Connect to Media Storage (Cloudinary)</h3>
+      <div class="hint">Alternative to Firebase above - no credit card needed, ever. Free plan gives 25 GB/month combined storage+bandwidth. If both this and Firebase are connected, Cloudinary is used first.</div>
+      <span id="cldBadge" class="publish-status-badge not-connected">Not connected</span>
+      <div class="field-row">
+        <div class="field-col">
+          <label>Cloud Name</label>
+          <input type="text" id="cldCloudName" placeholder="e.g. dxyz1234">
+        </div>
+        <div class="field-col">
+          <label>Upload Preset (unsigned)</label>
+          <input type="text" id="cldPreset" placeholder="e.g. eee_practice_uploads">
+        </div>
+      </div>
+      <button id="saveCloudinaryBtn" class="btn btn-secondary full-width" style="margin-top:10px;">Save</button>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field-col">
+      <label>Teacher Menu</label>
+      <select id="teacherTabSelect" style="font-weight:700;">
+        <option value="upload">1. Upload Questions</option>
+        <option value="verify">2. Verify Uploaded Data</option>
+        <option value="marks">3. Student Marks</option>
+        <option value="doubts">4. Student Doubts</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ===== TAB 1: Upload Questions ===== -->
+  <div id="tab1Panel">
+  <div class="field-row">
+    <div class="field-col">
+      <label>Subject</label>
+      <select id="subjectSelect"></select>
+    </div>
+    <div class="field-col">
+      <label>Subtopic</label>
+      <select id="subtopicSelect"></select>
+    </div>
+    <div class="field-col" style="max-width:80px;">
+      <label>Level</label>
+      <select id="levelSelect"><option value="1">1</option><option value="2">2</option></select>
+    </div>
+  </div>
+
+  <button id="addTopicToggle" class="settings-toggle" style="margin-bottom:12px;">&#9881; Manage Topics (Add / Delete)</button>
+  <div id="addTopicBody" class="settings-body">
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:10px;">Add a new topic</h3>
+      <div class="field-row">
+        <div class="field-col">
+          <label>New Topic Name</label>
+          <input type="text" id="newTopicInput" placeholder="e.g. Symmetrical Components">
+        </div>
+      </div>
+      <button id="saveTopicBtn" class="btn btn-primary full-width">Save New Topic</button>
+      <div id="newTopicStatus" class="status-line"></div>
+    </div>
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Delete a topic</h3>
+      <div class="hint">Deletes the topic currently selected above (Subject + Subtopic) and permanently removes all its questions. This can't be undone once published.</div>
+      <button id="deleteTopicBtn" class="btn btn-secondary full-width" style="margin-top:10px;color:var(--wrong);">&#128465; Delete Selected Topic</button>
+      <div id="deleteTopicStatus" class="status-line"></div>
+    </div>
+  </div>
+
+  <div class="source-grid">
+    <div class="source-btn" id="cameraBtn">
+      <span class="icon">&#128247;</span>
+      Take Photo
+      <span class="sub">Snap a question paper now</span>
+    </div>
+    <div class="source-btn" id="filesBtn">
+      <span class="icon">&#128193;</span>
+      Choose from Phone
+      <span class="sub">Gallery, PDF, DOCX, TXT</span>
+    </div>
+    <div class="source-btn" id="dictateBtn">
+      <span class="icon">&#127908;</span>
+      <span id="dictateBtnLabel">Dictate a Question</span>
+      <span class="sub">Speak instead of typing (needs internet)</span>
+    </div>
+  </div>
+
+  <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+  <input type="file" id="filesInput" accept=".pdf,.docx,.txt,.jpg,.jpeg,.png" style="display:none;">
+
+  <div id="statusLine" class="status-line"></div>
+
+  <div id="rawSection" class="hidden">
+    <label class="row-label">Extracted text (edit if needed before splitting into questions)</label>
+    <textarea id="rawText" class="raw-text"></textarea>
+    <button id="splitBtn" class="btn btn-primary full-width">Split into Questions</button>
+  </div>
+
+  <div id="questionsSection"></div>
+  </div>
+  <!-- ===== /TAB 1 ===== -->
+
+  <!-- ===== TAB 2: Verify Uploaded Data ===== -->
+  <div id="tab2Panel" class="hidden">
+    <div id="verifySummary"></div>
+    <div id="verifyDetail"></div>
+  </div>
+  <!-- ===== /TAB 2 ===== -->
+
+  <!-- ===== TAB 3: Student Marks (needs backend) ===== -->
+  <div id="tab3Panel" class="hidden">
+    <div class="settings-panel">
+      <h3>Student Marks — Not Available Yet</h3>
+      <div class="hint" style="margin-bottom:0;">
+        Each student's test history currently lives only on their own phone/laptop
+        (see "My Test History" in the student app) — there's no server for their
+        device to send scores to, so this tab can't show them yet.
+        <br><br>
+        To make this real, the app needs a small backend (Firebase is the
+        practical option — free tier, works well with this kind of app) that
+        every student's device writes scores to, and this tab reads from.
+        That's a genuine architecture change, not just a new screen — let your
+        teacher-assistant know if you want to take that step and it can be
+        built as the next version.
+      </div>
+    </div>
+  </div>
+  <!-- ===== /TAB 3 ===== -->
+
+  <!-- ===== TAB 4: Student Doubts (needs backend) ===== -->
+  <div id="tab4Panel" class="hidden">
+    <div class="settings-panel">
+      <h3>Student Doubts — Not Available Yet</h3>
+      <div class="hint" style="margin-bottom:0;">
+        Same underlying reason as Student Marks: a message (with voice, photo,
+        PDF, or text) from a student's device needs somewhere to land that your
+        device can then read and reply to. That requires the same backend
+        (Firebase) mentioned in the Marks tab — once that's in place, this tab
+        and the marks tab can be built together, since they'd share the same
+        underlying setup.
+      </div>
+    </div>
+  </div>
+  <!-- ===== /TAB 4 ===== -->
+
+  </div><!-- /upload-wrap -->
+
+<div id="exportBar" class="sticky-export">
+  <button id="downloadBtn" class="btn btn-secondary">Download File</button>
+  <button id="publishBtn" class="btn btn-primary">Publish to GitHub</button>
+</div>
+</div><!-- /appContent -->
+
+<script>
+// PIN gate: nothing in #appContent is usable until this passes.
+const PIN_KEY = 'eeeTeacherPin';
+const SETUP_CODE_HASH = '00f5f79cb3e6dd959358738a0b4c6706712a006c572f35eabbf5f4a4a56be484';
+
+async function sha256Hex(str){
+  const enc = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+const lockOverlay = document.getElementById('lockOverlay');
+const appContent = document.getElementById('appContent');
+const pinInput = document.getElementById('pinInput');
+const pinSubmitBtn = document.getElementById('pinSubmitBtn');
+const pinError = document.getElementById('pinError');
+const lockTitle = document.getElementById('lockTitle');
+const lockHint = document.getElementById('lockHint');
+
+const storedPin = localStorage.getItem(PIN_KEY);
+const isFirstTime = !storedPin;
+// Two-stage first-time flow: a brand new device must first prove it knows
+// the shared Setup Code (known only to you) before it's allowed to choose
+// its own PIN. Without this, ANY new device - including a student's own
+// phone visiting upload.html for the first time - would be treated as
+// "first time setup" and could just invent its own PIN with zero barrier.
+let setupCodeVerified = false;
+if (isFirstTime) {
+  lockTitle.textContent = 'Teacher Setup Code Required';
+  lockHint.textContent = 'This device hasn\'t been set up yet. Enter the Teacher Setup Code first (ask whoever manages this app if you don\'t have it).';
+  pinInput.type = 'text';
+  pinInput.maxLength = 20;
+  pinInput.placeholder = 'Setup Code';
+}
+
+async function tryUnlock(){
+  const val = pinInput.value.trim();
+  if (isFirstTime && !setupCodeVerified) {
+    pinSubmitBtn.disabled = true;
+    const hash = await sha256Hex(val.toUpperCase());
+    pinSubmitBtn.disabled = false;
+    if (hash === SETUP_CODE_HASH) {
+      setupCodeVerified = true;
+      pinInput.value = '';
+      pinInput.type = 'password';
+      pinInput.maxLength = 8;
+      pinInput.placeholder = 'PIN';
+      lockTitle.textContent = 'Set a Teacher PIN';
+      lockHint.textContent = 'Setup code accepted. Now choose a 4+ digit PIN for this device.';
+      pinError.textContent = '';
+    } else {
+      pinError.textContent = 'Incorrect Setup Code.';
+      pinInput.value = '';
+    }
+    return;
+  }
+  if (isFirstTime && setupCodeVerified) {
+    if (val.length < 4) {
+      pinError.textContent = 'Use at least 4 digits.';
+      return;
+    }
+    localStorage.setItem(PIN_KEY, val);
+    unlock();
+  } else {
+    if (val === storedPin) {
+      unlock();
+    } else {
+      pinError.textContent = 'Incorrect PIN.';
+      pinInput.value = '';
+    }
+  }
+}
+function unlock(){
+  lockOverlay.style.display = 'none';
+  appContent.style.display = 'block';
+}
+pinSubmitBtn.addEventListener('click', tryUnlock);
+pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+pinInput.focus();
+</script>
+
+<script src="libs/mammoth/mammoth.browser.min.js"></script>
+<script src="libs/tesseract/tesseract.min.js"></script>
+<script src="libs/katex/katex.min.js"></script>
+<script src="libs/katex/auto-render.min.js"></script>
+<script src="libs/pptxgenjs/pptxgen.bundle.js"></script>
+<script type="module" src="upload.js"></script>
+</body>
+</html>

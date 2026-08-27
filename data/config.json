@@ -1,0 +1,5 @@
+{
+  "teacherWhatsapp": "91XXXXXXXXXX",
+  "teacherEmail": "your-email@example.com",
+  "note": "teacherWhatsapp must be a full number with country code, digits only, no + or spaces (e.g. 919876543210). This file is public - do not put anything private here."
+}

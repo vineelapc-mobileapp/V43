@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Power Pulse - EEE Practice by Balaji Sir</title>
+<meta name="theme-color" content="#16274A">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="libs/katex/katex.min.css">
+</head>
+<body>
+
+<header class="app-header">
+  <a href="home.html" class="icon-btn" aria-label="Switch mode" style="text-decoration:none;display:flex;align-items:center;">&#8962;</a>
+  <button id="backBtn" class="icon-btn hidden" aria-label="Back">&#8592;</button>
+  <img src="icons/icon-192.png" alt="EE" style="width:28px;height:28px;border-radius:7px;">
+  <h1 id="headerTitle">EEE Practice</h1>
+  <button id="paletteToggleBtn" class="icon-btn hidden" aria-label="Question Palette">&#9638;</button>
+</header>
+
+<div id="examStrip" class="exam-strip hidden">
+  <span id="examProgressText"></span>
+  <span id="stopwatchDisplay" class="stopwatch-pill" aria-label="Optional stopwatch">&#9201; 00:00</span>
+  <span class="self-paced-tag">Self-paced</span>
+</div>
+
+<main id="app"></main>
+
+<div id="examActionBar" class="exam-action-bar hidden">
+  <button id="markReviewBtn" class="btn btn-secondary">Mark for Review &amp; Next</button>
+  <button id="saveNextBtn" class="btn btn-primary">Save &amp; Next</button>
+</div>
+
+<div id="paletteOverlay" class="palette-overlay hidden">
+  <div class="palette-sheet">
+    <div class="palette-header">
+      <h2>Question Palette</h2>
+      <button id="closePaletteBtn" class="icon-btn" aria-label="Close">&times;</button>
+    </div>
+    <div class="palette-legend">
+      <span><i class="dot dot-not-visited"></i>Not Visited</span>
+      <span><i class="dot dot-not-answered"></i>Not Answered</span>
+      <span><i class="dot dot-answered"></i>Answered</span>
+      <span><i class="dot dot-marked"></i>Marked for Review</span>
+    </div>
+    <div id="paletteGrid" class="palette-grid"></div>
+    <button id="submitTestBtn" class="btn btn-primary full-width">Submit Test</button>
+  </div>
+</div>
+
+<div id="submitConfirmModal" class="modal hidden">
+  <div class="modal-box">
+    <h2>Submit Test?</h2>
+    <div id="submitSummary" class="submit-summary"></div>
+    <div class="modal-actions">
+      <button id="cancelSubmitBtn" class="btn btn-secondary">Continue Test</button>
+      <button id="confirmSubmitBtn" class="btn btn-primary">Yes, Submit</button>
+    </div>
+  </div>
+</div>
+
+<div id="videoPromptModal" class="modal hidden">
+  <div class="modal-box">
+    <h2>Video Solution</h2>
+    <p>That wasn't correct. Would you like to watch the video solution?</p>
+    <div class="modal-actions">
+      <button id="watchNowBtn" class="btn btn-primary">Watch Now</button>
+      <button id="watchAfterBtn" class="btn btn-secondary">After Test</button>
+    </div>
+  </div>
+</div>
+
+<div id="videoPlayerModal" class="modal hidden">
+  <div class="modal-box modal-video">
+    <div class="video-wrap">
+      <iframe id="videoFrame" src="" title="Video Solution" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <video id="videoFileEl" class="hidden" controls playsinline></video>
+    </div>
+    <button id="closeVideoBtn" class="btn btn-primary full-width">Done - Continue</button>
+  </div>
+</div>
+
+<script src="libs/katex/katex.min.js"></script>
+<script src="libs/katex/auto-render.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

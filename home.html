@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Power Pulse - EEE Practice by Balaji Sir</title>
+<meta name="theme-color" content="#16274A">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+  background:#EEF3FA;
+  color:#16213A;min-height:100vh;position:relative;overflow-x:hidden;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.bg-wave-top{position:fixed;top:0;left:0;width:100%;z-index:0;pointer-events:none;}
+.bg-wave-bottom{position:fixed;bottom:0;left:0;width:100%;z-index:0;pointer-events:none;}
+.bg-dots{position:fixed;top:60px;right:20px;z-index:0;pointer-events:none;opacity:0.5;}
+.bg-circuit-left{position:fixed;top:38%;left:0;z-index:0;pointer-events:none;opacity:0.35;}
+.bg-circuit-right{position:fixed;bottom:20%;right:0;z-index:0;pointer-events:none;opacity:0.35;}
+
+.wrap{text-align:center;max-width:420px;width:100%;position:relative;z-index:1;}
+
+.logo{width:110px;height:110px;margin:0 auto 14px;display:block;}
+
+h1{font-size:34px;color:#16274A;cursor:default;user-select:none;font-weight:800;letter-spacing:0.5px;}
+h1 .pulse{color:#E8720C;}
+
+.attribution-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;margin-bottom:4px;}
+.attribution-row .line{height:2px;width:44px;border-radius:2px;}
+.attribution-row .line.left{background:linear-gradient(90deg, rgba(22,39,74,0), #16274A);}
+.attribution-row .line.right{background:linear-gradient(90deg, #E8720C, rgba(232,114,12,0));}
+.attribution{color:#16274A;font-size:15px;font-weight:700;white-space:nowrap;}
+.attribution .bolt{color:#E8720C;}
+
+.made-easy{color:#2E4570;font-size:13px;font-weight:600;margin-bottom:30px;letter-spacing:0.2px;}
+
+.choice{
+  background:#fff;border-radius:18px;padding:20px 22px;
+  cursor:pointer;display:flex;align-items:center;gap:16px;text-align:left;
+  box-shadow:0 4px 16px rgba(22,39,74,0.12);margin-bottom:28px;
+}
+.choice:active{transform:scale(0.98);}
+.choice .badge{
+  width:56px;height:56px;border-radius:50%;flex-shrink:0;
+  background:radial-gradient(circle at 30% 30%, #2E6FE0, #16274A);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;box-shadow:0 3px 10px rgba(22,100,224,0.35);
+}
+.choice .textcol{flex:1;}
+.choice .title{font-weight:800;font-size:18px;margin-bottom:3px;color:#16213A;}
+.choice .sub{font-size:12.5px;color:#64748B;line-height:1.4;}
+.choice .arrow{
+  width:38px;height:38px;border-radius:50%;background:#EAF1FB;color:#2E6FE0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-weight:700;
+}
+
+.features{display:flex;justify-content:space-between;gap:6px;}
+.feature{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;}
+.feature:not(:last-child)::after{
+  content:'';position:absolute;right:0;top:6px;width:1px;height:54px;background:#D7E0EC;
+}
+.feature .icon{
+  width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:8px;
+}
+.feature.practice .icon{background:#E3ECFB;}
+.feature.concepts .icon{background:#FCE6DD;}
+.feature.tests .icon{background:#DEF3E8;}
+.feature .flabel{font-weight:800;font-size:14px;color:#16274A;margin-bottom:2px;}
+.feature .fsub{font-size:11px;color:#8894A6;}
+
+.footer-tap{margin-top:36px;font-size:11px;color:#B8C4D6;user-select:none;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+</style>
+</head>
+<body>
+
+<svg class="bg-wave-top" viewBox="0 0 400 200" preserveAspectRatio="none" height="150"><path d="M0,0 L0,110 C60,150 140,60 220,90 C300,120 340,40 400,70 L400,0 Z" fill="#DCE9FB"/><path d="M0,0 L0,90 C80,130 150,50 240,80 C310,105 360,30 400,55 L400,0 Z" fill="#2E6FE0" opacity="0.85"/></svg>
+<svg class="bg-wave-bottom" viewBox="0 0 400 220" preserveAspectRatio="none" height="180"><path d="M0,220 L0,120 C70,90 130,170 210,140 C300,105 340,180 400,150 L400,220 Z" fill="#2E6FE0" opacity="0.85"/><path d="M0,220 L0,150 C90,120 160,190 250,160 C320,138 360,195 400,175 L400,220 Z" fill="#DCE9FB"/><path d="M340,220 C370,160 380,120 400,60 L400,220 Z" fill="#E8720C" opacity="0.85"/></svg>
+
+<svg class="bg-dots" width="90" height="70" viewBox="0 0 90 70">
+  <g fill="#2E6FE0">
+    <circle cx="5" cy="5" r="2.2"/><circle cx="25" cy="5" r="2.2"/><circle cx="45" cy="5" r="2.2"/><circle cx="65" cy="5" r="2.2"/>
+    <circle cx="5" cy="22" r="2.2"/><circle cx="25" cy="22" r="2.2"/><circle cx="45" cy="22" r="2.2"/><circle cx="65" cy="22" r="2.2"/>
+    <circle cx="5" cy="39" r="2.2"/><circle cx="25" cy="39" r="2.2"/><circle cx="45" cy="39" r="2.2"/><circle cx="65" cy="39" r="2.2"/>
+    <circle cx="5" cy="56" r="2.2"/><circle cx="25" cy="56" r="2.2"/><circle cx="45" cy="56" r="2.2"/><circle cx="65" cy="56" r="2.2"/>
+  </g>
+</svg>
+
+<svg class="bg-circuit-left" width="140" height="220" viewBox="0 0 140 220">
+  <g stroke="#2E6FE0" stroke-width="2" fill="none">
+    <path d="M0,60 L40,60 L60,40 L100,40"/>
+    <path d="M0,110 L30,110 L50,130 L90,130"/>
+    <path d="M0,160 L45,160 L65,180 L110,180"/>
+  </g>
+  <g fill="#2E6FE0">
+    <circle cx="100" cy="40" r="4"/><circle cx="60" cy="40" r="3"/>
+    <circle cx="90" cy="130" r="4"/><circle cx="50" cy="130" r="3"/>
+    <circle cx="110" cy="180" r="4"/><circle cx="65" cy="180" r="3"/>
+  </g>
+</svg>
+
+<svg class="bg-circuit-right" width="140" height="220" viewBox="0 0 140 220">
+  <g stroke="#E8720C" stroke-width="2" fill="none">
+    <path d="M140,50 L100,50 L80,70 L40,70"/>
+    <path d="M140,100 L110,100 L90,120 L50,120"/>
+  </g>
+  <g fill="#E8720C">
+    <circle cx="40" cy="70" r="4"/><circle cx="80" cy="70" r="3"/>
+    <circle cx="50" cy="120" r="4"/><circle cx="90" cy="120" r="3"/>
+  </g>
+</svg>
+
+<div class="wrap">
+  <svg class="logo" viewBox="0 0 120 120">
+    <defs>
+      <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFB020"/>
+        <stop offset="55%" stop-color="#F0670F"/>
+        <stop offset="100%" stop-color="#D62E1F"/>
+      </linearGradient>
+    </defs>
+    <circle cx="60" cy="60" r="46" fill="none" stroke="#2E6FE0" stroke-width="4" stroke-dasharray="255 35" stroke-linecap="round" transform="rotate(-95 60 60)"/>
+    <path d="M67,18 L35,66 L55,66 L50,102 L88,50 L64,50 Z" fill="url(#boltGrad)"/>
+    <path d="M28,63 L45,63 L52,54 L58,72 L65,60 L92,60" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+  <h1 id="titleTap">POWER<span class="pulse"> PULSE</span></h1>
+
+  <div class="attribution-row">
+    <span class="line left"></span>
+    <span class="attribution"><span class="bolt">&#9889;</span> By Balaji Sir <span class="bolt">&#9889;</span></span>
+    <span class="line right"></span>
+  </div>
+  <div class="made-easy">Made Easy Senior Faculty</div>
+
+  <div class="choice" onclick="window.location.href='index.html'">
+    <div class="badge">EE</div>
+    <div class="textcol">
+      <div class="title">Start Practice</div>
+      <div class="sub">Attempt questions,<br>get instant feedback</div>
+    </div>
+    <div class="arrow">&#8250;</div>
+  </div>
+
+  <div class="features">
+    <div class="feature practice">
+      <div class="icon">&#128214;</div>
+      <div class="flabel">Practice</div>
+      <div class="fsub">Quality Questions</div>
+    </div>
+    <div class="feature concepts">
+      <div class="icon">&#127919;</div>
+      <div class="flabel">Concepts</div>
+      <div class="fsub">Learn Better</div>
+    </div>
+    <div class="feature tests">
+      <div class="icon">&#128200;</div>
+      <div class="flabel">Tests</div>
+      <div class="fsub">Track Progress</div>
+    </div>
+  </div>
+
+  <div class="footer-tap">v42</div>
+</div>
+<script>
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('service-worker.js').catch(() => {});
+}
+// Teacher access is intentionally not shown as a button.
+// Tap the "POWER PULSE" title 5 times within 3 seconds to reveal it.
+let taps = 0, tapTimer = null;
+document.getElementById('titleTap').addEventListener('click', () => {
+  taps++;
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => { taps = 0; }, 3000);
+  if (taps >= 5) {
+    taps = 0;
+    window.location.href = 'upload.html';
+  }
+});
+</script>
+</body>
+</html>
