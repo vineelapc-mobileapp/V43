@@ -99,17 +99,17 @@
               {
                 "id": "power_factor_control_l1_new1787840539107_0",
                 "type": "fill",
-                "question": "At an industrial sub-station with a 4 MW load, a capacitor of 2 MVAR is installed to maintain the load power factor at 0.97 lagging. If the capacitor goes out of service, the load power factor becomes _____ [GATE-2005]",
-                "questionImage": null,
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1787841245/vn22w5snuilqreibajoc.png",
                 "options": [],
                 "correctIndex": null,
-                "correctAnswer": "0.8",
+                "correctAnswer": "7.5 MVAR",
                 "videoUrl": "PASTE_VIDEO_LINK_HERE",
                 "videoFile": null,
                 "videoReady": false,
                 "audioFile": null,
                 "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1787840448/drpje1jifd7kwamlnl9j.png"
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1787841281/zk34sj52jztv8znfcye4.png"
               },
               {
                 "id": "power_factor_control_l1_new1787840781610_0",
@@ -125,21 +125,6 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1787840779/g5sqnezaye2j2anojakh.png"
-              },
-              {
-                "id": "power_factor_control_l1_new1787840946699_0",
-                "type": "fill",
-                "question": "Q) Find the rating of shunt capacitor required for changing the pf from 0.8 lag to 0.8 leading for a load with output power of 4 Mw and efficiency of 80 % is ______",
-                "questionImage": null,
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "7.5 MVAR",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1787840945/kq00sjifchnas58ucffq.png"
               }
             ],
             "2": []
