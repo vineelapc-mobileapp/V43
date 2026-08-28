@@ -63,6 +63,55 @@ body{
 }
 .stopwatch-pill.running{background:var(--primary);color:#fff;border-color:var(--primary);}
 
+.calc-toggle-btn{
+  background:#fff;color:var(--primary);border:1px solid #C7D2E0;
+  padding:3px 9px;border-radius:10px;font-size:14px;cursor:pointer;line-height:1.6;
+}
+.calc-toggle-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+#app.calc-open{padding-bottom:60vh;transition:padding-bottom 0.2s;}
+
+.calc-drawer{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:#fff;border-top-left-radius:16px;border-top-right-radius:16px;
+  box-shadow:0 -4px 20px rgba(22,39,74,0.25);
+  max-height:56vh;display:flex;flex-direction:column;
+  transform:translateY(0);transition:transform 0.25s ease;
+}
+.calc-drawer.calc-closed{transform:translateY(105%);}
+.calc-header{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  border-bottom:1px solid #EAF1F6;font-weight:700;color:var(--primary);font-size:13px;
+}
+.calc-header span{flex:1;}
+.calc-mode-btn{
+  background:#EAF1F6;color:var(--primary);border:none;border-radius:8px;
+  padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--mono);
+}
+.calc-mode-btn.rad{background:var(--accent);color:#fff;}
+.calc-close-btn{background:none;border:none;font-size:16px;color:var(--muted);cursor:pointer;padding:4px 6px;}
+.calc-display{
+  padding:14px 16px;text-align:right;font-family:var(--mono);
+  font-size:26px;font-weight:700;color:var(--text);background:#F4F6FB;
+  overflow-x:auto;white-space:nowrap;min-height:24px;
+}
+.calc-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:10px;overflow-y:auto;
+}
+.calc-btn{
+  border:none;border-radius:10px;padding:12px 0;font-size:15px;font-weight:700;
+  cursor:pointer;font-family:var(--mono);background:#EAF1F6;color:var(--text);
+}
+.calc-btn:active{opacity:0.7;}
+.calc-fn{background:#DDE7F5;color:var(--primary);font-size:12px;}
+.calc-op{background:#FDECD9;color:#8A4B00;}
+.calc-num{background:#fff;border:1px solid #E4E9F2;}
+.calc-const{background:#E4EFEA;color:#1C6B44;}
+.calc-clear{background:var(--wrong);color:#fff;}
+.calc-back{background:#EAF1F6;}
+.calc-eq{background:var(--primary);color:#fff;}
+.calc-pct{background:#F0E6FB;color:#5A2E8A;}
+
 #app{max-width:640px;margin:0 auto;padding:16px;padding-bottom:90px;}
 
 .list-card{
