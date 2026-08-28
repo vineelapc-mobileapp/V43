@@ -364,7 +364,52 @@ if (isFirstTime) {
   pinInput.placeholder = 'Setup Code';
 }
 
+// ---- Lockout after repeated wrong attempts (Setup Code OR PIN) ----
+// Stored in localStorage (not a page-memory variable) so reloading the
+// page - the obvious way to try to reset a counter - doesn't bypass it.
+// A student guessing repeatedly hits an escalating wait instead of an
+// unlimited number of tries.
+const LOCKOUT_KEY = 'eeeTeacherLockout';
+function getLockoutState(){
+  try { return JSON.parse(localStorage.getItem(LOCKOUT_KEY)) || { attempts: 0, until: 0 }; }
+  catch { return { attempts: 0, until: 0 }; }
+}
+function setLockoutState(s){ localStorage.setItem(LOCKOUT_KEY, JSON.stringify(s)); }
+function clearLockoutState(){ localStorage.removeItem(LOCKOUT_KEY); }
+
+function recordFailedAttempt(){
+  const s = getLockoutState();
+  s.attempts += 1;
+  if (s.attempts >= 5) {
+    // Escalating lockout: 30s, 60s, 120s... doubling each time the
+    // 5-attempt threshold is hit again, so repeated guessing gets
+    // progressively less practical rather than a single fixed wait.
+    const lockoutMultiplier = Math.pow(2, Math.floor(s.attempts / 5) - 1);
+    const waitSeconds = 30 * lockoutMultiplier;
+    s.until = Date.now() + waitSeconds * 1000;
+  }
+  setLockoutState(s);
+  return s;
+}
+
+function checkLockedOut(){
+  const s = getLockoutState();
+  if (s.until && Date.now() < s.until) {
+    const secondsLeft = Math.ceil((s.until - Date.now()) / 1000);
+    pinError.textContent = `Too many wrong attempts. Try again in ${secondsLeft}s.`;
+    pinSubmitBtn.disabled = true;
+    setTimeout(() => {
+      pinSubmitBtn.disabled = false;
+      pinError.textContent = '';
+    }, s.until - Date.now());
+    return true;
+  }
+  return false;
+}
+checkLockedOut(); // in case the page was reloaded mid-lockout
+
 async function tryUnlock(){
+  if (checkLockedOut()) return;
   const val = pinInput.value.trim();
   if (isFirstTime && !setupCodeVerified) {
     pinSubmitBtn.disabled = true;
@@ -372,6 +417,7 @@ async function tryUnlock(){
     pinSubmitBtn.disabled = false;
     if (hash === SETUP_CODE_HASH) {
       setupCodeVerified = true;
+      clearLockoutState();
       pinInput.value = '';
       pinInput.type = 'password';
       pinInput.maxLength = 8;
@@ -380,8 +426,10 @@ async function tryUnlock(){
       lockHint.textContent = 'Setup code accepted. Now choose a 4+ digit PIN for this device.';
       pinError.textContent = '';
     } else {
+      recordFailedAttempt();
       pinError.textContent = 'Incorrect Setup Code.';
       pinInput.value = '';
+      checkLockedOut();
     }
     return;
   }
@@ -391,13 +439,17 @@ async function tryUnlock(){
       return;
     }
     localStorage.setItem(PIN_KEY, val);
+    clearLockoutState();
     unlock();
   } else {
     if (val === storedPin) {
+      clearLockoutState();
       unlock();
     } else {
+      recordFailedAttempt();
       pinError.textContent = 'Incorrect PIN.';
       pinInput.value = '';
+      checkLockedOut();
     }
   }
 }
