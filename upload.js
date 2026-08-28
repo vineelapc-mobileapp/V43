@@ -108,7 +108,33 @@ function renderVerifyTab(){
   DATA.subjects.forEach(subj => {
     const subjBox = document.createElement('div');
     subjBox.className = 'settings-panel';
-    subjBox.innerHTML = `<h3>${subj.name}</h3>`;
+
+    const subjHeader = document.createElement('div');
+    subjHeader.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;';
+    const subjTitle = document.createElement('h3');
+    subjTitle.style.margin = '0';
+    subjTitle.textContent = subj.name;
+    subjHeader.appendChild(subjTitle);
+
+    const visLabel = document.createElement('label');
+    visLabel.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;';
+    const visCheckbox = document.createElement('input');
+    visCheckbox.type = 'checkbox';
+    visCheckbox.checked = subj.visible !== false; // undefined/missing = visible by default, backward compatible
+    visCheckbox.style.cssText = 'width:16px;height:16px;cursor:pointer;';
+    visCheckbox.onchange = () => {
+      subj.visible = visCheckbox.checked;
+      pendingTopicChanges = true;
+      saveDraft();
+      visLabel.querySelector('span').textContent = visCheckbox.checked ? 'Visible to students' : 'Hidden from students';
+      setStatus(`"${subj.name}" is now ${visCheckbox.checked ? 'visible to' : 'hidden from'} students. Use Download or Publish to make this live.`, 'ok');
+    };
+    const visText = document.createElement('span');
+    visText.textContent = visCheckbox.checked ? 'Visible to students' : 'Hidden from students';
+    visLabel.appendChild(visCheckbox);
+    visLabel.appendChild(visText);
+    subjHeader.appendChild(visLabel);
+    subjBox.appendChild(subjHeader);
 
     const table = document.createElement('div');
     table.style.fontSize = '13px';
@@ -1350,10 +1376,10 @@ function buildQuestionCard(q, opts){
   qImageBtn.className = 'btn btn-secondary';
   qImageBtn.style.fontSize = '13px';
   qImageBtn.style.padding = '8px 12px';
-  qImageBtn.textContent = pendingSourceImages.length > 0 ? '🖼 Or Browse for a Different Figure' : '🖼 Attach Figure/Diagram to Question';
+  qImageBtn.textContent = pendingSourceImages.length > 0 ? '🖼 Or Browse for a Figure / PDF' : '🖼 Attach Figure/Diagram/PDF to Question';
   const qImageInput = document.createElement('input');
   qImageInput.type = 'file';
-  qImageInput.accept = '.jpg,.jpeg,.png';
+  qImageInput.accept = '.jpg,.jpeg,.png,.pdf';
   qImageInput.style.display = 'none';
   const qImagePreview = document.createElement('div');
   qImagePreview.style.marginTop = '8px';
@@ -1377,6 +1403,34 @@ function buildQuestionCard(q, opts){
   qImageInput.onchange = async () => {
     const file = qImageInput.files[0];
     if (!file) return;
+    const ext = file.name.split('.').pop().toLowerCase();
+    const isPdf = ext === 'pdf';
+
+    // Auto-extract text so the teacher doesn't have to retype the question
+    // by hand - only fills the Question box if it's currently empty, so it
+    // never overwrites something already typed.
+    if (!q.question || !q.question.trim()) {
+      try {
+        setStatus(isPdf ? 'Reading PDF text...' : 'Reading text from image...');
+        const extractedText = isPdf ? await extractPdfText(file) : await extractImageText(file);
+        if (extractedText && extractedText.trim()) {
+          q.question = extractedText.trim();
+          qTextArea.value = q.question;
+          setStatus('Question text filled in automatically - please check it over for any OCR mistakes.', 'ok');
+        }
+      } catch (err) {
+        // OCR/PDF-read failing shouldn't block attaching the figure itself
+        console.error('Auto-extract failed:', err);
+      }
+    }
+
+    if (isPdf) {
+      // A PDF isn't something an <img> tag can display as a figure - the
+      // text extraction above is the useful part; nothing to attach visually.
+      qImageInput.value = '';
+      return;
+    }
+
     if (cloudinaryConfigured || firebaseSignedIn) {
       setStatus('Uploading figure to Media Storage...');
       try {
