@@ -1118,6 +1118,7 @@ async function handleFile(file){
   setStatus('Reading ' + file.name + ' ...');
   try {
     let text = '';
+    let ocrConfidence = null;
     const isImage = ['jpg','jpeg','png'].includes(ext) || file.type.startsWith('image/');
     if (ext === 'txt') {
       text = await file.text();
@@ -1128,7 +1129,9 @@ async function handleFile(file){
     } else if (ext === 'pdf') {
       text = await extractPdfText(file);
     } else if (isImage) {
-      text = await extractImageText(file);
+      const ocrResult = await extractImageText(file);
+      text = ocrResult.text;
+      ocrConfidence = ocrResult.confidence;
     } else {
       setStatus('Unsupported file type: .' + ext, 'error');
       return;
@@ -1140,7 +1143,14 @@ async function handleFile(file){
     accumulatedText += (accumulatedText ? '\n\n' : '') + text.trim();
     rawText.value = accumulatedText;
     rawSection.classList.remove('hidden');
-    setStatus(`Added ${text.length} characters from ${file.name}. Take/choose another page, or review and split below.`, 'ok');
+    // Low OCR confidence almost always means handwriting, a skewed photo,
+    // or poor lighting - none of which this technology can reliably read.
+    // Say so clearly rather than letting garbled text look like it worked.
+    if (isImage && ocrConfidence !== null && ocrConfidence < 35) {
+      setStatus(`Added ${text.length} characters from ${file.name}, but OCR confidence was low (${Math.round(ocrConfidence)}%) - this usually means handwriting or an unclear photo, which this tool can't read reliably. Please check the text below carefully, retype it, or use "Dictate a Question" instead.`, 'error');
+    } else {
+      setStatus(`Added ${text.length} characters from ${file.name}. Take/choose another page, or review and split below.`, 'ok');
+    }
   } catch (err) {
     console.error(err);
     setStatus('Extraction failed: ' + err.message, 'error');
@@ -1182,7 +1192,12 @@ async function extractImageText(file){
       }
     }
   });
-  return result.data.text;
+  // Tesseract's own confidence score (0-100) - low confidence almost
+  // always means handwriting, a skewed photo, or poor lighting, none of
+  // which OCR can reliably read. Callers use this to decide whether to
+  // trust the text or warn the teacher instead of silently inserting
+  // garbage.
+  return { text: result.data.text, confidence: result.data.confidence };
 }
 
 rawText.addEventListener('input', () => { accumulatedText = rawText.value; });
@@ -1408,15 +1423,32 @@ function buildQuestionCard(q, opts){
 
     // Auto-extract text so the teacher doesn't have to retype the question
     // by hand - only fills the Question box if it's currently empty, so it
-    // never overwrites something already typed.
+    // never overwrites something already typed. For images, only trusted
+    // when OCR confidence is reasonable - handwriting and unclear photos
+    // produce garbled text that looks like it worked but isn't real, so
+    // that gets flagged instead of silently inserted.
     if (!q.question || !q.question.trim()) {
       try {
         setStatus(isPdf ? 'Reading PDF text...' : 'Reading text from image...');
-        const extractedText = isPdf ? await extractPdfText(file) : await extractImageText(file);
-        if (extractedText && extractedText.trim()) {
-          q.question = extractedText.trim();
-          qTextArea.value = q.question;
-          setStatus('Question text filled in automatically - please check it over for any OCR mistakes.', 'ok');
+        if (isPdf) {
+          const extractedText = await extractPdfText(file);
+          if (extractedText && extractedText.trim()) {
+            q.question = extractedText.trim();
+            qTextArea.value = q.question;
+            setStatus('Question text filled in automatically - please check it over for any extraction mistakes.', 'ok');
+          }
+        } else {
+          const ocrResult = await extractImageText(file);
+          const extractedText = ocrResult.text;
+          if (ocrResult.confidence < 35) {
+            // Don't silently fill garbled text - leave the box empty and
+            // say clearly why, so it's obvious something needs typing.
+            setStatus(`OCR confidence was too low (${Math.round(ocrResult.confidence)}%) to trust automatically - this usually means handwriting or an unclear photo. The figure is still attached below, but please type the question yourself, or try "Dictate a Question" on the main screen instead.`, 'error');
+          } else if (extractedText && extractedText.trim()) {
+            q.question = extractedText.trim();
+            qTextArea.value = q.question;
+            setStatus('Question text filled in automatically - please check it over for any OCR mistakes.', 'ok');
+          }
         }
       } catch (err) {
         // OCR/PDF-read failing shouldn't block attaching the figure itself
