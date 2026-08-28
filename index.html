@@ -11,6 +11,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="libs/katex/katex.min.css">
+<script>
+// If this page was opened directly (bookmarked/shared link, not via the
+// "Start Practice" card on the Power Pulse launcher), send the student
+// there first - the launcher should always be the first thing they see.
+if (!sessionStorage.getItem('cameFromLauncher')) {
+  window.location.replace('home.html');
+}
+</script>
 </head>
 <body>
 
@@ -25,7 +33,54 @@
 <div id="examStrip" class="exam-strip hidden">
   <span id="examProgressText"></span>
   <span id="stopwatchDisplay" class="stopwatch-pill" aria-label="Optional stopwatch">&#9201; 00:00</span>
+  <button id="calcToggleBtn" class="calc-toggle-btn" aria-label="Scientific calculator">&#128290;</button>
   <span class="self-paced-tag">Self-paced</span>
+</div>
+
+<div id="calcDrawer" class="calc-drawer calc-closed">
+  <div class="calc-header">
+    <span>Scientific Calculator</span>
+    <button id="calcAngleModeBtn" class="calc-mode-btn">DEG</button>
+    <button id="calcCloseBtn" class="calc-close-btn" aria-label="Close calculator">&#10005;</button>
+  </div>
+  <div id="calcDisplay" class="calc-display">0</div>
+  <div class="calc-grid">
+    <button class="calc-btn calc-fn" data-fn="sin">sin</button>
+    <button class="calc-btn calc-fn" data-fn="cos">cos</button>
+    <button class="calc-btn calc-fn" data-fn="tan">tan</button>
+    <button class="calc-btn calc-op" data-val="(">(</button>
+    <button class="calc-btn calc-op" data-val=")">)</button>
+
+    <button class="calc-btn calc-fn" data-fn="log">log</button>
+    <button class="calc-btn calc-fn" data-fn="ln">ln</button>
+    <button class="calc-btn calc-fn" data-fn="sqrt">&#8730;</button>
+    <button class="calc-btn calc-op" data-val="^">x^y</button>
+    <button class="calc-btn calc-clear" data-action="clear">C</button>
+
+    <button class="calc-btn calc-num" data-val="7">7</button>
+    <button class="calc-btn calc-num" data-val="8">8</button>
+    <button class="calc-btn calc-num" data-val="9">9</button>
+    <button class="calc-btn calc-op" data-val="/">&#247;</button>
+    <button class="calc-btn calc-back" data-action="back">&#9003;</button>
+
+    <button class="calc-btn calc-num" data-val="4">4</button>
+    <button class="calc-btn calc-num" data-val="5">5</button>
+    <button class="calc-btn calc-num" data-val="6">6</button>
+    <button class="calc-btn calc-op" data-val="*">&#215;</button>
+    <button class="calc-btn calc-const" data-val="pi">&#960;</button>
+
+    <button class="calc-btn calc-num" data-val="1">1</button>
+    <button class="calc-btn calc-num" data-val="2">2</button>
+    <button class="calc-btn calc-num" data-val="3">3</button>
+    <button class="calc-btn calc-op" data-val="-">&#8722;</button>
+    <button class="calc-btn calc-const" data-val="e">e</button>
+
+    <button class="calc-btn calc-num" data-val="0">0</button>
+    <button class="calc-btn calc-num" data-val=".">.</button>
+    <button class="calc-btn calc-eq" data-action="equals">=</button>
+    <button class="calc-btn calc-op" data-val="+">+</button>
+    <button class="calc-btn calc-pct" data-val="%">%</button>
+  </div>
 </div>
 
 <main id="app"></main>
