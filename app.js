@@ -23,6 +23,11 @@ const paletteToggleBtn = document.getElementById('paletteToggleBtn');
 const examStrip = document.getElementById('examStrip');
 const examProgressText = document.getElementById('examProgressText');
 const stopwatchDisplay = document.getElementById('stopwatchDisplay');
+const calcToggleBtn = document.getElementById('calcToggleBtn');
+const calcDrawer = document.getElementById('calcDrawer');
+const calcDisplay = document.getElementById('calcDisplay');
+const calcAngleModeBtn = document.getElementById('calcAngleModeBtn');
+const calcCloseBtn = document.getElementById('calcCloseBtn');
 const examActionBar = document.getElementById('examActionBar');
 const markReviewBtn = document.getElementById('markReviewBtn');
 const saveNextBtn = document.getElementById('saveNextBtn');
@@ -213,7 +218,7 @@ function renderSubjects(){
   // "Ask a Doubt" entry point intentionally hidden for now (see note near
   // openDoubtComposer below) - re-enable once students are onboarded.
 
-  DATA.subjects.forEach(sub => {
+  DATA.subjects.filter(sub => sub.visible !== false).forEach(sub => {
     const card = document.createElement('div');
     const themeClass = sub.id === 'eem' ? 'subject-measurements' : 'subject-power';
     card.className = 'list-card ' + themeClass;
@@ -268,6 +273,92 @@ function startQuiz(level, qs){
 // ---------- Optional Stopwatch ----------
 // Purely informational for the student - never enforced, never limits the
 // test. Starts at 0, tap to start/pause, resets automatically on a new test.
+// ---------- Scientific calculator (opens as a bottom drawer, doesn't cover
+// the question - #app gets extra bottom padding while it's open so nothing
+// ends up hidden behind it, and the question stays scrollable/visible). ----------
+let calcExpr = '';
+let calcAngleMode = 'deg'; // 'deg' or 'rad'
+let calcOpen = false;
+
+function calcToggleOpen(){
+  calcOpen = !calcOpen;
+  calcDrawer.classList.toggle('calc-closed', !calcOpen);
+  calcToggleBtn.classList.toggle('active', calcOpen);
+  app.classList.toggle('calc-open', calcOpen);
+}
+calcToggleBtn.addEventListener('click', calcToggleOpen);
+calcCloseBtn.addEventListener('click', calcToggleOpen);
+
+calcAngleModeBtn.addEventListener('click', () => {
+  calcAngleMode = calcAngleMode === 'deg' ? 'rad' : 'deg';
+  calcAngleModeBtn.textContent = calcAngleMode.toUpperCase();
+  calcAngleModeBtn.classList.toggle('rad', calcAngleMode === 'rad');
+});
+
+function calcUpdateDisplay(){
+  calcDisplay.textContent = calcExpr || '0';
+}
+
+// Evaluates the expression safely - only ever runs Math functions and plain
+// arithmetic the student typed via the calculator buttons, nothing else
+// reaches this (no free-text input field exists), so this cannot execute
+// arbitrary code from anywhere else in the page.
+function calcEvaluate(expr){
+  const toRad = deg => deg * Math.PI / 180;
+  const wrapTrig = (fn, inverse) => (x) => {
+    if (calcAngleMode === 'deg' && !inverse) return fn(toRad(x));
+    if (calcAngleMode === 'deg' && inverse) return fn(x) * 180 / Math.PI;
+    return fn(x);
+  };
+  const scope = {
+    sin: wrapTrig(Math.sin), cos: wrapTrig(Math.cos), tan: wrapTrig(Math.tan),
+    log: Math.log10 || (x => Math.log(x) / Math.LN10),
+    ln: Math.log,
+    sqrt: Math.sqrt,
+    pi: Math.PI, e: Math.E,
+    abs: Math.abs
+  };
+  // Translate calculator syntax into real JS math before evaluating:
+  // ^ -> ** (power), and bare function names get explicit () calls.
+  let jsExpr = expr.replace(/\^/g, '**');
+  jsExpr = jsExpr.replace(/√/g, 'sqrt');
+  const fn = new Function(...Object.keys(scope), `"use strict"; return (${jsExpr});`);
+  const result = fn(...Object.values(scope));
+  if (typeof result !== 'number' || !isFinite(result)) throw new Error('Invalid result');
+  return result;
+}
+
+calcDrawer.addEventListener('click', (e) => {
+  const btn = e.target.closest('.calc-btn');
+  if (!btn) return;
+  const action = btn.dataset.action;
+  const fnName = btn.dataset.fn;
+  const val = btn.dataset.val;
+
+  if (action === 'clear') {
+    calcExpr = '';
+  } else if (action === 'back') {
+    calcExpr = calcExpr.slice(0, -1);
+  } else if (action === 'equals') {
+    try {
+      const result = calcEvaluate(calcExpr);
+      calcExpr = String(Math.round(result * 1e10) / 1e10);
+    } catch (err) {
+      calcExpr = 'Error';
+      calcUpdateDisplay();
+      setTimeout(() => { calcExpr = ''; calcUpdateDisplay(); }, 900);
+      return;
+    }
+  } else if (fnName) {
+    calcExpr += fnName + '(';
+  } else if (val === 'pi') {
+    calcExpr += 'pi';
+  } else if (val !== undefined) {
+    calcExpr += val;
+  }
+  calcUpdateDisplay();
+});
+
 let stopwatch = { running: false, elapsedMs: 0, startedAt: null, intervalId: null };
 
 function formatStopwatch(ms){
