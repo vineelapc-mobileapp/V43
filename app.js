@@ -408,7 +408,9 @@ function renderQuiz(){
   card.className = 'question-card';
   const qText = document.createElement('div');
   qText.className = 'question-text';
-  qText.textContent = `Q${state.qIndex + 1}. ${q.question}`;
+  qText.textContent = q.question && q.question.trim()
+    ? `Q${state.qIndex + 1}. ${q.question}`
+    : `Q${state.qIndex + 1}.`; // no text - the figure below is the question itself
   card.appendChild(qText);
   renderMathIn(qText);
 
