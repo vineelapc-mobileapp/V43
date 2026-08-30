@@ -32,6 +32,8 @@ const levelSelect = document.getElementById('levelSelect');
 const cameraBtn = document.getElementById('cameraBtn');
 const filesBtn = document.getElementById('filesBtn');
 const dictateBtn = document.getElementById('dictateBtn');
+const photoAsQuestionBtn = document.getElementById('photoAsQuestionBtn');
+const photoAsQuestionInput = document.getElementById('photoAsQuestionInput');
 const dictateBtnLabel = document.getElementById('dictateBtnLabel');
 const cameraInput = document.getElementById('cameraInput');
 const filesInput = document.getElementById('filesInput');
@@ -1090,6 +1092,53 @@ filesInput.addEventListener('change', () => {
   filesInput.value = '';
 });
 
+// ---------- Photo as Question: skips OCR entirely - the photo itself
+// becomes the question's figure immediately, with an empty question card
+// ready for the teacher to type/dictate the question text (if any) and
+// fill in the options. Built for exactly the case OCR handles worst:
+// questions where a diagram is central and any surrounding printed text
+// would be lossy or wrong if force-extracted through OCR. ----------
+photoAsQuestionBtn.addEventListener('click', () => photoAsQuestionInput.click());
+photoAsQuestionInput.addEventListener('change', async () => {
+  const file = photoAsQuestionInput.files[0];
+  if (!file) return;
+  photoAsQuestionInput.value = '';
+
+  const newQ = {
+    type: 'mcq',
+    question: '',
+    options: ['', '', '', ''],
+    correctIndex: null,
+    correctAnswer: '',
+    questionImage: null,
+    videoUrl: '',
+    videoFile: null,
+    videoReady: false,
+    audioFile: null,
+    explanation: '',
+    explanationImage: null
+  };
+
+  try {
+    if (cloudinaryConfigured || firebaseSignedIn) {
+      setStatus('Uploading photo to Media Storage...');
+      newQ.questionImage = await uploadMedia(file, 'question-figures', file.name);
+    } else {
+      newQ.questionImage = await fileToDataUrl(file);
+    }
+    parsedQuestions.push(newQ);
+    rawSection.classList.remove('hidden'); // keep the panel visible/consistent with the rest of Tab 1
+    renderQuestionBlocks();
+    updateExportBarVisibility();
+    setStatus('Photo attached as a new question - type the question text (optional) and fill in the options below.', 'ok');
+    // Scroll to the newly added card so it's immediately visible to edit.
+    const cards = questionsSection.querySelectorAll('.qblock');
+    if (cards.length) cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    setStatus('Could not attach photo: ' + err.message, 'error');
+  }
+});
+
 function setStatus(msg, type){
   statusLine.textContent = msg;
   statusLine.className = 'status-line' + (type ? ' ' + type : '');
@@ -1949,9 +1998,13 @@ function buildQuestionCard(q, opts){
     const issues = [];
     box.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
 
-    if (!q.question || !q.question.trim()) {
+    // A question is allowed to have no typed text ONLY if a figure is
+    // attached instead - the photo itself is the question in that case
+    // ("Photo as Question"). If there's neither text nor a figure, that's
+    // a genuinely empty question.
+    if ((!q.question || !q.question.trim()) && !q.questionImage) {
       qTextArea.classList.add('field-error');
-      issues.push(`${labelText}: the question text is empty`);
+      issues.push(`${labelText}: the question text is empty (add text, or attach a figure/photo instead)`);
     }
 
     if (q.type === 'mcq') {
@@ -2011,7 +2064,10 @@ function mergeIntoData(){
 
   let addedCount = 0;
   parsedQuestions.forEach((q, i) => {
-    if (!q.question) return;
+    // A question is valid with no typed text as long as a figure/photo is
+    // attached instead - matches the "Photo as Question" flow and the
+    // same rule box.validate() already enforces in the UI.
+    if (!q.question && !q.questionImage) return;
     const isMcq = (q.type || 'mcq') === 'mcq';
     if (isMcq && (q.options.some(o => !o) || q.correctIndex === null)) return; // MCQ needs all 4 options + a correct one marked
     if (!isMcq && !q.correctAnswer) return; // Fill-in needs a correct answer typed in
