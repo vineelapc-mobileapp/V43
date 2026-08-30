@@ -304,6 +304,106 @@
                 "audioFile": null,
                 "explanation": "Solution : \nTotal reactance = 0.20 + 0.08 + 0.12 = 0.40 pu \n(all on 25 MVA, 110 kV base).\nBase current on 110 kV side = 25 / (√3 × 110) = 0.1312 kA.\nFault current = (1.0 / 0.40) × 0.1312 = 2.5 × 0.1312 ≈ 0.328 kA.\n ",
                 "explanationImage": null
+              },
+              {
+                "id": "symmetrical_faults_l1_new1788107887191_0",
+                "type": "mcq",
+                "question": "At a certain bus in a power system, the positive, negative, and zero sequence reactances are X1 = 0.20 pu, X2 = 0.20 pu, and X0 = 0.10 pu (on a 100 MVA, 11 kV base). Pre-fault voltage is 1.0 pu. The fault current for a single line-to-ground (L-G) fault at this bus (zero fault impedance) is approximately:",
+                "questionImage": null,
+                "options": [
+                  "10.5 kA",
+                  "15.7 kA",
+                  "21.0 kA",
+                  "31.5 kA"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "For a bolted L-G fault: Ia1 = Ia2 = Ia0 = V / (X1+X2+X0) = 1 / 0.50 = 2.0 pu.\nFault current = 3 × Ia1 = 6.0 pu.\nBase current = 100 / (√3 × 11) = 5.249 kA.\nFault current = 6.0 × 5.249 ≈ 31.5 kA",
+                "explanationImage": null
+              },
+              {
+                "id": "symmetrical_faults_l1_new1788107887191_1",
+                "type": "mcq",
+                "question": "For a three-phase symmetrical (bolted) fault at a bus, which sequence network(s) carry fault current?",
+                "questionImage": null,
+                "options": [
+                  "Positive sequence network only",
+                  "Positive and negative sequence networks",
+                  "All three sequence networks equally",
+                  "Zero sequence network only"
+                ],
+                "correctIndex": 0,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "A three-phase fault is balanced across all three phases, so by definition only the positive-sequence network carries current — negative and zero sequence currents are zero for a perfectly symmetrical fault.",
+                "explanationImage": null
+              },
+              {
+                "id": "symmetrical_faults_l1_new1788107887191_2",
+                "type": "mcq",
+                "question": "At a fault point, X1 = X2 = 0.25 pu, pre-fault voltage is 1.0 pu, and the base current is 5.0 kA. The fault current magnitude for a line-to-line (L-L) fault is approximately:",
+                "questionImage": null,
+                "options": [
+                  "8.7 kA",
+                  "10.0 kA",
+                  "17.3 kA",
+                  "20.0 kA"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "For a bolted L-L fault: Ia1 = -Ia2 = V / (X1+X2) = 1 / 0.50 = 2.0 pu.\nFault current magnitude = √3 × Ia1 = √3 × 2.0 ≈ 3.464 pu.\nFault current = 3.464 × 5.0 ≈ 17.3 kA.",
+                "explanationImage": null
+              },
+              {
+                "id": "symmetrical_faults_l1_new1788107887191_3",
+                "type": "mcq",
+                "question": "At a fault location, X1 = X2 = 0.30 pu. If the zero-sequence reactance X0 is significantly SMALLER than X1, which statement is generally true?",
+                "questionImage": null,
+                "options": [
+                  "The single line-to-ground fault current can exceed the three-phase fault current",
+                  "The line-to-line fault current always exceeds the three-phase fault current",
+                  "The double line-to-ground fault current is always the smallest of all fault types",
+                  "Fault current magnitude is independent of X0"
+                ],
+                "correctIndex": 0,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "3-phase fault current = V/X1 (constant regardless of X0).\nLG fault current = 3V / (2X1 + X0) — this grows larger as X0 shrinks.\nWorked check: with X1=0.30, if X0=0.10, LG current = 4.29 pu > 3-phase current = 3.33 pu.\nSo when X0 is small relative to X1 (a solidly grounded, low-impedance-path system), the LG fault can genuinely exceed the three-phase fault current - this is why some grounded systems must be rated for LG fault current as the worst case, not just the 3-phase fault.",
+                "explanationImage": null
+              },
+              {
+                "id": "symmetrical_faults_l1_new1788107887191_4",
+                "type": "mcq",
+                "question": "At a fault point, X1 = X2 = 0.25 pu and X0 = 0.20 pu, with pre-fault voltage 1.0 pu. For a double line-to-ground (L-L-G) fault, the positive-sequence fault current component (Ia1) is approximately:",
+                "questionImage": null,
+                "options": [
+                  "1.85 pu",
+                  "2.22 pu",
+                  "2.77 pu",
+                  "3.33 pu"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Ia1 = V / [X1 + (X2 × X0)/(X2 + X0)]\nParallel combination of X2 and X0 = (0.25 × 0.20)/(0.25+0.20) = 0.1111 pu.\nIa1 = 1 / (0.25 + 0.1111) = 1 / 0.3611 ≈ 2.77 pu.",
+                "explanationImage": null
               }
             ],
             "2": []
