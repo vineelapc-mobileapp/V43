@@ -262,10 +262,16 @@ textarea.raw-text{
       <span id="dictateBtnLabel">Dictate a Question</span>
       <span class="sub">Speak instead of typing (needs internet)</span>
     </div>
+    <div class="source-btn" id="photoAsQuestionBtn">
+      <span class="icon">&#128444;</span>
+      Photo as Question
+      <span class="sub">Skip text extraction - photo becomes the question, add options after</span>
+    </div>
   </div>
 
   <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
   <input type="file" id="filesInput" accept=".pdf,.docx,.txt,.jpg,.jpeg,.png" style="display:none;">
+  <input type="file" id="photoAsQuestionInput" accept="image/*" style="display:none;">
 
   <div id="statusLine" class="status-line"></div>
 
