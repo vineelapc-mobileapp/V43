@@ -284,7 +284,28 @@
           "id": "symmetrical_faults",
           "name": "Symmetrical Faults",
           "levels": {
-            "1": [],
+            "1": [
+              {
+                "id": "symmetrical_faults_l1_new1788083115257_0",
+                "type": "mcq",
+                "question": "A 3-phase, 25 MVA, 11 kV alternator has a subtransient reactance of 0.20 pu on its own base. It is connected through a step-up transformer (25 MVA, 11/110 kV, reactance 0.08 pu) and a transmission line (reactance 0.12 pu, same base) to a fault point F on the 110 kV side. Pre-fault voltage is 1.0 pu. The fault current for a three-phase symmetrical fault at F is approximately:",
+                "questionImage": null,
+                "options": [
+                  "0.16 kA",
+                  "0.33 kA",
+                  "0.66 kA",
+                  "1.31 kA"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Solution : \nTotal reactance = 0.20 + 0.08 + 0.12 = 0.40 pu \n(all on 25 MVA, 110 kV base).\nBase current on 110 kV side = 25 / (√3 × 110) = 0.1312 kA.\nFault current = (1.0 / 0.40) × 0.1312 = 2.5 × 0.1312 ≈ 0.328 kA.\n ",
+                "explanationImage": null
+              }
+            ],
             "2": []
           }
         },
