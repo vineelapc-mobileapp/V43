@@ -93,7 +93,7 @@
                 "videoUrl": "PASTE_VIDEO_LINK_HERE",
                 "videoFile": null,
                 "videoReady": false,
-                "explanation": "",
+                "explanation": "RC = Pmax ( Plf- Pcf )/Pcf \nfrom diagram \nPlf = (50x 100+ 0.5x 100x40) / (90x 100) \n= 0.777\nRc = 90 ( 0.777-0.7)/ 0.7\n = 10 MW",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1788111466/ftazsob2hlxzvm4j3zpq.jpg"
               }
             ],
