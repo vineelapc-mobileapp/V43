@@ -404,6 +404,66 @@
                 "audioFile": null,
                 "explanation": "Ia1 = V / [X1 + (X2 × X0)/(X2 + X0)]\nParallel combination of X2 and X0 = (0.25 × 0.20)/(0.25+0.20) = 0.1111 pu.\nIa1 = 1 / (0.25 + 0.1111) = 1 / 0.3611 ≈ 2.77 pu.",
                 "explanationImage": null
+              },
+              {
+                "id": "symmetrical_faults_l1_new1788108749856_0",
+                "type": "mcq",
+                "question": "A 3-phase transformer is rated 20 MVA, 33/11 kV, with a reactance of 8% on its own rating. Expressed in per unit on a new base of 50 MVA (same voltage), its reactance is:",
+                "questionImage": null,
+                "options": [
+                  "0.08 pu",
+                  "0.16 pu",
+                  "0.20 pu",
+                  "0.32 pu"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Solution 1: Per-unit reactance scales directly with the MVA base ratio when voltage is unchanged: X_new = X_old x (MVA_new/MVA_old) = 0.08 x (50/20) = 0.20 pu.",
+                "explanationImage": null
+              },
+              {
+                "id": "symmetrical_faults_l1_new1788108749856_1",
+                "type": "mcq",
+                "question": "At a bus with a base of 100 MVA and 11 kV (line-to-line), the base current is approximately:",
+                "questionImage": null,
+                "options": [
+                  "2.62 kA",
+                  "5.25 kA",
+                  "9.09 kA",
+                  "10.5 kA"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Solution 2: Base current = MVA_base / (sqrt(3) x kV_base) = 100 / (1.732 x 11) is approximately 5.25 kA.",
+                "explanationImage": null
+              },
+              {
+                "id": "symmetrical_faults_l1_new1788108749856_2",
+                "type": "mcq",
+                "question": "For a system with a base of 100 MVA and 132 kV (line), the base impedance is approximately:",
+                "questionImage": null,
+                "options": [
+                  "17.4 ohm",
+                  "87.1 ohm",
+                  "174.2 ohm",
+                  "348.5 ohm"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Solution 3: \nBase impedance = (kV_base)^2 / MVA_base = 132^2 / 100 = 17424/100 is approximately 174.2 ohm",
+                "explanationImage": null
               }
             ],
             "2": []
