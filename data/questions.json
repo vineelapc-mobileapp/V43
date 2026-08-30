@@ -476,7 +476,7 @@
           }
         }
       ],
-      "visible": true
+      "visible": false
     }
   ]
 }
