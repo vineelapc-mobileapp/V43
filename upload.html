@@ -354,21 +354,18 @@ const pinError = document.getElementById('pinError');
 const lockTitle = document.getElementById('lockTitle');
 const lockHint = document.getElementById('lockHint');
 
-const storedPin = localStorage.getItem(PIN_KEY);
-const isFirstTime = !storedPin;
-// Two-stage first-time flow: a brand new device must first prove it knows
-// the shared Setup Code (known only to you) before it's allowed to choose
-// its own PIN. Without this, ANY new device - including a student's own
-// phone visiting upload.html for the first time - would be treated as
-// "first time setup" and could just invent its own PIN with zero barrier.
+let storedPin = localStorage.getItem(PIN_KEY);
+// Genuine two-factor, every single time: the Setup Code (something only
+// you know) must be entered on EVERY visit, not just the first time a
+// device is set up - then the PIN (something set for this device) is
+// checked/chosen second. Stronger than one-time device enrollment, at
+// the cost of typing two things every time instead of one.
 let setupCodeVerified = false;
-if (isFirstTime) {
-  lockTitle.textContent = 'Teacher Setup Code Required';
-  lockHint.textContent = 'This device hasn\'t been set up yet. Enter the Teacher Setup Code first (ask whoever manages this app if you don\'t have it).';
-  pinInput.type = 'text';
-  pinInput.maxLength = 20;
-  pinInput.placeholder = 'Setup Code';
-}
+lockTitle.textContent = 'Teacher Setup Code Required';
+lockHint.textContent = 'Enter the Teacher Setup Code (ask whoever manages this app if you don\'t have it). Your PIN is asked next.';
+pinInput.type = 'text';
+pinInput.maxLength = 20;
+pinInput.placeholder = 'Setup Code';
 
 // ---- Lockout after repeated wrong attempts (Setup Code OR PIN) ----
 // Stored in localStorage (not a page-memory variable) so reloading the
@@ -417,7 +414,7 @@ checkLockedOut(); // in case the page was reloaded mid-lockout
 async function tryUnlock(){
   if (checkLockedOut()) return;
   const val = pinInput.value.trim();
-  if (isFirstTime && !setupCodeVerified) {
+  if (!setupCodeVerified) {
     pinSubmitBtn.disabled = true;
     const hash = await sha256Hex(val.toUpperCase());
     pinSubmitBtn.disabled = false;
@@ -427,9 +424,16 @@ async function tryUnlock(){
       pinInput.value = '';
       pinInput.type = 'password';
       pinInput.maxLength = 8;
-      pinInput.placeholder = 'PIN';
-      lockTitle.textContent = 'Set a Teacher PIN';
-      lockHint.textContent = 'Setup code accepted. Now choose a 4+ digit PIN for this device.';
+      storedPin = localStorage.getItem(PIN_KEY); // re-read in case it changed
+      if (storedPin) {
+        pinInput.placeholder = 'PIN';
+        lockTitle.textContent = 'Enter Teacher PIN';
+        lockHint.textContent = 'Setup code accepted. Now enter your PIN for this device.';
+      } else {
+        pinInput.placeholder = 'Choose a PIN';
+        lockTitle.textContent = 'Set a Teacher PIN';
+        lockHint.textContent = 'Setup code accepted. Now choose a 4+ digit PIN for this device.';
+      }
       pinError.textContent = '';
     } else {
       recordFailedAttempt();
@@ -439,12 +443,13 @@ async function tryUnlock(){
     }
     return;
   }
-  if (isFirstTime && setupCodeVerified) {
+  if (!storedPin) {
     if (val.length < 4) {
       pinError.textContent = 'Use at least 4 digits.';
       return;
     }
     localStorage.setItem(PIN_KEY, val);
+    storedPin = val;
     clearLockoutState();
     unlock();
   } else {
