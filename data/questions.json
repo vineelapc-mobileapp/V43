@@ -260,6 +260,21 @@
                 "audioFile": null,
                 "explanation": "Vc > Vph , so PL=0 ",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1788244036/oa4lhu8jseqkqclwcs8h.png"
+              },
+              {
+                "id": "corona_l2_new1788244214396_0",
+                "type": "fill",
+                "question": "A 3-phase, 220 KV, 50 Hz transmission line consists of 1.2 cm racius conductors spaced 2 m at the corners of an equilateral triangle The disruptive critical voltage between the lines if irregularity factor = 0.96, temperature 20°C, Barometric pressure 72.2 cm of mercury and dielectric strength of air = 21.1 KV (rms)/cm is kV (rms) and Corona loss per km of line is______ kW  .",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "0.693",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "0.693 ",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1788244206/bdmps8izjopopuqe16cs.png"
               }
             ]
           }
