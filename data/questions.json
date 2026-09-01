@@ -230,7 +230,38 @@
           "name": "Corona",
           "levels": {
             "1": [],
-            "2": []
+            "2": [
+              {
+                "id": "corona_l2_new1788244062452_0",
+                "type": "fill",
+                "question": "A 3-phase 220 kV. 50 Hz transmission line consists of 2 cm radius conductor spaced 2.5m apart in equilateral triangular formulation. If the temperature is 20°C, atmospheric pressure 75 cm and irregularity factor (mo) = 0.80, then the corona loss per km of line is _____ kW. (Assume dielectric strength of air = 21.1 kV/cm(rms))",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "0 (zero) ",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Vc > Vph , so PL=0 ",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1788244036/oa4lhu8jseqkqclwcs8h.png"
+              },
+              {
+                "id": "corona_l2_new1788244107429_0",
+                "type": "fill",
+                "question": "A 3-phase 220 kV. 50 Hz transmission line consists of 2 cm radius conductor spaced 2.5m apart in equilateral triangular formulation. If the temperature is 20°C, atmospheric pressure 75 cm and irregularity factor (mo) = 0.80, then the corona loss per km of line is _____ kW. (Assume dielectric strength of air = 21.1 kV/cm(rms))",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "0 (zero) ",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Vc > Vph , so PL=0 ",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1788244036/oa4lhu8jseqkqclwcs8h.png"
+              }
+            ]
           }
         },
         {
