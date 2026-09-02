@@ -133,6 +133,126 @@
                 "audioFile": null,
                 "explanation": " Calculate Droop Slopes (R) in Hz/MW\nR1 = (0.04 × 50) / 400 = 2.0 / 400 = 0.005 Hz/MW\nR2= (0.05 × 50) / 600 = 2.5 / 600 = 0.004167 Hz/MW\nStep 2: Formulate Frequency Equations\nf = f0− R1 \nP1 ⇒ f = 51 − 0.005 P1\nf = f0 − R2\nP2 ⇒ f = 51 − 0.004167 P2\nEquating frequency drops gives: 0.005 P1 = 0.004167 P2\n⇒ P1 / P2 = 0.004167 / 0.005 = 5/6\n\n Solve Load Allocation and System Frequency\nP 1+ P2= 500 MW ⇒ (5/6) P2+ P2= 500 ⇒ P2= 300 MW\nP1 = 500 − 300 = 200 MW\nf = 51 − (0.005 × 200) = 51 − 1.0 = 49.75 Hz",
                 "explanationImage": null
+              },
+              {
+                "id": "load_frequency_control_l2_new1788374053871_0",
+                "type": "mcq",
+                "question": "A 500 MW, 50 Hz generator has a speed governor droop characteristic of 4%. The generator is operating at 75% of its rated capacity on full load. If the system load suddenly increases by 50 MW without any change in the speed changer setting, determine the steady-state frequency deviation ( Δf ).",
+                "questionImage": null,
+                "options": [
+                  "-0.10 Hz  ",
+                  "-0.2",
+                  "-0.4",
+                  "-0.5 "
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Solution: \n    R = (% Droop / 100) × (f_nominal / P_rated) \n    R = (0.04) × (50 / 500) = 0.004 Hz/MW  \n Calculate Steady-State Frequency Change  For a load increase \n  ΔPd    = 50 MW   \n with no change in speed changer setting ( ΔP c   = 0 ): \n Δf = − R × ΔPd    = − (0.004) × 50 = − 0.20 Hz \n\n If in the Question if new system frquency is asked then , the new system frequency is   50 − 0.20 = 49.80 Hz . \n ",
+                "explanationImage": null
+              },
+              {
+                "id": "load_frequency_control_l2_new1788374053871_1",
+                "type": "mcq",
+                "question": "Two  generators operate in parallel at 50 Hz at  no load . Generator 1 is rated at 200 MW with a speed droop of 4%, and Generator 2 is rated at 400 MW with a speed droop of 5%. If the total load increases by 60 MW, calculate the load sharing ( ΔP 1   and   ΔP 2 ) between Generator 1 and Generator 2 respectively.  \n(A) ΔP 1   = 25 MW, ΔP 2   = 35 MW   \n(B) ΔP 1   = 30 MW, ΔP 2   = 30 MW \n(C) ΔP 1   = 23.08 MW, ΔP 2   = 36.92 MW  \n(D) ΔP 1   = 36.92 MW, ΔP 2   = 23.08 MW  \n",
+                "questionImage": null,
+                "options": [
+                  "ΔP 1   = 25 MW, ΔP 2   = 35 MW ",
+                  "ΔP 1   = 30 MW, ΔP 2   = 30 MW ",
+                  "ΔP 1   = 23.08 MW, ΔP 2   = 36.92 MW",
+                  " ΔP 1   = 36.92 MW, ΔP 2   = 23.08 MW "
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Solution: \nStep 1: Calculate Droop Constants in Hz/MW \n R 1   = (0.04 × 50) / 200 = 0.010 Hz/MW \n R 2   = (0.05 × 50) / 400 = 0.00625 Hz/MW  \nStep 2: Apply Parallel Load Sharing Relation  Both generators experience the same steady-state frequency drop  Δf : \n ΔP 1   = − Δf / R 1   and  \n ΔP 2   = − Δf / R 2  \n ΔP 1   + ΔP 2   = − Δf (1/R 1   + 1/R 2 ) \nΔP 1   + ΔP 2 =  60 MW = − Δf (1/0.010 + 1/0.00625) = 260 (− Δf) \n− Δf = 60 / 260 = 0.23077 Hz \nIndividual Power Changes \n ΔP 1 = 0.23077 / 0.010 = 23.08 MW\n ΔP 2 = 0.23077 / 0.00625 = 36.92 MW \n\n( Try with graphical solution  : Important:  keep 50 Hz at no load  )   ",
+                "explanationImage": null
+              },
+              {
+                "id": "load_frequency_control_l2_new1788374053871_2",
+                "type": "mcq",
+                "question": "A power system has a total operating capacity of 1000 MW. The system frequency is 50 Hz. The speed governor droop is   R = 4%   (on system base), and the load varies by 1.5% for a 1% change in frequency. Find the overall frequency response characteristic   β   (in MW/Hz) of the area. \n \n\n\n  ",
+                "questionImage": null,
+                "options": [
+                  "50 MW/Hz ",
+                  "500 MW/Hz",
+                  "530 MW/Hz",
+                  "5300 MW/Hz"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Solution : \n\n  AFRC (β) = B + (1/R) = ( ΔPd/Δf ) + (1/R)\n\nStep -1 : Calculate Governor Speed Droop Parameter (1/R)\n  R = (0.04 × 50) / 1000 = 2.0 / 1000 = 0.002 Hz/MW \n  1/R = 1 / 0.002 = 500 MW/Hz \n Step 2: Calculate Load Damping Factor (B) Damping factor or  \n  Bias Cooeficient\n  B  = ΔPd   / Δf :  ΔPd = 1.5% of 1000 MW = 15 MW   for   \nΔf = 1% of 50 Hz = 0.5 Hz D = 15 MW / 0.5 Hz = 30 MW/Hz \n Step 3: Calculate Area Frequency Response Characteristic \n(β)   = (1/R) + B = 500 + 30 = 530 MW/Hz ",
+                "explanationImage": null
+              },
+              {
+                "id": "load_frequency_control_l2_new1788374053871_3",
+                "type": "mcq",
+                "question": "In a two-area system, the tie-line bias setting for Area 1 is chosen as   B 1   = 500 MW/Hz . The area experiences an unexpected frequency drop of   Δf = −0.08 Hz   and a tie-line power increase (export) of   ΔP 12   = +15 MW . What is the Area Control Error (ACE) for Area 1 in MW ?  \n\n\n ",
+                "questionImage": null,
+                "options": [
+                  "-55 MW",
+                  "55",
+                  "-25",
+                  "25 MW"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": " Solution: \n Step 1: Formula for Area Control Error (ACE)\n  ACE 1   = ΔPc + ΔPtie - (Δf/R) = ΔPc + ΔPtie + B (Δf) , where B = -(1/R)\nFor Pc is constant ,ΔPc = 0   \nACE 1   =  ΔPtie - (Δf/R) =  ΔPtie + B (Δf)  \nStep 2: Substitute Given Values  \nACE 1   = (+15) + (500) × (−0.08) \nACE 1   = 15 − 40 = − 25 MW  \nNote:   The negative sign indicates that Area 1 is under-generating by 25 MW, requiring supplementary integral control to step up generation. ",
+                "explanationImage": null
+              },
+              {
+                "id": "load_frequency_control_l2_new1788374053871_4",
+                "type": "mcq",
+                "question": "A single-area system has the following parameters on a 100 MVA base: \nInertia constant   H = 5 ,   Load damping constant   B = D = 0.8 p.u.\nGovernor speed droop   R = 0.05 p.u.  If a step increase in load   ΔPd = 0.1 p.u.   occurs, what is the steady-state frequency error in per unit? \n\n ",
+                "questionImage": null,
+                "options": [
+                  "-0.0020 p.u.",
+                  "-0.0045 p.u.",
+                  "-0.0096 p.u. ",
+                  "-0.0048 p.u."
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Solution: \n Step 1: Steady-State Frequency Deviation Formula in Per Unit \n     Δf ss   = − ΔPd   / (D + 1/R)  \nStep 2: \n  Substitute Per-Unit Values  1/R = 1 / 0.05 = 20 p.u. \n      D + 1/R = 0.8 + 20 = 20.8 p.u. \n     Δf ss   = − 0.1 / 20.8 = − 0.004807 p.u.\n  \n    Note :  If asked in Hz mutiply with base frquency \n            (assuming f = 50 Hz):  \n          Δf = −0.004807 × 50 = −0.24 Hz ",
+                "explanationImage": null
+              },
+              {
+                "id": "load_frequency_control_l2_new1788374053871_5",
+                "type": "mcq",
+                "question": "A generator rated at 250 MVA, 50 Hz has a governor droop of 5% based on its own rating. It is connected to a power grid whose study base is chosen as 1000 MVA, 50 Hz. Calculate the per-unit droop parameter ( R new ) on the system base. \n   ",
+                "questionImage": null,
+                "options": [
+                  "0.05 p.u. ",
+                  "0.0125 p.u.",
+                  "0.20 p.u.",
+                  "0.10 p.u. "
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Solution: \nStep 1:  R (in Hz/MW) = (R_pu × f_nominal) / S_base\n  R pu,new   / S base,new   = R pu,old   / S base,old  \nStep 2: Convert to New System Base \n R pu,new   = R pu,old   × (S base,new   / S base,old )\n R pu,new   = 0.05 × (1000 / 250) = 0.05 × 4 = 0.20 p.u. \n",
+                "explanationImage": null
               }
             ]
           }
