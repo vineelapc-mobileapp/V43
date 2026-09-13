@@ -363,7 +363,23 @@
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1787840779/g5sqnezaye2j2anojakh.png"
               }
             ],
-            "2": []
+            "2": [
+              {
+                "id": "power_factor_control_l2_new1789297972221_0",
+                "type": "fill",
+                "question": "Q) A factory has max .demand of 175 MW at 0.75 lag is charged Rs 72 per KVA per Annum . If the phase advancing equipment ( compensator ) costs Rs 120 per KVAr find the most economical power factor at which factory should operate . Interest and depreciation total 10 % of the capital investment on the compensator ?",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "𝟎.𝟗𝟖𝟔 𝑳𝒂𝒈 ",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "x = Rs 72 per KVA per annum \nY = Rs 120 x 10 % = Rs 12 /KVAR /Annum \n𝑴𝒐𝒔𝒕 𝑬𝒄𝒐𝒏𝒐𝒎𝒊𝒄 𝑷𝒐𝒘𝒆𝒓 𝒇𝒂𝒄𝒕𝒐𝒓= 𝒄𝒐𝒔 𝜽𝟐=√(𝟏− (𝒚/𝒙)^(𝟐 ) )\n =√(𝟏− (𝟏𝟐/𝟕𝟐)^(𝟐 )  )=𝟎.𝟗𝟖𝟔 𝑳𝒂𝒈 \n",
+                "explanationImage": null
+              }
+            ]
           }
         },
         {
