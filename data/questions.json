@@ -360,26 +360,10 @@
                 "videoReady": false,
                 "audioFile": null,
                 "explanation": "Detailed Solution",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1787840779/g5sqnezaye2j2anojakh.png"
+                "explanationImage": null
               }
             ],
-            "2": [
-              {
-                "id": "power_factor_control_l2_new1789298217844_0",
-                "type": "fill",
-                "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789298182/gsjikmgq2xt3mizljhyz.png",
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "0.8",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789298211/kf2z0kpsa7vbi5ywdfas.png"
-              }
-            ]
+            "2": []
           }
         },
         {
