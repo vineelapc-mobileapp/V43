@@ -413,6 +413,36 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789463423/ikadcqsjn5ymzl2pxx1e.png"
+              },
+              {
+                "id": "power_factor_control_l2_new1789463944454_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789463661/wkfse1suqjacxmp87p5c.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "0.316 lead",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789463733/ijpw5eos83zzbgxmvzgw.png"
+              },
+              {
+                "id": "power_factor_control_l2_new1789463944454_1",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789463931/muzxjacskmgpm0gvoqwb.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "48 mF/ph",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789463909/ewtv9d3lk9ebzdnxqwxr.png"
               }
             ]
           }
