@@ -443,6 +443,21 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789463909/ewtv9d3lk9ebzdnxqwxr.png"
+              },
+              {
+                "id": "power_factor_control_l2_new1789464211576_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789464156/b8wfockaaokjmgzdifum.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "3.8 MVAR",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789464194/t5ytzaafmhbykhfh7evi.png"
               }
             ]
           }
