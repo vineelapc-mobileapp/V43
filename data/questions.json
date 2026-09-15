@@ -538,6 +538,21 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789470200/g10odaueau4ovoodstj5.png"
+              },
+              {
+                "id": "power_factor_control_l2_new1789470503988_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789470260/tjp5xgxrmiujsts8sxy7.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "(1)0.875; (2)457 KV;(3)0.131A/ph;(4)1600 ohms",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789470498/hhpvhfrs5tsc8heebaxe.png"
               }
             ]
           }
