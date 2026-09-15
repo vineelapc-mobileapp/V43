@@ -508,6 +508,21 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": null
+              },
+              {
+                "id": "power_factor_control_l2_new1789468888576_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789468716/gbvcdz1gaqv6pbcqgbex.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "Vrl= 500KV; Ic= 0.144 A/ph; Xlsh= 500 ohms",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789468876/gjbsyn42f0r7ji4pv6vm.png"
               }
             ]
           }
