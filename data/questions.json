@@ -488,6 +488,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789464815/vbtjcqdfteqdbraiwodg.png"
+              },
+              {
+                "id": "power_factor_control_l2_new1789465153616_0",
+                "type": "mcq",
+                "question": "Shunt reactors are sometimes used in high\nvoltage transmission systems to",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789464931/phztlyuwijwgfqnqq5wy.png",
+                "options": [
+                  "Limit the short circuit current through the line",
+                  "compensate for the series resistance of the line under heavily loaded condition",
+                  "limit over voltages at the load side under lightly loaded condition",
+                  "compensate for the voltage drop in the line under heavily loaded condition"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": null
               }
             ]
           }
