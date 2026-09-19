@@ -95,6 +95,26 @@
                 "videoReady": false,
                 "explanation": "RC = Pmax ( Plf- Pcf )/Pcf \nfrom diagram \nPlf = (50x 100+ 0.5x 100x40) / (90x 100) \n= 0.777\nRc = 90 ( 0.777-0.7)/ 0.7\n = 10 MW",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1788111466/ftazsob2hlxzvm4j3zpq.jpg"
+              },
+              {
+                "id": "economic_factors_l1_new1789796167400_0",
+                "type": "mcq",
+                "question": "Which factor is always  > 1",
+                "questionImage": null,
+                "options": [
+                  "Plant load factor ",
+                  "Plant capacity factor ",
+                  "Diversity factor",
+                  "Demand factor"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Diversity factor is always greater than 1",
+                "explanationImage": null
               }
             ],
             "2": []
