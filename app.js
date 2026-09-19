@@ -87,6 +87,26 @@ function goBack(){
 
 // ---------- Render router ----------
 function render(){
+  // Teacher's master kill-switch: if disabled, show this and nothing else,
+  // regardless of what the student was trying to do. Checked first, before
+  // any other view logic, so there's no path around it.
+  if (DATA.studentAccessEnabled === false) {
+    document.body.classList.remove('theme-measurements');
+    backBtn.classList.add('hidden');
+    paletteToggleBtn.classList.add('hidden');
+    examStrip.classList.add('hidden');
+    examActionBar.classList.add('hidden');
+    headerTitle.textContent = 'Power Pulse';
+    app.innerHTML = `
+      <div class="question-card" style="text-align:center;">
+        <div style="font-size:40px;margin-bottom:10px;">⏸</div>
+        <div class="question-text" style="margin-bottom:8px;">This app is temporarily unavailable</div>
+        <p style="color:var(--muted);font-size:14px;">Please check back later, or contact your teacher.</p>
+      </div>
+    `;
+    return;
+  }
+
   // First-ever launch: nothing is usable until Name/Email/College is filled in.
   if (!studentProfile && state.view !== 'profile') {
     state.view = 'profile';
