@@ -360,7 +360,7 @@
               {
                 "id": "transmission_line_parameters_l1_new1789810599294_0",
                 "type": "mcq",
-                "question": "Bundled Conductors 2)Double Circuit or Parallel Lines3)Series Capacitor",
+                "question": "Inductive Reactance of Transmission Line  can be reduced by using (1) Bundled Conductors 2)Double Circuit or Parallel Lines3)Series Capacitor",
                 "questionImage": null,
                 "options": [
                   "1 only",
@@ -380,13 +380,13 @@
               {
                 "id": "transmission_line_parameters_l1_new1789811853597_0",
                 "type": "mcq",
-                "question": "} For a given power delivered, if the working voltage of a distributor line is increased to n times, the cross-sectional area A of the Cistributor line, would be reduced to",
+                "question": "For a given power delivered, if the working voltage of a distributor line is increased to n times, the cross-sectional area A of the distributor line, would be reduced to",
                 "questionImage": null,
                 "options": [
                   "A/n",
                   "nA",
-                  "Sqrt(A/n)",
-                  "A/ (n square)"
+                  "√(A/n)",
+                  "A / n²"
                 ],
                 "correctIndex": 3,
                 "correctAnswer": "",
@@ -400,7 +400,7 @@
               {
                 "id": "transmission_line_parameters_l1_new1789814892350_0",
                 "type": "mcq",
-                "question": "> If a fixed amount Of power is to be transmitted over certain length with fixed power loss, itcam be said that volume of conductor is \n [(ESE-2010)]",
+                "question": " If a fixed amount Of power is to be transmitted over certain length with fixed power loss, it can be said that volume of conductor is  [(ESE-2010)]",
                 "questionImage": null,
                 "options": [
                   "Inversely proportional to magnitude of the voltage and that of power factor of the load.",
@@ -420,13 +420,13 @@
               {
                 "id": "transmission_line_parameters_l1_new1789815080087_0",
                 "type": "mcq",
-                "question": "For a fixed value of complex power in a transmission line having a sending end voltageV, the real power loss will be proportional to",
+                "question": "For a fixed value of complex power in a transmission line having a sending end voltage V, the real power loss will be proportional to",
                 "questionImage": null,
                 "options": [
                   "V",
-                  "Square root of V",
-                  "Inverse Sqaure of V",
-                  "Sqaure of V"
+                  "√ (V)",
+                  "1/ V² ",
+                  "V ²"
                 ],
                 "correctIndex": 2,
                 "correctAnswer": "",
@@ -460,7 +460,7 @@
               {
                 "id": "transmission_line_parameters_l1_new1789815810004_0",
                 "type": "mcq",
-                "question": "For a 5 layer ACSR conductor number of straunds are",
+                "question": "For a 5 layer ACSR conductor number of strands  are",
                 "questionImage": null,
                 "options": [
                   "91",
@@ -480,7 +480,7 @@
               {
                 "id": "transmission_line_parameters_l1_new1789817538731_0",
                 "type": "mcq",
-                "question": "Consider a long, two-wire line composed of solid round conductors. The radius of both conductors is 0.25 cm and the distance between their centres is 1m. If this distance is doubled, then the inductance per unit length:",
+                "question": "Consider a long, two-wire line composed of solid round conductors. The radius of both conductors is 0.25 cm and the distance between their centres is 1 m. If this distance is doubled, then the inductance per unit length is ",
                 "questionImage": null,
                 "options": [
                   "Doubles",
@@ -506,7 +506,7 @@
                   "0.05 + 0.2 In 60",
                   "0.2 ln 60",
                   "0.05 + 0.2 In (60/0.5)",
-                  "0.2 ln (60/0.5) [GATE-1999}"
+                  "0.2 ln (60/0.5) "
                 ],
                 "correctIndex": 2,
                 "correctAnswer": "",
@@ -514,13 +514,13 @@
                 "videoFile": null,
                 "videoReady": false,
                 "audioFile": null,
-                "explanation": "L=0.05 + 0.2 𝐥𝐧⁡( 𝒅/𝒓  )𝒎𝑯/𝒌𝒎 = 𝟎.𝟎𝟓+𝟎.𝟐 𝒍𝒏 (𝟔𝟎/(𝟎.𝟓))            ",
+                "explanation": "L=0.05 + 0.2 𝐥𝐧⁡( 𝒅/𝒓  ) = 𝟎.𝟎𝟓 + 𝟎.𝟐 𝒍𝒏 (𝟔𝟎/(𝟎.𝟓))   𝒎𝑯/𝒌𝒎         ",
                 "explanationImage": null
               },
               {
                 "id": "transmission_line_parameters_l1_new1789827154155_0",
                 "type": "fill",
-                "question": "the self GMD  for bundle of two conductors 2) three conductors with equal spacer spacing of S",
+                "question": "Finfd the self GMD  for bundle of \n1) two conductors \n2) three conductors with equal spacer spacing of S  and \n(3) 4 bundled conductors placed at the Corners of square ,each condctor has a radius of \"r\". \n",
                 "questionImage": null,
                 "options": [],
                 "correctIndex": null,
@@ -586,7 +586,7 @@
               {
                 "id": "transmission_line_parameters_l2_new1789822404261_0",
                 "type": "fill",
-                "question": "The total reactance and total susceptance ofa lossless overhead EHV line, operating at 50 Hz, are given by 0.045 pu and 1.2 pu respectively. If the velocity of wave propagation is 3 x 10 power 5 km/s, then the approximate length of the line is ____ km.",
+                "question": "The total reactance and total susceptance ofa lossless overhead EHV line, operating at 50 Hz, are given by 0.045 pu and 1.2 pu respectively. If the velocity of wave propagation is 300 x 10³ km/s, then the approximate length of the line is ____ km.",
                 "questionImage": null,
                 "options": [],
                 "correctIndex": null,
@@ -632,26 +632,6 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789829767/aw5sz3qol409b6mfadi3.png"
-              },
-              {
-                "id": "transmission_line_parameters_l2_new1789830287677_0",
-                "type": "mcq",
-                "question": "Q.3 A cable has the following characteristics L = 0.201 micro H/m and C= 196.2 pF/m. the velocity of wave propagation through cable is. [GATE-1998]",
-                "questionImage": null,
-                "options": [
-                  "32 m/s",
-                  "159.24 m/s",
-                  "0.0312 m/s",
-                  "159.24 m/μs"
-                ],
-                "correctIndex": 3,
-                "correctAnswer": "",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789830272/uotlbcftal88aurwrckv.png"
               }
             ]
           }
