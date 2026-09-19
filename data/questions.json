@@ -617,6 +617,21 @@
                 "audioFile": null,
                 "explanation": "L will decrease and Capacitance increase ",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789828993/zqlwu9dprdghb2dyedmr.png"
+              },
+              {
+                "id": "transmission_line_parameters_l2_new1789829798705_0",
+                "type": "fill",
+                "question": "A single phase transmission line and a telephone line are both symmetrically strung one below the other, in horizontal configurations, on a Common tower. The shortest and longest distances between the Phase and telephone conductors are 2.5 m and 3m. The voltage ( V/ Km) induced in the telephone circuit, due to SO Hz Current of 100A in the power circuit is __. [GATE-2006]",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "2.29",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789829767/aw5sz3qol409b6mfadi3.png"
               }
             ]
           }
