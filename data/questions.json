@@ -115,6 +115,21 @@
                 "audioFile": null,
                 "explanation": "Diversity factor is always greater than 1",
                 "explanationImage": null
+              },
+              {
+                "id": "economic_factors_l1_new1789798840710_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789796337/sglpc3zl0pmkxwmsjfr0.jpg",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "Pc = 200, Pmax = 150, Pavg = 105.2, PLF = 0.70138,PUF = 0.57386, UF = 0.75, RC = 50 MW",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789798831/zxw6elkzw8ko6ki3wnrp.jpg"
               }
             ],
             "2": []
