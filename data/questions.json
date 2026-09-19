@@ -130,6 +130,46 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789798831/zxw6elkzw8ko6ki3wnrp.jpg"
+              },
+              {
+                "id": "economic_factors_l1_new1789808445866_0",
+                "type": "mcq",
+                "question": "Which of the following are used as Peak Load Plants (1) Pumped Storage  , (2) Hydro  (3) Diesel (4) BESS plant",
+                "questionImage": null,
+                "options": [
+                  "1 ,2 only",
+                  "2, 3 only",
+                  "1, 2, 3 only",
+                  "All"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "All peak load plants has less operating time from noload to full load",
+                "explanationImage": null
+              },
+              {
+                "id": "economic_factors_l1_new1789808999166_0",
+                "type": "mcq",
+                "question": "Which of the following are used as Peak Load Plants (1) Pumped Storage  , (2) Hydro  (3) Diesel (4) BESS plant",
+                "questionImage": null,
+                "options": [
+                  "1 ,2 only",
+                  "2, 3 only",
+                  "1, 2, 3 only",
+                  "All"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "All peak load plants has less operating time from noload to full load",
+                "explanationImage": null
               }
             ],
             "2": []
