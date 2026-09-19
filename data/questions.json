@@ -170,6 +170,26 @@
                 "audioFile": null,
                 "explanation": "All peak load plants has less operating time from noload to full load",
                 "explanationImage": null
+              },
+              {
+                "id": "economic_factors_l1_new1789809357500_0",
+                "type": "mcq",
+                "question": "Plant load factor is increased by",
+                "questionImage": null,
+                "options": [
+                  "Reducing load factor",
+                  "Increasing Pmax",
+                  "Reducing Pmax",
+                  "Increasing capacity"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Plf = Pavg/ Pmax ,   By reducing Pmax , PLf is increased ",
+                "explanationImage": null
               }
             ],
             "2": []
