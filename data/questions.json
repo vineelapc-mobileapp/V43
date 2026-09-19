@@ -560,6 +560,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789827098/pt6jacedo0ti8iwcwcx2.png"
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789827394379_0",
+                "type": "mcq",
+                "question": "A long wire composed of a smooth round conductor runs above and parallel to the ground (assumed to be a large conducting plane). A high voltage exists between the conductor and the ground. The maximum electric stress occurs at",
+                "questionImage": null,
+                "options": [
+                  "the upper surface of the conductor",
+                  "the lower surface of the conductor",
+                  "the ground surface",
+                  "midway between the conductor and ground"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Electric field is inverse with square of the distance ",
+                "explanationImage": null
               }
             ],
             "2": [
