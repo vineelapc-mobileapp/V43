@@ -532,7 +532,23 @@
                 "explanationImage": null
               }
             ],
-            "2": []
+            "2": [
+              {
+                "id": "transmission_line_parameters_l2_new1789822404261_0",
+                "type": "fill",
+                "question": "The total reactance and total susceptance ofa lossless overhead EHV line, operating at 50 Hz, are given by 0.045 pu and 1.2 pu respectively. If the velocity of wave propagation is 3 x 10 power 5 km/s, then the approximate length of the line is ____ km.",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "222 km",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789822375/jipqfy3woowamxh8itlf.png"
+              }
+            ]
           }
         },
         {
