@@ -530,6 +530,36 @@
                 "audioFile": null,
                 "explanation": "L=0.05 + 0.2 𝐥𝐧⁡( 𝒅/𝒓  )𝒎𝑯/𝒌𝒎 = 𝟎.𝟎𝟓+𝟎.𝟐 𝒍𝒏 (𝟔𝟎/(𝟎.𝟓))            ",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789827154155_0",
+                "type": "fill",
+                "question": "the self GMD  for bundle of two conductors 2) three conductors with equal spacer spacing of S",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "2 bundled Ds =  sqrt( r'S) , 3  bundled Ds = cuberoot ( r's² ),  4 bundled  Ss  = fourth root ( √2 r' S³ )  ",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789826795/bluvmtprvsaoqposurwj.png"
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789827154155_1",
+                "type": "fill",
+                "question": "Self GMD of 7 Strandered ACSR conductor with each strand radius of 'r' is ",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "2.176 r    ",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789827098/pt6jacedo0ti8iwcwcx2.png"
               }
             ],
             "2": [
