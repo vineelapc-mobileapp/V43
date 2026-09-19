@@ -632,6 +632,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789829767/aw5sz3qol409b6mfadi3.png"
+              },
+              {
+                "id": "transmission_line_parameters_l2_new1789830287677_0",
+                "type": "mcq",
+                "question": "Q.3 A cable has the following characteristics L = 0.201 micro H/m and C= 196.2 pF/m. the velocity of wave propagation through cable is. [GATE-1998]",
+                "questionImage": null,
+                "options": [
+                  "32 m/s",
+                  "159.24 m/s",
+                  "0.0312 m/s",
+                  "159.24 m/μs"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789830272/uotlbcftal88aurwrckv.png"
               }
             ]
           }
