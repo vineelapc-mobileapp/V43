@@ -175,6 +175,42 @@ function renderVerifyTab(){
     verifySummary.appendChild(subjBox);
   });
 
+  // ---- Master kill-switch: blocks every student from using the app's
+  // content the moment it's toggled. This does NOT remove the installed
+  // icon/PWA from any student's device - no website can do that, for any
+  // app, ever (a real web security boundary, not a limitation of this
+  // build). What it DOES do: the next time a student opens or refreshes
+  // the app, they see a plain "temporarily unavailable" screen instead of
+  // any questions, regardless of which subject/topic they try to reach. ----
+  const killSwitchBox = document.createElement('div');
+  killSwitchBox.className = 'settings-panel';
+  killSwitchBox.style.background = DATA.studentAccessEnabled === false ? '#FBEAEA' : '#fff';
+  const killLabel = document.createElement('label');
+  killLabel.style.cssText = 'display:flex;align-items:center;gap:10px;cursor:pointer;';
+  const killCheckbox = document.createElement('input');
+  killCheckbox.type = 'checkbox';
+  killCheckbox.checked = DATA.studentAccessEnabled === false;
+  killCheckbox.style.cssText = 'width:20px;height:20px;cursor:pointer;';
+  killCheckbox.onchange = () => {
+    DATA.studentAccessEnabled = killCheckbox.checked ? false : true;
+    pendingTopicChanges = true;
+    updateExportBarVisibility();
+    setStatus(
+      killCheckbox.checked
+        ? 'Student access will be disabled once you Publish. Every student sees "temporarily unavailable" until you turn this back off.'
+        : 'Student access restored - Publish to make it live again.',
+      'ok'
+    );
+    renderVerifyTab();
+  };
+  const killText = document.createElement('span');
+  killText.innerHTML = '<strong style="color:var(--wrong);">🔴 Disable ALL student access</strong><br><span style="font-size:12px;color:var(--muted);">Blocks every subject/question for every student until you turn this back off. Does not remove the installed app from any device - see note below.</span>';
+  killLabel.appendChild(killCheckbox);
+  killLabel.appendChild(killText);
+  killSwitchBox.appendChild(killLabel);
+  // Inserted after Overview below, then moved to the very top - see the
+  // insertBefore call right after Overview is placed.
+
   const overview = document.createElement('div');
   overview.className = 'settings-panel';
   overview.style.background = '#eef1fb';
@@ -203,6 +239,7 @@ function renderVerifyTab(){
     overview.appendChild(reportBtn);
   }
   verifySummary.insertBefore(overview, verifySummary.firstChild);
+  verifySummary.insertBefore(killSwitchBox, verifySummary.firstChild); // kill switch stays the topmost element
 }
 
 // Sorts every question across every subject/subtopic by its embedded size
@@ -488,6 +525,29 @@ function renderSubtopicDetailContents(subtopic, subjectName){
         },
         onChange: () => { pendingTopicChanges = true; updateExportBarVisibility(); savedIndicator.style.display = 'block'; }
       });
+
+      // Move this question between Level 1 and Level 2 - useful when a
+      // question turns out easier/harder than where it was first placed.
+      const otherLevel = level === '1' ? '2' : '1';
+      const moveBtn = document.createElement('button');
+      moveBtn.className = 'btn btn-secondary';
+      moveBtn.style.cssText = 'font-size:13px;margin-top:6px;width:100%;';
+      moveBtn.textContent = `↕ Move this question to Level ${otherLevel}`;
+      moveBtn.onclick = () => {
+        const idx = subtopic.levels[level].indexOf(q);
+        if (idx === -1) return;
+        subtopic.levels[level].splice(idx, 1);
+        if (!subtopic.levels[otherLevel]) subtopic.levels[otherLevel] = [];
+        subtopic.levels[otherLevel].push(q);
+        pendingTopicChanges = true;
+        updateExportBarVisibility();
+        setStatus(`Moved to Level ${otherLevel}. Use Download or Publish to make this live.`, 'ok');
+        renderVerifyTab();
+        verifyDetail.dataset.openFor = subtopic.id;
+        renderSubtopicDetailContents(subtopic, subjectName);
+      };
+      card.appendChild(moveBtn);
+
       verifyDetail.appendChild(card);
     });
   });
