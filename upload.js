@@ -238,6 +238,32 @@ function renderVerifyTab(){
     reportBtn.onclick = () => renderStorageReport();
     overview.appendChild(reportBtn);
   }
+
+  // ---- Full question-bank export, chapter-wise, for offline review ----
+  // Covers every subject/subtopic/level in one document - teacher-only,
+  // never exposed to students, for reading/verifying/marking corrections
+  // away from the app.
+  const exportFullRow = document.createElement('div');
+  exportFullRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;';
+  const wordBtn = document.createElement('button');
+  wordBtn.className = 'btn btn-secondary';
+  wordBtn.style.fontSize = '13px';
+  wordBtn.textContent = '📄 Download Full Question Bank (Word)';
+  wordBtn.onclick = () => downloadFullBankDocx();
+  const pdfBtn = document.createElement('button');
+  pdfBtn.className = 'btn btn-secondary';
+  pdfBtn.style.fontSize = '13px';
+  pdfBtn.textContent = '📕 Download Full Question Bank (PDF)';
+  pdfBtn.onclick = () => downloadFullBankPdf();
+  exportFullRow.appendChild(wordBtn);
+  exportFullRow.appendChild(pdfBtn);
+  overview.appendChild(exportFullRow);
+  const exportFullHint = document.createElement('div');
+  exportFullHint.className = 'progress-note';
+  exportFullHint.style.marginTop = '6px';
+  exportFullHint.textContent = 'Every subject, subtopic, and level, questions + options + correct answer + explanation, in reading order - for offline review. Teacher-only.';
+  overview.appendChild(exportFullHint);
+
   verifySummary.insertBefore(overview, verifySummary.firstChild);
   verifySummary.insertBefore(killSwitchBox, verifySummary.firstChild); // kill switch stays the topmost element
 }
@@ -557,6 +583,283 @@ function renderSubtopicDetailContents(subtopic, subjectName){
 }
 function qsEmpty(subtopic){
   return (subtopic.levels['1'] || []).length === 0 && (subtopic.levels['2'] || []).length === 0;
+}
+
+// ---------- Full question-bank export (Word + PDF), chapter-wise ----------
+// Both libraries (docx, jsPDF) are loaded on demand, only when the teacher
+// actually taps one of these buttons - keeps the app's normal load light
+// for everyone who never uses this feature.
+function loadScriptOnce(src){
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('Could not load ' + src));
+    document.head.appendChild(s);
+  });
+}
+
+// Converts a question/explanation image (either a local data: URI or a
+// remote Firebase/Cloudinary URL) into a data URI ready to embed in a
+// document. Remote URLs are fetched and converted; failures return null
+// rather than breaking the whole export.
+async function imageToDataUriSafe(url){
+  if (!url) return null;
+  try {
+    if (url.startsWith('data:')) return url;
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (err) {
+    console.error('Could not fetch image for export:', err);
+    return null;
+  }
+}
+
+function dataUriToUint8Array(dataUri){
+  const base64 = dataUri.split(',')[1];
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+function imageFormatFromDataUri(dataUri){
+  const match = dataUri.match(/^data:image\/(\w+);/);
+  if (!match) return 'JPEG';
+  const ext = match[1].toLowerCase();
+  if (ext === 'png') return 'PNG';
+  if (ext === 'webp') return 'WEBP';
+  return 'JPEG';
+}
+
+// docx's ImageRun requires an explicit type ("jpg"/"png"/"gif"/"bmp") -
+// without it, the embedded image gets a bare/undefined extension inside
+// the file and won't display correctly. Anything not in that exact list
+// (e.g. webp) is treated as jpg, which most viewers still render fine
+// since it's really about the container extension docx writes, not a
+// strict re-encode.
+function docxImageType(dataUri){
+  const match = dataUri.match(/^data:image\/(\w+);/);
+  const ext = match ? match[1].toLowerCase() : '';
+  if (ext === 'png') return 'png';
+  if (ext === 'gif') return 'gif';
+  if (ext === 'bmp') return 'bmp';
+  return 'jpg';
+}
+
+// Builds one flat, ordered list covering every subject/subtopic/level/
+// question in the whole question bank - the same structure both the
+// Word and PDF generators consume, so the reading order is identical
+// either way. Images are pre-fetched here so neither generator has to
+// deal with the async fetching itself.
+async function buildFullExportBlocks(onProgress){
+  const blocks = [];
+  let imgCount = 0, imgDone = 0;
+  for (const subj of DATA.subjects) {
+    for (const subt of subj.subtopics) {
+      for (const lvl of ['1', '2']) {
+        for (const q of (subt.levels[lvl] || [])) {
+          if (q.questionImage) imgCount++;
+          if (q.explanationImage) imgCount++;
+        }
+      }
+    }
+  }
+
+  for (const subj of DATA.subjects) {
+    blocks.push({ type: 'subject', text: subj.name });
+    for (const subt of subj.subtopics) {
+      const l1 = subt.levels['1'] || [];
+      const l2 = subt.levels['2'] || [];
+      if (l1.length + l2.length === 0) continue; // skip empty subtopics
+      blocks.push({ type: 'subtopic', text: subt.name });
+      for (const lvl of ['1', '2']) {
+        const qs = subt.levels[lvl] || [];
+        if (!qs.length) continue;
+        blocks.push({ type: 'level', text: `Level ${lvl}` });
+        let qNum = 1;
+        for (const q of qs) {
+          let qImg = null, explImg = null;
+          if (q.questionImage) {
+            qImg = await imageToDataUriSafe(q.questionImage);
+            imgDone++; if (onProgress) onProgress(imgDone, imgCount);
+          }
+          if (q.explanationImage) {
+            explImg = await imageToDataUriSafe(q.explanationImage);
+            imgDone++; if (onProgress) onProgress(imgDone, imgCount);
+          }
+          blocks.push({
+            type: 'question',
+            number: qNum++,
+            question: q.question || '(see attached figure)',
+            questionImage: qImg,
+            isMcq: (q.type || 'mcq') !== 'fill',
+            options: q.options || [],
+            correctIndex: q.correctIndex,
+            correctAnswer: q.correctAnswer || '',
+            explanation: q.explanation || '',
+            explanationImage: explImg
+          });
+        }
+      }
+    }
+  }
+  return blocks;
+}
+
+async function downloadFullBankDocx(){
+  setStatus('Preparing Word document - loading tools...');
+  try {
+    await loadScriptOnce('libs/docx/docx.iife.js');
+    const blocks = await buildFullExportBlocks((done, total) => {
+      if (total > 0) setStatus(`Preparing Word document - fetching images (${done}/${total})...`);
+    });
+    setStatus('Preparing Word document - assembling pages...');
+
+    const { Document, Packer, Paragraph, TextRun, ImageRun, HeadingLevel } = window.docx;
+    const children = [];
+    for (const b of blocks) {
+      if (b.type === 'subject') {
+        children.push(new Paragraph({ text: b.text, heading: HeadingLevel.HEADING_1, spacing: { before: 300, after: 100 } }));
+      } else if (b.type === 'subtopic') {
+        children.push(new Paragraph({ text: b.text, heading: HeadingLevel.HEADING_2, spacing: { before: 200, after: 80 } }));
+      } else if (b.type === 'level') {
+        children.push(new Paragraph({ text: b.text, heading: HeadingLevel.HEADING_3, spacing: { before: 120, after: 60 } }));
+      } else if (b.type === 'question') {
+        children.push(new Paragraph({
+          children: [new TextRun({ text: `Q${b.number}. ${b.question}`, bold: true })],
+          spacing: { before: 200 }
+        }));
+        if (b.questionImage) {
+          try {
+            children.push(new Paragraph({
+              children: [new ImageRun({ data: dataUriToUint8Array(b.questionImage), type: docxImageType(b.questionImage), transformation: { width: 380, height: 240 } })],
+              spacing: { before: 60, after: 60 }
+            }));
+          } catch { children.push(new Paragraph({ text: '[Figure could not be embedded - view in app]', italics: true })); }
+        }
+        if (b.isMcq) {
+          const letters = ['A', 'B', 'C', 'D'];
+          b.options.forEach((opt, idx) => {
+            const isCorrect = idx === b.correctIndex;
+            children.push(new Paragraph({
+              children: [new TextRun({ text: `${letters[idx]}) ${opt}${isCorrect ? '   ✓ CORRECT' : ''}`, bold: isCorrect, color: isCorrect ? '2F9E52' : undefined })]
+            }));
+          });
+        } else {
+          children.push(new Paragraph({ children: [new TextRun({ text: `Correct Answer: ${b.correctAnswer}`, bold: true, color: '2F9E52' })] }));
+        }
+        if (b.explanation) {
+          children.push(new Paragraph({ children: [new TextRun({ text: `Explanation: ${b.explanation}` })], spacing: { before: 60 } }));
+        }
+        if (b.explanationImage) {
+          try {
+            children.push(new Paragraph({
+              children: [new ImageRun({ data: dataUriToUint8Array(b.explanationImage), type: docxImageType(b.explanationImage), transformation: { width: 380, height: 240 } })],
+              spacing: { before: 60, after: 60 }
+            }));
+          } catch { children.push(new Paragraph({ text: '[Explanation image could not be embedded - view in app]', italics: true })); }
+        }
+      }
+    }
+
+    const doc = new Document({ sections: [{ children }] });
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'EEE_Practice_Full_Question_Bank.docx';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Word document downloaded - every subject, subtopic, and level, in order.', 'ok');
+  } catch (err) {
+    console.error(err);
+    setStatus('Could not generate Word document: ' + err.message, 'error');
+  }
+}
+
+async function downloadFullBankPdf(){
+  setStatus('Preparing PDF - loading tools...');
+  try {
+    await loadScriptOnce('libs/jspdf/jspdf.umd.min.js');
+    const blocks = await buildFullExportBlocks((done, total) => {
+      if (total > 0) setStatus(`Preparing PDF - fetching images (${done}/${total})...`);
+    });
+    setStatus('Preparing PDF - laying out pages...');
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 40;
+    const maxWidth = pageWidth - margin * 2;
+    let y = margin;
+
+    function ensureSpace(neededHeight){
+      if (y + neededHeight > pageHeight - margin) {
+        doc.addPage();
+        y = margin;
+      }
+    }
+    function addText(text, size, style, color){
+      doc.setFontSize(size);
+      doc.setFont(undefined, style || 'normal');
+      doc.setTextColor(...(color || [0, 0, 0]));
+      const lines = doc.splitTextToSize(text, maxWidth);
+      lines.forEach(line => {
+        ensureSpace(size * 1.4);
+        doc.text(line, margin, y);
+        y += size * 1.4;
+      });
+    }
+    function addImage(dataUri){
+      try {
+        const props = doc.getImageProperties(dataUri);
+        const imgWidth = Math.min(maxWidth, 300);
+        const imgHeight = (props.height / props.width) * imgWidth;
+        ensureSpace(imgHeight + 10);
+        doc.addImage(dataUri, imageFormatFromDataUri(dataUri), margin, y, imgWidth, imgHeight);
+        y += imgHeight + 10;
+      } catch {
+        addText('[Image could not be embedded - view in app]', 10, 'italic', [150, 150, 150]);
+      }
+    }
+
+    for (const b of blocks) {
+      if (b.type === 'subject') { y += 10; addText(b.text, 18, 'bold'); y += 6; }
+      else if (b.type === 'subtopic') { addText(b.text, 15, 'bold'); y += 4; }
+      else if (b.type === 'level') { addText(b.text, 12, 'bold'); y += 2; }
+      else if (b.type === 'question') {
+        y += 6;
+        addText(`Q${b.number}. ${b.question}`, 11, 'bold');
+        if (b.questionImage) addImage(b.questionImage);
+        if (b.isMcq) {
+          const letters = ['A', 'B', 'C', 'D'];
+          b.options.forEach((opt, idx) => {
+            const isCorrect = idx === b.correctIndex;
+            addText(`${letters[idx]}) ${opt}${isCorrect ? '  [CORRECT]' : ''}`, 10, isCorrect ? 'bold' : 'normal', isCorrect ? [47, 158, 82] : [0, 0, 0]);
+          });
+        } else {
+          addText(`Correct Answer: ${b.correctAnswer}`, 10, 'bold', [47, 158, 82]);
+        }
+        if (b.explanation) addText(`Explanation: ${b.explanation}`, 10, 'normal');
+        if (b.explanationImage) addImage(b.explanationImage);
+      }
+    }
+
+    doc.save('EEE_Practice_Full_Question_Bank.pdf');
+    setStatus('PDF downloaded - every subject, subtopic, and level, in order.', 'ok');
+  } catch (err) {
+    console.error(err);
+    setStatus('Could not generate PDF: ' + err.message, 'error');
+  }
 }
 
 // ---------- Teacher-only exports: PPT (questions + answers) and video link CSV ----------
