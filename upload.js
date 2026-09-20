@@ -604,11 +604,25 @@ function loadScriptOnce(src){
 // remote Firebase/Cloudinary URL) into a data URI ready to embed in a
 // document. Remote URLs are fetched and converted; failures return null
 // rather than breaking the whole export.
+// Converts a question/explanation image (either a local data: URI or a
+// remote Firebase/Cloudinary URL) into a data URI ready to embed in a
+// document. Remote URLs are fetched and converted; failures return null
+// rather than breaking the whole export. A 10-second timeout is critical
+// here - without one, a single slow or unreachable image would freeze
+// the ENTIRE export forever with no error and no completion message,
+// since this runs in a sequential loop over every question's images.
 async function imageToDataUriSafe(url){
   if (!url) return null;
   try {
     if (url.startsWith('data:')) return url;
-    const res = await fetch(url);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    let res;
+    try {
+      res = await fetch(url, { signal: controller.signal });
+    } finally {
+      clearTimeout(timeoutId);
+    }
     const blob = await res.blob();
     return await new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -617,7 +631,7 @@ async function imageToDataUriSafe(url){
       reader.readAsDataURL(blob);
     });
   } catch (err) {
-    console.error('Could not fetch image for export:', err);
+    console.error('Could not fetch image for export (skipped, export continues):', err);
     return null;
   }
 }
@@ -672,6 +686,7 @@ async function buildFullExportBlocks(onProgress){
       }
     }
   }
+  if (onProgress) onProgress(0, imgCount); // report the total immediately, before fetching starts, so there's visible feedback even before the first image finishes (or times out)
 
   for (const subj of DATA.subjects) {
     blocks.push({ type: 'subject', text: subj.name });
@@ -686,13 +701,15 @@ async function buildFullExportBlocks(onProgress){
         blocks.push({ type: 'level', text: `Level ${lvl}` });
         let qNum = 1;
         for (const q of qs) {
-          let qImg = null, explImg = null;
+          let qImg = null, explImg = null, qImgFailed = false, explImgFailed = false;
           if (q.questionImage) {
             qImg = await imageToDataUriSafe(q.questionImage);
+            if (!qImg) qImgFailed = true; // an image was attached but couldn't be fetched in time
             imgDone++; if (onProgress) onProgress(imgDone, imgCount);
           }
           if (q.explanationImage) {
             explImg = await imageToDataUriSafe(q.explanationImage);
+            if (!explImg) explImgFailed = true;
             imgDone++; if (onProgress) onProgress(imgDone, imgCount);
           }
           blocks.push({
@@ -700,12 +717,14 @@ async function buildFullExportBlocks(onProgress){
             number: qNum++,
             question: q.question || '(see attached figure)',
             questionImage: qImg,
+            questionImageFailed: qImgFailed,
             isMcq: (q.type || 'mcq') !== 'fill',
             options: q.options || [],
             correctIndex: q.correctIndex,
             correctAnswer: q.correctAnswer || '',
             explanation: q.explanation || '',
-            explanationImage: explImg
+            explanationImage: explImg,
+            explanationImageFailed: explImgFailed
           });
         }
       }
@@ -719,7 +738,7 @@ async function downloadFullBankDocx(){
   try {
     await loadScriptOnce('libs/docx/docx.iife.js');
     const blocks = await buildFullExportBlocks((done, total) => {
-      if (total > 0) setStatus(`Preparing Word document - fetching images (${done}/${total})...`);
+      if (total > 0) setStatus(`Preparing Word document - fetching images (${done}/${total}). A slow or unreachable image waits at most 10s before being skipped, so this always finishes.`);
     });
     setStatus('Preparing Word document - assembling pages...');
 
@@ -744,6 +763,8 @@ async function downloadFullBankDocx(){
               spacing: { before: 60, after: 60 }
             }));
           } catch { children.push(new Paragraph({ text: '[Figure could not be embedded - view in app]', italics: true })); }
+        } else if (b.questionImageFailed) {
+          children.push(new Paragraph({ text: '[Figure could not be fetched in time - view in app]', italics: true }));
         }
         if (b.isMcq) {
           const letters = ['A', 'B', 'C', 'D'];
@@ -766,6 +787,8 @@ async function downloadFullBankDocx(){
               spacing: { before: 60, after: 60 }
             }));
           } catch { children.push(new Paragraph({ text: '[Explanation image could not be embedded - view in app]', italics: true })); }
+        } else if (b.explanationImageFailed) {
+          children.push(new Paragraph({ text: '[Explanation image could not be fetched in time - view in app]', italics: true }));
         }
       }
     }
@@ -790,7 +813,7 @@ async function downloadFullBankPdf(){
   try {
     await loadScriptOnce('libs/jspdf/jspdf.umd.min.js');
     const blocks = await buildFullExportBlocks((done, total) => {
-      if (total > 0) setStatus(`Preparing PDF - fetching images (${done}/${total})...`);
+      if (total > 0) setStatus(`Preparing PDF - fetching images (${done}/${total}). A slow or unreachable image waits at most 10s before being skipped, so this always finishes.`);
     });
     setStatus('Preparing PDF - laying out pages...');
 
@@ -840,6 +863,7 @@ async function downloadFullBankPdf(){
         y += 6;
         addText(`Q${b.number}. ${b.question}`, 11, 'bold');
         if (b.questionImage) addImage(b.questionImage);
+        else if (b.questionImageFailed) addText('[Figure could not be fetched in time - view in app]', 10, 'italic', [150, 150, 150]);
         if (b.isMcq) {
           const letters = ['A', 'B', 'C', 'D'];
           b.options.forEach((opt, idx) => {
@@ -851,6 +875,7 @@ async function downloadFullBankPdf(){
         }
         if (b.explanation) addText(`Explanation: ${b.explanation}`, 10, 'normal');
         if (b.explanationImage) addImage(b.explanationImage);
+        else if (b.explanationImageFailed) addText('[Explanation image could not be fetched in time - view in app]', 10, 'italic', [150, 150, 150]);
       }
     }
 
