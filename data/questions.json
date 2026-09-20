@@ -671,6 +671,26 @@
                 "audioFile": null,
                 "explanation": "As the distance between conductors of  cables are less so proximity effect is more in cables compared to Over head lines",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789890339458_0",
+                "type": "mcq",
+                "question": "A transmission line with HVAC has more resistance than with HVDC supply because of",
+                "questionImage": null,
+                "options": [
+                  "Skin effect",
+                  "Proximity effect",
+                  "Both effects",
+                  "None of the effects"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Skin and Proximity effects causes effective area of current flowing path is reduced with HVAC causing Rac > Rdc ",
+                "explanationImage": null
               }
             ],
             "2": [
