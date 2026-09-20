@@ -651,6 +651,26 @@
                 "audioFile": null,
                 "explanation": "skin and proximity effects increases with frquency",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789889235406_0",
+                "type": "mcq",
+                "question": "Proximity effect in power cables and overhead line",
+                "questionImage": null,
+                "options": [
+                  "same in Over head and Cables",
+                  "More in Over head",
+                  "More in cables",
+                  "Does not depends on both"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "As the distance between conductors of  cables are less so proximity effect is more in cables compared to Over head lines",
+                "explanationImage": null
               }
             ],
             "2": [
