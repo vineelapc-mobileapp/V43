@@ -551,6 +551,106 @@
                 "audioFile": null,
                 "explanation": "Electric field is inverse with square of the distance ",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789889060179_0",
+                "type": "mcq",
+                "question": "A solid round conductor carries a sinusoidal current of frequency f. Due to skin effect, the current density is maximum at the:",
+                "questionImage": null,
+                "options": [
+                  "Centre of the conductor",
+                  "Surface of the conductor",
+                  "Midway between centre and surface",
+                  "Current density is uniform"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Skin effect → current crowds near the conductor surface.",
+                "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789889060179_1",
+                "type": "mcq",
+                "question": "For a good conductor, the skin depth δ is given by which expression?",
+                "questionImage": null,
+                "options": [
+                  "δ  ∝  1/ √ ( ωμσ )",
+                  "δ   ∝   √ (2( ωμσ ))",
+                  "δ   ∝   √ ( ωμ /2 σ )",
+                  "δ  ∝  √ (2 ωμ / σ )"
+                ],
+                "correctIndex": 0,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "δ ∝ 1/√(ωμσ)) for a good conductor.",
+                "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789889060179_2",
+                "type": "mcq",
+                "question": "Two long parallel conductors carry currents in the same direction. The proximity effect causes the current density to become:",
+                "questionImage": null,
+                "options": [
+                  "Higher on the facing surfaces",
+                  "Higher on the outer surfaces away from each other",
+                  "Uniform throughout both conductors",
+                  "Zero at the outer surfaces"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Same-direction currents → current crowds on outer surfaces.",
+                "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789889060179_3",
+                "type": "mcq",
+                "question": "A conductor has skin depth   δ   at frequency f. If the frequency is increased to 4f, while   μ   and   σ  remain unchanged, the new skin depth is:",
+                "questionImage": null,
+                "options": [
+                  "4 δ",
+                  "2 δ",
+                  "δ /2",
+                  "δ /4"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "δ ∝ 1/√f; at 4f, δ becomes δ/2. ",
+                "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1789889060179_4",
+                "type": "mcq",
+                "question": "Which of the following statements about skin and proximity effects is CORRECT?",
+                "questionImage": null,
+                "options": [
+                  "Skin effect decreases with frequency",
+                  "Proximity effect is caused only by DC current",
+                  "Both effects generally increase the effective AC resistance of a conductor",
+                  "Skin effect makes current density maximum at the centre"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "skin and proximity effects increases with frquency",
+                "explanationImage": null
               }
             ],
             "2": [
