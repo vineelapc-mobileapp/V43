@@ -780,7 +780,28 @@
           "id": "transmission_line_performance",
           "name": "Transmission Line Performance",
           "levels": {
-            "1": [],
+            "1": [
+              {
+                "id": "transmission_line_performance_l1_new1789890663478_0",
+                "type": "mcq",
+                "question": "A transmission line has ABCD parameters: A=0.8, B=j40 ohms  C=j0.01 S, D=0.8 Which statement is correct?",
+                "questionImage": null,
+                "options": [
+                  "The line is reciprocal",
+                  "The line is non-reciprocal",
+                  "The line is lossless because \\(A=D=0.8\\)",
+                  "The line is symmetrical but not reciprocal"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "AD−BC=(0.8)(0.8)−(j40)(j0.01) =1.04\n\nHence, actually the line is not reciprocal.",
+                "explanationImage": null
+              }
+            ],
             "2": []
           }
         },
