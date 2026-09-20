@@ -800,6 +800,46 @@
                 "audioFile": null,
                 "explanation": "AD−BC=(0.8)(0.8)−(j40)(j0.01) =1.04\n\nHence, actually the line is not reciprocal.",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_performance_l1_new1789901703157_0",
+                "type": "mcq",
+                "question": "A transmission line has impedance of 700 ohms with receiving end shorted and 300 ohms with receiving end opened .then it's characteristic Impedance is",
+                "questionImage": null,
+                "options": [
+                  "210",
+                  "700",
+                  "458",
+                  "1000"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Zc= √(ZssX Zso)\n = √(700*300) = 458.2 ohms ",
+                "explanationImage": null
+              },
+              {
+                "id": "transmission_line_performance_l1_new1789901740076_0",
+                "type": "mcq",
+                "question": "A transmission line has impedance of 700 ohms with receiving end shorted and 300 ohms with receiving end opened .then it's characteristic Impedance is",
+                "questionImage": null,
+                "options": [
+                  "210",
+                  "700",
+                  "458",
+                  "1000"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Zc= √(ZssX Zso)\n = √(700*300) = 458.2 ohms ",
+                "explanationImage": null
               }
             ],
             "2": []
