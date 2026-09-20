@@ -2214,10 +2214,32 @@ downloadBtn.addEventListener('click', () => {
 // just added, what position they now hold in the topic, and the running
 // totals for the topic and the whole question bank.
 function showQuestionCountSummary(addedCount, subtopicName, level, actionLabel){
-  if (addedCount === 0) return; // nothing new was added (e.g. only a topic edit) - no count to show
+  const grandTotal = countAllQuestions(DATA);
+
+  if (addedCount === 0) {
+    // A topic-level-only change (kill switch, subject visibility, Add/Delete
+    // Topic) with no new questions still deserves a clear, hard-to-miss
+    // confirmation - previously this case showed nothing but a small status
+    // line, easy to miss entirely.
+    const overlay = document.createElement('div');
+    overlay.className = 'modal';
+    overlay.innerHTML = `
+      <div class="modal-box" style="border-top:3px solid var(--correct);max-width:420px;">
+        <h2 style="color:var(--correct);">${actionLabel}!</h2>
+        <p style="color:var(--text);font-size:15px;line-height:1.6;">
+          Your changes (settings, topic, or visibility updates) are saved.${actionLabel === 'Published' ? ' Students will see this after GitHub Pages rebuilds (usually 1-2 minutes).' : ''}<br><br>
+          Your question bank currently has <strong>${grandTotal}</strong> question(s) across all topics.
+        </p>
+        <button class="btn btn-primary full-width" id="dismissCountSummary">Got it</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.querySelector('#dismissCountSummary').onclick = () => overlay.remove();
+    return;
+  }
+
   const subj = DATA.subjects.find(s => s.subtopics.some(st => st.name === subtopicName));
   const topicTotal = subj ? countSubtopicQuestions(subj, subtopicName) : null;
-  const grandTotal = countAllQuestions(DATA);
   const firstNum = topicTotal !== null ? topicTotal - addedCount + 1 : null;
   const rangeText = addedCount === 1
     ? (firstNum !== null ? `now question #${firstNum}` : '')
@@ -2229,7 +2251,7 @@ function showQuestionCountSummary(addedCount, subtopicName, level, actionLabel){
     <div class="modal-box" style="border-top:3px solid var(--correct);max-width:420px;">
       <h2 style="color:var(--correct);">${actionLabel}!</h2>
       <p style="color:var(--text);font-size:15px;line-height:1.6;">
-        <strong>${addedCount}</strong> new question(s) added${rangeText ? ' (' + rangeText + ' in Level ' + level + ')' : ''}.<br><br>
+        <strong>${addedCount}</strong> new question(s) added${rangeText ? ' (' + rangeText + ' in Level ' + level + ')' : ''}.${actionLabel === 'Published' ? ' Students will see this after GitHub Pages rebuilds (usually 1-2 minutes).' : ''}<br><br>
         <strong>${subtopicName}</strong> now has <strong>${topicTotal ?? '?'}</strong> question(s) total.<br>
         Your whole question bank now has <strong>${grandTotal}</strong> question(s) across all topics.
       </p>
@@ -2244,7 +2266,7 @@ function showQuestionCountSummary(addedCount, subtopicName, level, actionLabel){
 publishBtn.addEventListener('click', async () => {
   const s = loadSettings();
   if (!s || !s.user || !s.repo || !s.token) {
-    setStatus('Fill in Publish Settings (username, repo, token) first, then Save Settings.', 'error');
+    showPublishError('Fill in Publish Settings (username, repo, token) first, then tap Save Settings before Publishing.');
     settingsBody.classList.add('open');
     settingsChev.textContent = '▲';
     return;
