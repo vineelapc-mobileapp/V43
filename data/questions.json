@@ -1418,5 +1418,6 @@
       ],
       "visible": false
     }
-  ]
+  ],
+  "studentAccessEnabled": false
 }
