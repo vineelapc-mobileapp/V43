@@ -874,7 +874,23 @@
           "name": "Voltage / Reactive Power Control",
           "levels": {
             "1": [],
-            "2": []
+            "2": [
+              {
+                "id": "voltage_reactive_power_control_l2_new1789990781665_0",
+                "type": "fill",
+                "question": "find 𝑷(𝟑∅)  𝒊𝒇 Vs =Vr = 11 KV , Z = 3 + j4 , pf = 0.8 lag at load end",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "𝟑𝟕.𝟕𝟏 𝑴𝑾 ",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789990636/wsz3xfswd63mwywlkuik.png"
+              }
+            ]
           }
         },
         {
