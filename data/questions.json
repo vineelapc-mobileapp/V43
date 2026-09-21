@@ -1095,6 +1095,21 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789998871/zgtm627tewzijqpi08pt.png"
+              },
+              {
+                "id": "voltage_reactive_power_control_l2_new1789999101824_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789998362/ggu5zhoc1izl91loutaq.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "500 KV , 0.144 A/PH, 500 OHMS",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789998871/zgtm627tewzijqpi08pt.png"
               }
             ]
           }
