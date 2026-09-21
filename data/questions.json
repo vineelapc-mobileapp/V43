@@ -988,7 +988,28 @@
           "id": "voltage_reactive_power_control",
           "name": "Voltage / Reactive Power Control",
           "levels": {
-            "1": [],
+            "1": [
+              {
+                "id": "voltage_reactive_power_control_l1_new1789998224083_0",
+                "type": "mcq",
+                "question": "Shunt reactors are sometimes used in high voltage transmission systems to",
+                "questionImage": null,
+                "options": [
+                  "limit the short circuit current through the line.",
+                  "compensate for the series reactance of the line under heavily loaded condition.",
+                  "limit over voltages at the load side under lightly loaded condition.",
+                  "compensate for the voltage drop in the line"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Due to ferranti effect Vr > Vs occurs in light load / no load  conditions in medium and long lines ",
+                "explanationImage": null
+              }
+            ],
             "2": [
               {
                 "id": "voltage_reactive_power_control_l2_new1789990781665_0",
