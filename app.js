@@ -31,6 +31,7 @@ const calcCloseBtn = document.getElementById('calcCloseBtn');
 const examActionBar = document.getElementById('examActionBar');
 const markReviewBtn = document.getElementById('markReviewBtn');
 const saveNextBtn = document.getElementById('saveNextBtn');
+const prevBtn = document.getElementById('prevBtn');
 const paletteOverlay = document.getElementById('paletteOverlay');
 const paletteGrid = document.getElementById('paletteGrid');
 const closePaletteBtn = document.getElementById('closePaletteBtn');
@@ -73,6 +74,7 @@ cancelSubmitBtn.addEventListener('click', () => submitConfirmModal.classList.add
 confirmSubmitBtn.addEventListener('click', finishTest);
 markReviewBtn.addEventListener('click', () => advance('marked'));
 saveNextBtn.addEventListener('click', () => advance('save'));
+prevBtn.addEventListener('click', () => goToPrevious());
 
 function goBack(){
   if (state.view === 'subtopics') state.view = 'subjects';
@@ -421,6 +423,7 @@ function renderQuiz(){
   const q = state.questions[state.qIndex];
   headerTitle.textContent = `${state.subtopic.name} - L${state.level}`;
   examProgressText.textContent = `Question ${state.qIndex + 1} of ${state.questions.length}`;
+  prevBtn.disabled = state.qIndex === 0;
 
   if (state.status[q.id] === 'not-visited') state.status[q.id] = 'not-answered';
 
@@ -694,6 +697,13 @@ function advance(mode){
     render();
   } else {
     openSubmitConfirm();
+  }
+}
+
+function goToPrevious(){
+  if (state.qIndex > 0) {
+    state.qIndex--;
+    render();
   }
 }
 
