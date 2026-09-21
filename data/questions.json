@@ -920,6 +920,21 @@
                 "audioFile": null,
                 "explanation": "A star-delta transformation cannot be used to derive the one circuit from the other.",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_performance_l1_new1789995694875_0",
+                "type": "fill",
+                "question": "For a 400 km long tran smission line, the Series impedance is (0.0 + 0.5) ohms /km and the shunt admittance is (0.0 + j5.0) Micro mhos/km. The magnitude of the series impedance (in Q) of the equivalent Pie  circuit of the transmission line  is   [GATE-2014] |",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "187 phms",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789995686/t9qnznykd05xptwtpypv.png"
               }
             ],
             "2": []
