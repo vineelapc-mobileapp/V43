@@ -840,6 +840,26 @@
                 "audioFile": null,
                 "explanation": "Zc= √(ZssX Zso)\n = √(700*300) = 458.2 ohms ",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_performance_l1_new1789991449098_0",
+                "type": "mcq",
+                "question": "Consider the following statements: The calculations performed using short-line approximate model! instead of nominal-x model for amedium length transmission line delivering lagging load ata given receiving-end voltage always results in higher \n1. sending-end current 2. sending-end power\n3. regulation 4. efficiency\nWhich of these statements are correct? [IAS-2001] |",
+                "questionImage": null,
+                "options": [
+                  " 1and2 ",
+                  "2 & 4",
+                  "All",
+                  "1, 2 & 3 "
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "1, 2 and 3 are correct ",
+                "explanationImage": null
               }
             ],
             "2": []
