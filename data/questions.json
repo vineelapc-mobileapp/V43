@@ -1039,6 +1039,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789996357/viofx8cqnppqiitstopc.png"
+              },
+              {
+                "id": "voltage_reactive_power_control_l2_new1789997856870_0",
+                "type": "mcq",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789997790/gofnru8lbifcjwfvyjnn.png",
+                "options": [
+                  "Infinite",
+                  "2000 ",
+                  "105.26 ",
+                  "1052.6"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789997850/mr5or3fomf2mfs0lx79b.png"
               }
             ]
           }
