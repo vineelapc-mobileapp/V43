@@ -935,6 +935,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789995686/t9qnznykd05xptwtpypv.png"
+              },
+              {
+                "id": "transmission_line_performance_l1_new1789997709608_0",
+                "type": "mcq",
+                "question": "Consider the following statements:\n1. Equivalent-T circuit of along line is preferred to equivalent-Pie  circuit.\n2. The nature of reactive power compensation\nis different for peak load and off-peak load\nconditions.\n3. Ferranti effect is significant only on medium\nand long lines.\nWhich of the statements given above are\ncorrect?\n",
+                "questionImage": null,
+                "options": [
+                  "1, 2",
+                  "2, 3",
+                  "1, 2, 3",
+                  "1,,3"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Equivalent-Pie circuit is practically used \n2. The nature of reactive power compensation\nis different for peak load and off-peak load\nconditions.\n3. Ferranti effect is significant only on medium\nand long lines.",
+                "explanationImage": null
               }
             ],
             "2": []
