@@ -860,6 +860,46 @@
                 "audioFile": null,
                 "explanation": "1, 2 and 3 are correct ",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_performance_l1_new1789992932917_0",
+                "type": "mcq",
+                "question": "Q.28 Inwhich one of the following models of transmission lines, is the full charging current assumed to flow over half the length of the line only?[IAS-1998]",
+                "questionImage": null,
+                "options": [
+                  "Equivalent-Pie",
+                  "Shortline",
+                  "Nominal-Pie",
+                  "Nominal-T"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Nominal-T   Charging Current flows upto 50 % of line",
+                "explanationImage": null
+              },
+              {
+                "id": "transmission_line_performance_l1_new1789993261413_0",
+                "type": "mcq",
+                "question": "Q.28 Inwhich one of the following models of transmission lines, is the full charging current assumed to flow over half the length of the line only?[IAS-1998]",
+                "questionImage": null,
+                "options": [
+                  "Equivalent-Pie",
+                  "Shortline",
+                  "Nominal-Pie",
+                  "Nominal-T"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Nominal-T   Charging Current flows upto 50 % of line",
+                "explanationImage": null
               }
             ],
             "2": []
