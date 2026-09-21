@@ -1004,6 +1004,21 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789991160/vspc8kyhzdkevbeaqpxe.png"
+              },
+              {
+                "id": "voltage_reactive_power_control_l2_new1789996364935_0",
+                "type": "fill",
+                "question": "A feeder with reactance of 0.2 p.u. has a sens o end voltage of 1.2 p.u. If the reactive power Supplied at receiving-end of the feeder is 0.3 p.u. the approximate voltage drop in feeder in pu will be     (IAS1999)",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "0.53 pu",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789996357/viofx8cqnppqiitstopc.png"
               }
             ]
           }
