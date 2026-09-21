@@ -889,6 +889,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789990636/wsz3xfswd63mwywlkuik.png"
+              },
+              {
+                "id": "voltage_reactive_power_control_l2_new1789991163989_0",
+                "type": "mcq",
+                "question": "A transmission line has an impedance of (3 + j 4) ohms/phase. The PF. of the load required for maximum and zero voltage regulation are respectively?",
+                "questionImage": null,
+                "options": [
+                  "0.6 lead, 0.6 lag",
+                  "0.6 lag, 0.6 lead",
+                  "0.6 lag, 0.8 lead",
+                  "0.8 lag, 0.6 lead"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1789991160/vspc8kyhzdkevbeaqpxe.png"
               }
             ]
           }
