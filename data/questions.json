@@ -900,6 +900,26 @@
                 "audioFile": null,
                 "explanation": "Nominal-T   Charging Current flows upto 50 % of line",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_performance_l1_new1789993636005_0",
+                "type": "mcq",
+                "question": "Assertion (A): In the modelling of medium and long transmission lines the nominal-pie and T circuits are not equivalent to each other. \nReason (R): A star-delta transformation can be used to derive the one circuit from the other.",
+                "questionImage": null,
+                "options": [
+                  "Both A and R are true and R is the correct explanation of A",
+                  "Both A and R are true but Ris not a correct explanation of A",
+                  "A is true but R is false",
+                  "Ais false but R is true "
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "A star-delta transformation cannot be used to derive the one circuit from the other.",
+                "explanationImage": null
               }
             ],
             "2": []
