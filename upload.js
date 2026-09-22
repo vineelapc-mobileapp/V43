@@ -144,10 +144,11 @@ function renderVerifyTab(){
     subj.subtopics.forEach(st => {
       const l1 = (st.levels['1'] || []);
       const l2 = (st.levels['2'] || []);
-      const count = l1.length + l2.length;
+      const lc = (st.levels['conventional'] || []);
+      const count = l1.length + l2.length + lc.length;
       totalQuestions += count;
 
-      [...l1, ...l2].forEach(q => {
+      [...l1, ...l2, ...lc].forEach(q => {
         if (!hasVideoSource(q)) missingVideo++;
         if (!q.explanation) missingExplanation++;
       });
@@ -155,15 +156,15 @@ function renderVerifyTab(){
       const row = document.createElement('div');
       row.style.cssText = 'display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid #f0f2fa;cursor:pointer;';
       const flagBits = [];
-      const noVideoCount = [...l1, ...l2].filter(q => !hasVideoSource(q)).length;
-      const noExplCount = [...l1, ...l2].filter(q => !q.explanation).length;
+      const noVideoCount = [...l1, ...l2, ...lc].filter(q => !hasVideoSource(q)).length;
+      const noExplCount = [...l1, ...l2, ...lc].filter(q => !q.explanation).length;
       if (count === 0) flagBits.push('<span style="color:var(--wrong);">empty</span>');
       if (noVideoCount > 0) flagBits.push(`<span style="color:#e65100;">${noVideoCount} missing video</span>`);
       if (noExplCount > 0) flagBits.push(`<span style="color:var(--muted);">${noExplCount} missing explanation</span>`);
       row.innerHTML = `
         <span>${st.name}</span>
         <span style="text-align:right;">
-          <strong>${count}</strong> Qs (L1: ${l1.length}, L2: ${l2.length})
+          <strong>${count}</strong> Qs (L1: ${l1.length}, L2: ${l2.length}, Conv: ${lc.length})
           ${flagBits.length ? '<br><span style="font-size:11px;">' + flagBits.join(' &middot; ') + '</span>' : ''}
         </span>
       `;
@@ -507,6 +508,108 @@ function renderSubtopicDetailContents(subtopic, subjectName){
   intro.textContent = 'Edit any question below directly - your changes save to this page immediately. Look for the Download / Publish to GitHub bar at the very bottom of the screen to make edits live for students.';
   verifyDetail.appendChild(intro);
 
+  // ---- Concepts & Formulas PDF for THIS topic (Quick Revision) ----
+  // One PDF per subtopic, with its own on/off switch. Only visible and
+  // downloadable by students for this specific topic when the switch is
+  // on - the switch, not just having a file attached, controls whether
+  // students see it at all.
+  const pdfBox = document.createElement('div');
+  pdfBox.className = 'settings-panel';
+  pdfBox.style.background = '#F4F6FB';
+  const pdfTitle = document.createElement('h3');
+  pdfTitle.style.margin = '0 0 6px 0';
+  pdfTitle.textContent = '📄 Concepts & Formulas (Quick Revision)';
+  pdfBox.appendChild(pdfTitle);
+
+  const pdfStatusLine = document.createElement('div');
+  pdfStatusLine.style.cssText = 'font-size:12px;color:var(--muted);margin-bottom:8px;';
+  pdfStatusLine.textContent = subtopic.conceptsPdfUrl
+    ? 'A PDF is attached for this topic.'
+    : 'No PDF attached yet for this topic.';
+  pdfBox.appendChild(pdfStatusLine);
+
+  const pdfControlsRow = document.createElement('div');
+  pdfControlsRow.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;';
+
+  const pdfUploadBtn = document.createElement('button');
+  pdfUploadBtn.className = 'btn btn-secondary';
+  pdfUploadBtn.style.fontSize = '12px';
+  pdfUploadBtn.textContent = subtopic.conceptsPdfUrl ? 'Replace PDF' : 'Upload PDF';
+  const pdfInput = document.createElement('input');
+  pdfInput.type = 'file';
+  pdfInput.accept = '.pdf';
+  pdfInput.style.display = 'none';
+  pdfUploadBtn.onclick = () => pdfInput.click();
+  pdfInput.onchange = async () => {
+    const file = pdfInput.files[0];
+    if (!file) return;
+    const sizeMB = file.size / (1024 * 1024);
+    if (sizeMB > 20) {
+      setStatus(`That PDF is ${sizeMB.toFixed(1)} MB - please keep the revision sheet under 20 MB.`, 'error');
+      pdfInput.value = '';
+      return;
+    }
+    try {
+      if (cloudinaryConfigured || firebaseSignedIn) {
+        setStatus('Uploading Concepts & Formulas PDF to Media Storage...');
+        subtopic.conceptsPdfUrl = await uploadMedia(file, 'concepts-pdfs', file.name);
+      } else {
+        setStatus('Attaching Concepts & Formulas PDF...');
+        subtopic.conceptsPdfUrl = await fileToDataUrl(file);
+      }
+      pendingTopicChanges = true;
+      updateExportBarVisibility();
+      setStatus(`Concepts & Formulas PDF attached to "${subtopic.name}". Turn the switch on and Publish to make it visible to students.`, 'ok');
+      verifyDetail.dataset.openFor = subtopic.id;
+      renderSubtopicDetailContents(subtopic, subjectName);
+    } catch (err) {
+      setStatus('Could not attach PDF: ' + err.message, 'error');
+    }
+    pdfInput.value = '';
+  };
+  pdfControlsRow.appendChild(pdfUploadBtn);
+  pdfControlsRow.appendChild(pdfInput);
+
+  if (subtopic.conceptsPdfUrl) {
+    const pdfRemoveBtn = document.createElement('button');
+    pdfRemoveBtn.className = 'remove-q';
+    pdfRemoveBtn.style.fontSize = '12px';
+    pdfRemoveBtn.textContent = 'Remove';
+    pdfRemoveBtn.onclick = () => {
+      subtopic.conceptsPdfUrl = null;
+      subtopic.conceptsPdfVisible = false;
+      pendingTopicChanges = true;
+      updateExportBarVisibility();
+      setStatus(`Concepts & Formulas PDF removed from "${subtopic.name}".`, 'ok');
+      verifyDetail.dataset.openFor = subtopic.id;
+      renderSubtopicDetailContents(subtopic, subjectName);
+    };
+    pdfControlsRow.appendChild(pdfRemoveBtn);
+
+    // The on/off switch - this, not just having a file attached, is what
+    // actually controls student visibility for this one topic's PDF.
+    const switchLabel = document.createElement('label');
+    switchLabel.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;margin-left:auto;';
+    const switchCheckbox = document.createElement('input');
+    switchCheckbox.type = 'checkbox';
+    switchCheckbox.checked = !!subtopic.conceptsPdfVisible;
+    switchCheckbox.style.cssText = 'width:18px;height:18px;cursor:pointer;';
+    switchCheckbox.onchange = () => {
+      subtopic.conceptsPdfVisible = switchCheckbox.checked;
+      pendingTopicChanges = true;
+      updateExportBarVisibility();
+      setStatus(`Concepts & Formulas PDF for "${subtopic.name}" is now ${switchCheckbox.checked ? 'ON - visible to students' : 'OFF - hidden from students'}. Publish to make this live.`, 'ok');
+      switchText.textContent = switchCheckbox.checked ? 'ON - visible to students' : 'OFF - hidden from students';
+    };
+    const switchText = document.createElement('span');
+    switchText.textContent = switchCheckbox.checked ? 'ON - visible to students' : 'OFF - hidden from students';
+    switchLabel.appendChild(switchCheckbox);
+    switchLabel.appendChild(switchText);
+    pdfControlsRow.appendChild(switchLabel);
+  }
+  pdfBox.appendChild(pdfControlsRow);
+  verifyDetail.appendChild(pdfBox);
+
   // ---- Teacher-only exports for this topic ----
   const exportRow = document.createElement('div');
   exportRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;';
@@ -534,12 +637,15 @@ function renderSubtopicDetailContents(subtopic, subjectName){
   savedIndicator.textContent = '✓ Changes ready - Download or Publish to GitHub at the bottom of the screen to make them live.';
   verifyDetail.appendChild(savedIndicator);
 
-  ['1','2'].forEach(level => {
+  ['1','2','conventional'].forEach(level => {
     const qs = subtopic.levels[level] || [];
+    const isConventional = level === 'conventional';
     qs.forEach((q, i) => {
+      const levelLabel = isConventional ? 'Conventional' : `Level ${level}`;
       const card = buildQuestionCard(q, {
-        label: `Level ${level}, Question ${i + 1} (editing existing content)`,
+        label: `${levelLabel}, Question ${i + 1} (editing existing content)`,
         removeLabel: 'Delete this question permanently',
+        forceConventional: isConventional,
         onRemove: () => {
           if (!window.confirm('Delete this question permanently? This can\'t be undone once published.')) return;
           subtopic.levels[level].splice(i, 1);
@@ -554,35 +660,42 @@ function renderSubtopicDetailContents(subtopic, subjectName){
 
       // Move this question between Level 1 and Level 2 - useful when a
       // question turns out easier/harder than where it was first placed.
-      const otherLevel = level === '1' ? '2' : '1';
-      const moveBtn = document.createElement('button');
-      moveBtn.className = 'btn btn-secondary';
-      moveBtn.style.cssText = 'font-size:13px;margin-top:6px;width:100%;';
-      moveBtn.textContent = `↕ Move this question to Level ${otherLevel}`;
-      moveBtn.onclick = () => {
-        const idx = subtopic.levels[level].indexOf(q);
-        if (idx === -1) return;
-        subtopic.levels[level].splice(idx, 1);
-        if (!subtopic.levels[otherLevel]) subtopic.levels[otherLevel] = [];
-        subtopic.levels[otherLevel].push(q);
-        pendingTopicChanges = true;
-        updateExportBarVisibility();
-        setStatus(`Moved to Level ${otherLevel}. Use Download or Publish to make this live.`, 'ok');
-        renderVerifyTab();
-        verifyDetail.dataset.openFor = subtopic.id;
-        renderSubtopicDetailContents(subtopic, subjectName);
-      };
-      card.appendChild(moveBtn);
+      // Not offered for Conventional questions, since moving into an MCQ
+      // level would need a type change too, not just a level change.
+      if (!isConventional) {
+        const otherLevel = level === '1' ? '2' : '1';
+        const moveBtn = document.createElement('button');
+        moveBtn.className = 'btn btn-secondary';
+        moveBtn.style.cssText = 'font-size:13px;margin-top:6px;width:100%;';
+        moveBtn.textContent = `↕ Move this question to Level ${otherLevel}`;
+        moveBtn.onclick = () => {
+          const idx = subtopic.levels[level].indexOf(q);
+          if (idx === -1) return;
+          subtopic.levels[level].splice(idx, 1);
+          if (!subtopic.levels[otherLevel]) subtopic.levels[otherLevel] = [];
+          subtopic.levels[otherLevel].push(q);
+          pendingTopicChanges = true;
+          updateExportBarVisibility();
+          setStatus(`Moved to Level ${otherLevel}. Use Download or Publish to make this live.`, 'ok');
+          renderVerifyTab();
+          verifyDetail.dataset.openFor = subtopic.id;
+          renderSubtopicDetailContents(subtopic, subjectName);
+        };
+        card.appendChild(moveBtn);
+      }
 
       verifyDetail.appendChild(card);
     });
   });
   if (qsEmpty(subtopic)) {
-    verifyDetail.innerHTML += '<div class="progress-note">No questions in this subtopic yet.</div>';
+    const emptyNote = document.createElement('div');
+    emptyNote.className = 'progress-note';
+    emptyNote.textContent = 'No questions in this subtopic yet.';
+    verifyDetail.appendChild(emptyNote);
   }
 }
 function qsEmpty(subtopic){
-  return (subtopic.levels['1'] || []).length === 0 && (subtopic.levels['2'] || []).length === 0;
+  return (subtopic.levels['1'] || []).length === 0 && (subtopic.levels['2'] || []).length === 0 && (subtopic.levels['conventional'] || []).length === 0;
 }
 
 // ---------- Full question-bank export (Word + PDF), chapter-wise ----------
@@ -678,7 +791,7 @@ async function buildFullExportBlocks(onProgress){
   let imgCount = 0, imgDone = 0;
   for (const subj of DATA.subjects) {
     for (const subt of subj.subtopics) {
-      for (const lvl of ['1', '2']) {
+      for (const lvl of ['1', '2', 'conventional']) {
         for (const q of (subt.levels[lvl] || [])) {
           if (q.questionImage) imgCount++;
           if (q.explanationImage) imgCount++;
@@ -693,12 +806,13 @@ async function buildFullExportBlocks(onProgress){
     for (const subt of subj.subtopics) {
       const l1 = subt.levels['1'] || [];
       const l2 = subt.levels['2'] || [];
-      if (l1.length + l2.length === 0) continue; // skip empty subtopics
+      const lc = subt.levels['conventional'] || [];
+      if (l1.length + l2.length + lc.length === 0) continue; // skip empty subtopics
       blocks.push({ type: 'subtopic', text: subt.name });
-      for (const lvl of ['1', '2']) {
+      for (const lvl of ['1', '2', 'conventional']) {
         const qs = subt.levels[lvl] || [];
         if (!qs.length) continue;
-        blocks.push({ type: 'level', text: `Level ${lvl}` });
+        blocks.push({ type: 'level', text: lvl === 'conventional' ? 'Conventional (Long Answer)' : `Level ${lvl}` });
         let qNum = 1;
         for (const q of qs) {
           let qImg = null, explImg = null, qImgFailed = false, explImgFailed = false;
@@ -718,6 +832,7 @@ async function buildFullExportBlocks(onProgress){
             question: q.question || '(see attached figure)',
             questionImage: qImg,
             questionImageFailed: qImgFailed,
+            isConventional: q.type === 'conventional',
             isMcq: (q.type || 'mcq') !== 'fill',
             options: q.options || [],
             correctIndex: q.correctIndex,
@@ -737,6 +852,9 @@ async function downloadFullBankDocx(){
   setStatus('Preparing Word document - loading tools...');
   try {
     await loadScriptOnce('libs/docx/docx.iife.js');
+    if (!window.docx || !window.docx.Document) {
+      throw new Error('The docx library loaded but did not set up correctly. This usually means libs/docx/docx.iife.js is missing, corrupted, or at the wrong path in your GitHub repo - check that file exists exactly at that path.');
+    }
     const blocks = await buildFullExportBlocks((done, total) => {
       if (total > 0) setStatus(`Preparing Word document - fetching images (${done}/${total}). A slow or unreachable image waits at most 10s before being skipped, so this always finishes.`);
     });
@@ -766,7 +884,10 @@ async function downloadFullBankDocx(){
         } else if (b.questionImageFailed) {
           children.push(new Paragraph({ text: '[Figure could not be fetched in time - view in app]', italics: true }));
         }
-        if (b.isMcq) {
+        if (b.isConventional) {
+          // No options/correct-answer for a long-answer question - the
+          // Explanation block right below IS the full model answer.
+        } else if (b.isMcq) {
           const letters = ['A', 'B', 'C', 'D'];
           b.options.forEach((opt, idx) => {
             const isCorrect = idx === b.correctIndex;
@@ -778,7 +899,7 @@ async function downloadFullBankDocx(){
           children.push(new Paragraph({ children: [new TextRun({ text: `Correct Answer: ${b.correctAnswer}`, bold: true, color: '2F9E52' })] }));
         }
         if (b.explanation) {
-          children.push(new Paragraph({ children: [new TextRun({ text: `Explanation: ${b.explanation}` })], spacing: { before: 60 } }));
+          children.push(new Paragraph({ children: [new TextRun({ text: (b.isConventional ? 'Model Answer: ' : 'Explanation: ') + b.explanation })], spacing: { before: 60 } }));
         }
         if (b.explanationImage) {
           try {
@@ -812,6 +933,9 @@ async function downloadFullBankPdf(){
   setStatus('Preparing PDF - loading tools...');
   try {
     await loadScriptOnce('libs/jspdf/jspdf.umd.min.js');
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      throw new Error('The jsPDF library loaded but did not set up correctly. This usually means libs/jspdf/jspdf.umd.min.js is missing, corrupted, or at the wrong path in your GitHub repo - check that file exists exactly at that path.');
+    }
     const blocks = await buildFullExportBlocks((done, total) => {
       if (total > 0) setStatus(`Preparing PDF - fetching images (${done}/${total}). A slow or unreachable image waits at most 10s before being skipped, so this always finishes.`);
     });
@@ -864,7 +988,9 @@ async function downloadFullBankPdf(){
         addText(`Q${b.number}. ${b.question}`, 11, 'bold');
         if (b.questionImage) addImage(b.questionImage);
         else if (b.questionImageFailed) addText('[Figure could not be fetched in time - view in app]', 10, 'italic', [150, 150, 150]);
-        if (b.isMcq) {
+        if (b.isConventional) {
+          // No options/correct-answer for a long-answer question.
+        } else if (b.isMcq) {
           const letters = ['A', 'B', 'C', 'D'];
           b.options.forEach((opt, idx) => {
             const isCorrect = idx === b.correctIndex;
@@ -873,7 +999,7 @@ async function downloadFullBankPdf(){
         } else {
           addText(`Correct Answer: ${b.correctAnswer}`, 10, 'bold', [47, 158, 82]);
         }
-        if (b.explanation) addText(`Explanation: ${b.explanation}`, 10, 'normal');
+        if (b.explanation) addText((b.isConventional ? 'Model Answer: ' : 'Explanation: ') + b.explanation, 10, 'normal');
         if (b.explanationImage) addImage(b.explanationImage);
         else if (b.explanationImageFailed) addText('[Explanation image could not be fetched in time - view in app]', 10, 'italic', [150, 150, 150]);
       }
@@ -1405,6 +1531,13 @@ deleteTopicBtn.addEventListener('click', () => {
 });
 
 // ---------- Source buttons ----------
+// If the Level is changed after questions were already split (e.g. switching
+// to Conventional), re-render the existing cards so they immediately reflect
+// the right editor (options hidden, Model Answer label shown, etc).
+levelSelect.addEventListener('change', () => {
+  if (parsedQuestions.length > 0) renderQuestionBlocks();
+});
+
 cameraBtn.addEventListener('click', () => cameraInput.click());
 filesBtn.addEventListener('click', () => filesInput.click());
 
@@ -1923,6 +2056,11 @@ function buildQuestionCard(q, opts){
   box.appendChild(qImageRow);
 
   // ---- Question Type switch: MCQ vs Fill in the Blank ----
+  // Skipped entirely for Conventional (long-answer) questions - there's
+  // no correct option to pick, the written Explanation field below IS
+  // the answer.
+  const answerArea = document.createElement('div');
+  if (!opts.forceConventional) {
   const typeRow = document.createElement('div');
   typeRow.style.marginBottom = '10px';
   const typeLabel = document.createElement('label');
@@ -1941,7 +2079,6 @@ function buildQuestionCard(q, opts){
   box.appendChild(typeRow);
 
   // ---- Answer area ----
-  const answerArea = document.createElement('div');
   box.appendChild(answerArea);
   function renderAnswerArea(){
     answerArea.innerHTML = '';
@@ -1989,6 +2126,16 @@ function buildQuestionCard(q, opts){
   }
   renderAnswerArea();
   typeSelect.onchange = () => { q.type = typeSelect.value; renderAnswerArea(); if (opts.onChange) opts.onChange(); };
+  } else {
+    // Conventional question: a plain note pointing to the Explanation
+    // field below, which serves as the full written model answer.
+    const convNote = document.createElement('div');
+    convNote.className = 'progress-note';
+    convNote.style.marginBottom = '10px';
+    convNote.innerHTML = '<strong>Conventional (Long Answer) question</strong> - no options needed. Write the full model answer / solution in the "Model Answer" field below.';
+    box.appendChild(convNote);
+    box.appendChild(answerArea); // stays empty for conventional questions, kept for downstream .querySelector calls
+  }
 
   const videoLabel = document.createElement('label');
   videoLabel.className = 'row-label';
@@ -2274,7 +2421,9 @@ function buildQuestionCard(q, opts){
   const explLabel = document.createElement('label');
   explLabel.className = 'row-label';
   explLabel.style.marginTop = '10px';
-  explLabel.textContent = 'Explanation - the descriptive correct answer shown to students either way';
+  explLabel.textContent = opts.forceConventional
+    ? 'Model Answer / Solution - the full written answer shown to students'
+    : 'Explanation - the descriptive correct answer shown to students either way';
   box.appendChild(explLabel);
 
   box.appendChild(buildSymbolToolbar());
@@ -2395,7 +2544,11 @@ function buildQuestionCard(q, opts){
       issues.push(`${labelText}: the question text is empty (add text, or attach a figure/photo instead)`);
     }
 
-    if (q.type === 'mcq') {
+    if (opts.forceConventional) {
+      if (!q.explanation || !q.explanation.trim()) {
+        issues.push(`${labelText}: the Model Answer is empty - write the full answer/solution`);
+      }
+    } else if (q.type === 'mcq') {
       const optInputs = answerArea.querySelectorAll('.opt-grid input');
       const letters = ['A', 'B', 'C', 'D'];
       optInputs.forEach((inp, idx) => {
@@ -2425,9 +2578,11 @@ function buildQuestionCard(q, opts){
 
 function renderQuestionBlocks(){
   questionsSection.innerHTML = '';
+  const forceConventional = levelSelect.value === 'conventional';
   parsedQuestions.forEach((q, i) => {
     const card = buildQuestionCard(q, {
       label: `Question ${i + 1}`,
+      forceConventional,
       onRemove: () => { parsedQuestions.splice(i, 1); renderQuestionBlocks(); },
       onChange: () => saveDraft()
     });
@@ -2456,18 +2611,24 @@ function mergeIntoData(){
     // attached instead - matches the "Photo as Question" flow and the
     // same rule box.validate() already enforces in the UI.
     if (!q.question && !q.questionImage) return;
+    const isConventional = level === 'conventional';
+    if (isConventional) {
+      if (!q.explanation || !q.explanation.trim()) return; // a conventional question needs its written answer
+    } else {
+      const isMcq = (q.type || 'mcq') === 'mcq';
+      if (isMcq && (q.options.some(o => !o) || q.correctIndex === null)) return; // MCQ needs all 4 options + a correct one marked
+      if (!isMcq && !q.correctAnswer) return; // Fill-in needs a correct answer typed in
+    }
     const isMcq = (q.type || 'mcq') === 'mcq';
-    if (isMcq && (q.options.some(o => !o) || q.correctIndex === null)) return; // MCQ needs all 4 options + a correct one marked
-    if (!isMcq && !q.correctAnswer) return; // Fill-in needs a correct answer typed in
     const id = subtId + '_l' + level + '_new' + Date.now() + '_' + i;
     subt.levels[level].push({
       id,
-      type: isMcq ? 'mcq' : 'fill',
+      type: isConventional ? 'conventional' : (isMcq ? 'mcq' : 'fill'),
       question: q.question,
       questionImage: q.questionImage || null,
-      options: isMcq ? q.options : [],
-      correctIndex: isMcq ? q.correctIndex : null,
-      correctAnswer: isMcq ? '' : q.correctAnswer,
+      options: (!isConventional && isMcq) ? q.options : [],
+      correctIndex: (!isConventional && isMcq) ? q.correctIndex : null,
+      correctAnswer: (!isConventional && !isMcq) ? q.correctAnswer : '',
       videoUrl: q.videoUrl || 'PASTE_VIDEO_LINK_HERE',
       videoFile: q.videoFile || null,
       videoReady: !!q.videoReady,
@@ -2511,7 +2672,7 @@ function validateAllQuestionCards(){
 function countAllQuestions(data){
   let total = 0;
   data.subjects.forEach(subj => subj.subtopics.forEach(subt => {
-    total += (subt.levels['1'] || []).length + (subt.levels['2'] || []).length;
+    total += (subt.levels['1'] || []).length + (subt.levels['2'] || []).length + (subt.levels['conventional'] || []).length;
   }));
   return total;
 }
@@ -2519,7 +2680,7 @@ function countAllQuestions(data){
 function countSubtopicQuestions(subj, subtopicName){
   const subt = subj.subtopics.find(s => s.name === subtopicName);
   if (!subt) return 0;
-  return (subt.levels['1'] || []).length + (subt.levels['2'] || []).length;
+  return (subt.levels['1'] || []).length + (subt.levels['2'] || []).length + (subt.levels['conventional'] || []).length;
 }
 
 downloadBtn.addEventListener('click', () => {
