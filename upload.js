@@ -138,6 +138,105 @@ function renderVerifyTab(){
     subjHeader.appendChild(visLabel);
     subjBox.appendChild(subjHeader);
 
+    // ---- Class Work Book Solution (Part 1 / Part 2) - subject-wide PDFs,
+    // each with its own upload + on/off switch, same pattern as the
+    // per-topic Concepts & Formulas PDF but scoped to the whole subject. ----
+    const classworkBox = document.createElement('div');
+    classworkBox.className = 'settings-panel';
+    classworkBox.style.background = '#F4F6FB';
+    const classworkTitle = document.createElement('h3');
+    classworkTitle.style.margin = '0 0 8px 0';
+    classworkTitle.textContent = '📘 Class Work Book Solution';
+    classworkBox.appendChild(classworkTitle);
+
+    function buildSubjectPdfRow(partLabel, urlField, visibleField){
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 0;border-top:1px solid #E4E9F5;';
+
+      const partTitle = document.createElement('span');
+      partTitle.style.cssText = 'font-size:13px;font-weight:700;color:var(--text);flex-basis:100%;';
+      partTitle.textContent = partLabel;
+      row.appendChild(partTitle);
+
+      const uploadBtn = document.createElement('button');
+      uploadBtn.className = 'btn btn-secondary';
+      uploadBtn.style.fontSize = '12px';
+      uploadBtn.textContent = subj[urlField] ? 'Replace PDF' : 'Upload PDF';
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = '.pdf';
+      fileInput.style.display = 'none';
+      uploadBtn.onclick = () => fileInput.click();
+      fileInput.onchange = async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+        const sizeMB = file.size / (1024 * 1024);
+        if (sizeMB > 20) {
+          setStatus(`That PDF is ${sizeMB.toFixed(1)} MB - please keep it under 20 MB.`, 'error');
+          fileInput.value = '';
+          return;
+        }
+        try {
+          if (cloudinaryConfigured || firebaseSignedIn) {
+            setStatus(`Uploading ${partLabel} to Media Storage...`);
+            subj[urlField] = await uploadMedia(file, 'classwork-pdfs', file.name);
+          } else {
+            setStatus(`Attaching ${partLabel}...`);
+            subj[urlField] = await fileToDataUrl(file);
+          }
+          pendingTopicChanges = true;
+          updateExportBarVisibility();
+          setStatus(`${partLabel} attached to "${subj.name}". Turn the switch on and Publish to make it visible to students.`, 'ok');
+          renderVerifyTab();
+        } catch (err) {
+          setStatus(`Could not attach ${partLabel}: ` + err.message, 'error');
+        }
+        fileInput.value = '';
+      };
+      row.appendChild(uploadBtn);
+      row.appendChild(fileInput);
+
+      if (subj[urlField]) {
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-q';
+        removeBtn.style.fontSize = '12px';
+        removeBtn.textContent = 'Remove';
+        removeBtn.onclick = () => {
+          subj[urlField] = null;
+          subj[visibleField] = false;
+          pendingTopicChanges = true;
+          updateExportBarVisibility();
+          setStatus(`${partLabel} removed from "${subj.name}".`, 'ok');
+          renderVerifyTab();
+        };
+        row.appendChild(removeBtn);
+
+        const switchLabel = document.createElement('label');
+        switchLabel.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;margin-left:auto;';
+        const switchCheckbox = document.createElement('input');
+        switchCheckbox.type = 'checkbox';
+        switchCheckbox.checked = !!subj[visibleField];
+        switchCheckbox.style.cssText = 'width:18px;height:18px;cursor:pointer;';
+        const switchText = document.createElement('span');
+        switchText.textContent = switchCheckbox.checked ? 'ON - visible to students' : 'OFF - hidden from students';
+        switchCheckbox.onchange = () => {
+          subj[visibleField] = switchCheckbox.checked;
+          pendingTopicChanges = true;
+          updateExportBarVisibility();
+          setStatus(`${partLabel} for "${subj.name}" is now ${switchCheckbox.checked ? 'ON - visible to students' : 'OFF - hidden from students'}. Publish to make this live.`, 'ok');
+          switchText.textContent = switchCheckbox.checked ? 'ON - visible to students' : 'OFF - hidden from students';
+        };
+        switchLabel.appendChild(switchCheckbox);
+        switchLabel.appendChild(switchText);
+        row.appendChild(switchLabel);
+      }
+      return row;
+    }
+
+    classworkBox.appendChild(buildSubjectPdfRow('Part 1', 'classworkPart1Url', 'classworkPart1Visible'));
+    classworkBox.appendChild(buildSubjectPdfRow('Part 2', 'classworkPart2Url', 'classworkPart2Visible'));
+    subjBox.appendChild(classworkBox);
+
     const table = document.createElement('div');
     table.style.fontSize = '13px';
 
