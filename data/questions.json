@@ -193,7 +193,9 @@
               }
             ],
             "2": []
-          }
+          },
+          "conceptsPdfUrl": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790056872/nkldnubtscqrekxb1r7b.pdf",
+          "conceptsPdfVisible": true
         },
         {
           "id": "economic_load_dispatch",
