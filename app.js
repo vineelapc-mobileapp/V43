@@ -80,6 +80,7 @@ function goBack(){
   if (state.view === 'subtopics') state.view = 'subjects';
   else if (state.view === 'levels') state.view = 'subtopics';
   else if (state.view === 'quiz') state.view = 'levels';
+  else if (state.view === 'conventional') state.view = 'levels';
   else if (state.view === 'results') state.view = 'levels';
   else if (state.view === 'history') state.view = 'subjects';
   else if (state.view === 'doubt') state.view = state.doubtReturnView || 'subjects';
@@ -119,7 +120,7 @@ function render(){
   // Measurements switches to a teal/cyan "instrument panel" theme. Applies
   // whenever a subject is open (subtopics through results), reverts to
   // default on the Subject-selection screen and other subject-agnostic views.
-  const themedViews = ['subtopics', 'levels', 'quiz', 'results', 'doubt'];
+  const themedViews = ['subtopics', 'levels', 'quiz', 'results', 'doubt', 'conventional'];
   if (themedViews.includes(state.view) && state.subject) {
     document.body.classList.toggle('theme-measurements', state.subject.id === 'eem');
   } else {
@@ -137,6 +138,7 @@ function render(){
   else if (state.view === 'subtopics') renderSubtopics();
   else if (state.view === 'levels') renderLevels();
   else if (state.view === 'quiz') renderQuiz();
+  else if (state.view === 'conventional') renderConventional();
   else if (state.view === 'results') renderResults();
   else if (state.view === 'history') renderHistory();
   else if (state.view === 'doubt') renderDoubtComposer();
@@ -263,6 +265,23 @@ function renderSubtopics(){
   });
 }
 
+// Concepts & Formulas PDF is the one thing students CAN download directly -
+// the full question bank/answers stays teacher-only. A data: URI triggers
+// a real file download; a hosted link (Firebase/Cloudinary) opens in a new
+// tab, where the browser's own PDF viewer offers view/save.
+function downloadConceptsPdf(subtopic){
+  const url = subtopic.conceptsPdfUrl;
+  if (!url) return;
+  if (url.startsWith('data:')) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_Concepts_Formulas.pdf';
+    a.click();
+  } else {
+    window.open(url, '_blank');
+  }
+}
+
 function renderLevels(){
   headerTitle.textContent = state.subtopic.name;
   const wrap = document.createElement('div');
@@ -276,7 +295,68 @@ function renderLevels(){
     if (qs.length > 0) btn.onclick = () => startQuiz(lvl, qs);
     wrap.appendChild(btn);
   });
+  const convQs = state.subtopic.levels['conventional'] || [];
+  const convBtn = document.createElement('button');
+  convBtn.className = 'level-btn' + (convQs.length === 0 ? ' disabled' : '');
+  convBtn.textContent = `Conventional - Long Answer (${convQs.length} Qs)`;
+  if (convQs.length > 0) convBtn.onclick = () => { state.view = 'conventional'; render(); };
+  wrap.appendChild(convBtn);
   app.appendChild(wrap);
+
+  // Concepts & Formulas PDF - only shown if the teacher has both attached
+  // one AND explicitly switched it on for this specific topic.
+  if (state.subtopic.conceptsPdfUrl && state.subtopic.conceptsPdfVisible) {
+    const pdfCard = document.createElement('div');
+    pdfCard.className = 'list-card';
+    pdfCard.style.cssText = 'border-left:4px solid var(--accent, #C97A2B);margin-top:14px;';
+    pdfCard.innerHTML = `<div><div>📄 Quick Revision - Concepts &amp; Formulas</div><div class="meta">Tap to view or download</div></div><div>&#8250;</div>`;
+    pdfCard.onclick = () => downloadConceptsPdf(state.subtopic);
+    app.appendChild(pdfCard);
+  }
+}
+
+// Conventional (long-answer) study mode: a plain scrollable list of
+// question/model-answer cards, tap to reveal - no scoring, no timer, no
+// palette, since these aren't machine-gradable multiple-choice questions.
+function renderConventional(){
+  headerTitle.textContent = state.subtopic.name + ' - Conventional';
+  const qs = state.subtopic.levels['conventional'] || [];
+  qs.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    const qImgHtml = q.questionImage ? `<img src="${q.questionImage}" alt="Figure" class="explanation-image">` : '';
+    card.innerHTML = `
+      <div class="question-text">Q${i + 1}. ${q.question || ''}</div>
+      ${qImgHtml}
+      <button class="btn btn-secondary full-width reveal-answer-btn" style="margin-top:10px;">Show Model Answer</button>
+      <div class="conv-answer hidden" style="margin-top:12px;"></div>
+    `;
+    const revealBtn = card.querySelector('.reveal-answer-btn');
+    const answerDiv = card.querySelector('.conv-answer');
+    revealBtn.onclick = () => {
+      const isHidden = answerDiv.classList.contains('hidden');
+      if (isHidden) {
+        const explImgHtml = q.explanationImage ? `<img src="${q.explanationImage}" alt="Explanation" class="explanation-image">` : '';
+        const audioHtml = q.audioFile ? `<audio controls class="audio-explanation" src="${q.audioFile}"></audio>` : '';
+        const videoHtml = hasVideo(q) ? '<span class="video-link">Watch Video Solution</span>' : '';
+        answerDiv.innerHTML = `
+          <p class="explanation-text">${q.explanation || 'No model answer provided yet.'}</p>
+          ${explImgHtml}
+          ${audioHtml}
+          ${videoHtml}
+        `;
+        renderMathIn(answerDiv.querySelector('.explanation-text'));
+        const videoLinkEl = answerDiv.querySelector('.video-link');
+        if (videoLinkEl) videoLinkEl.onclick = () => playVideo(q, 'quiz');
+        answerDiv.classList.remove('hidden');
+        revealBtn.textContent = 'Hide Model Answer';
+      } else {
+        answerDiv.classList.add('hidden');
+        revealBtn.textContent = 'Show Model Answer';
+      }
+    };
+    app.appendChild(card);
+  });
 }
 
 function startQuiz(level, qs){
