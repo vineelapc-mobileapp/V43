@@ -269,17 +269,71 @@ function renderSubtopics(){
 // the full question bank/answers stays teacher-only. A data: URI triggers
 // a real file download; a hosted link (Firebase/Cloudinary) opens in a new
 // tab, where the browser's own PDF viewer offers view/save.
-function downloadConceptsPdf(subtopic){
+async function downloadConceptsPdf(subtopic){
   const url = subtopic.conceptsPdfUrl;
   if (!url) return;
+  const filename = subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_Concepts_Formulas.pdf';
+
   if (url.startsWith('data:')) {
+    // Already local - nothing to fetch, nothing to fail.
     const a = document.createElement('a');
     a.href = url;
-    a.download = subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_Concepts_Formulas.pdf';
+    a.download = filename;
     a.click();
-  } else {
-    window.open(url, '_blank');
+    return;
   }
+
+  // For a hosted link (Firebase/Cloudinary), fetch it ourselves rather
+  // than navigating the browser straight to it - this way the student
+  // never sees the actual storage URL (in the address bar or in a raw
+  // browser error page), and any failure is handled cleanly in-app
+  // instead of an ugly, unbranded "site can't be reached" screen.
+  showPdfMessage('Loading...', false);
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    let res;
+    try {
+      res = await fetch(url, { signal: controller.signal });
+    } finally {
+      clearTimeout(timeoutId);
+    }
+    if (!res.ok) throw new Error('not ok');
+    const blob = await res.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(objectUrl);
+    hidePdfMessage();
+  } catch (err) {
+    showPdfMessage('Service not available. Please contact your teacher.', true);
+  }
+}
+
+// A small, unbranded overlay for the PDF load/error state - deliberately
+// says nothing about where the file is hosted or what technically failed.
+function showPdfMessage(text, isError){
+  hidePdfMessage();
+  const overlay = document.createElement('div');
+  overlay.id = 'pdfMsgOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.55);display:flex;align-items:center;justify-content:center;z-index:60;';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:14px;padding:24px;max-width:280px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.2);">
+      <div style="font-size:32px;margin-bottom:10px;">${isError ? '⚠️' : '⏳'}</div>
+      <div style="font-size:14px;color:${isError ? '#D64545' : '#16213A'};font-weight:600;margin-bottom:${isError ? '14px' : '0'};">${text}</div>
+      ${isError ? '<button id="pdfMsgDismiss" style="background:#16274A;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;">OK</button>' : ''}
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  if (isError) {
+    document.getElementById('pdfMsgDismiss').onclick = hidePdfMessage;
+  }
+}
+function hidePdfMessage(){
+  const existing = document.getElementById('pdfMsgOverlay');
+  if (existing) existing.remove();
 }
 
 function renderLevels(){
