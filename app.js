@@ -254,24 +254,6 @@ function renderSubjects(){
 
 function renderSubtopics(){
   headerTitle.textContent = state.subject.name;
-
-  // Class Work Book Solution (Part 1 / Part 2) - subject-wide, shown here
-  // before the topic list, only for whichever parts the teacher has both
-  // uploaded AND explicitly switched on.
-  const subj = state.subject;
-  [1, 2].forEach(part => {
-    const url = part === 1 ? subj.classworkPart1Url : subj.classworkPart2Url;
-    const visible = part === 1 ? subj.classworkPart1Visible : subj.classworkPart2Visible;
-    if (url && visible) {
-      const card = document.createElement('div');
-      card.className = 'list-card';
-      card.style.cssText = 'border-left:4px solid var(--accent, #C97A2B);';
-      card.innerHTML = `<div><div>📘 Class Work Book Solution - Part ${part}</div><div class="meta">Tap to view or download</div></div><div>&#8250;</div>`;
-      card.onclick = () => downloadClassworkPdf(subj, part);
-      app.appendChild(card);
-    }
-  });
-
   state.subject.subtopics.forEach(st => {
     const l1 = (st.levels['1'] || []).length;
     const l2 = (st.levels['2'] || []).length;
@@ -291,22 +273,7 @@ async function downloadConceptsPdf(subtopic){
   const url = subtopic.conceptsPdfUrl;
   if (!url) return;
   const filename = subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_Concepts_Formulas.pdf';
-  await downloadPdfSafely(url, filename);
-}
 
-async function downloadClassworkPdf(subject, part){
-  const url = part === 1 ? subject.classworkPart1Url : subject.classworkPart2Url;
-  if (!url) return;
-  const filename = subject.name.replace(/[^a-z0-9]/gi, '_') + `_Classwork_Part${part}.pdf`;
-  await downloadPdfSafely(url, filename);
-}
-
-// Shared by every PDF download in the app - fetches the file itself
-// rather than navigating the browser straight to it, so a student never
-// sees the actual storage URL (address bar or a raw browser error page),
-// and any failure is handled cleanly in-app instead of an ugly,
-// unbranded "site can't be reached" screen.
-async function downloadPdfSafely(url, filename){
   if (url.startsWith('data:')) {
     // Already local - nothing to fetch, nothing to fail.
     const a = document.createElement('a');
@@ -316,6 +283,11 @@ async function downloadPdfSafely(url, filename){
     return;
   }
 
+  // For a hosted link (Firebase/Cloudinary), fetch it ourselves rather
+  // than navigating the browser straight to it - this way the student
+  // never sees the actual storage URL (in the address bar or in a raw
+  // browser error page), and any failure is handled cleanly in-app
+  // instead of an ugly, unbranded "site can't be reached" screen.
   showPdfMessage('Loading...', false);
   try {
     const controller = new AbortController();
