@@ -1180,7 +1180,28 @@
           "id": "surge_impedance_loading_sil",
           "name": "Surge Impedance Loading (SIL)",
           "levels": {
-            "1": [],
+            "1": [
+              {
+                "id": "surge_impedance_loading_sil_l1_new1790538023200_0",
+                "type": "mcq",
+                "question": "surge impedance of a transmission line of length 200 km is 400 ohms. If the length of the line is doubled then the Surge impedance of the line in ohms is",
+                "questionImage": null,
+                "options": [
+                  "800 ",
+                  "200",
+                  "400",
+                  "1000"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": "https://res.cloudinary.com/fl9rh27m/video/upload/v1790537968/rpsb2cqfhoxogdcanr1t.webm",
+                "explanation": "Surge impedance is independent of length of line and hence answer is 400 ohms",
+                "explanationImage": null
+              }
+            ],
             "2": []
           }
         },
