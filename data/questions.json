@@ -713,6 +713,46 @@
                 "audioFile": null,
                 "explanation": "Skin and Proximity effects causes effective area of current flowing path is reduced with HVAC causing Rac > Rdc ",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1790531267168_0",
+                "type": "mcq",
+                "question": "Condition for Distortion Less Line",
+                "questionImage": null,
+                "options": [
+                  "L/R = CG",
+                  "L/R = C/G",
+                  "LR = CG",
+                  "L/C = G/R"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "L/R = C/G for Distortion less line to make it independent of frequency ",
+                "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1790531312933_0",
+                "type": "mcq",
+                "question": "Condition for Distortion Less Line",
+                "questionImage": null,
+                "options": [
+                  "L/R = CG",
+                  "L/R = C/G",
+                  "LR = CG",
+                  "L/C = G/R"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "L/R = C/G for Distortion less line to make it independent of frequency ",
+                "explanationImage": null
               }
             ],
             "2": [
