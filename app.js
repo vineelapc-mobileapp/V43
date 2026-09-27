@@ -67,8 +67,24 @@ if ('serviceWorker' in navigator) {
 }
 
 const fwdBtn = document.getElementById('fwdBtn');
-backBtn.addEventListener('click', () => history.back());
-fwdBtn.addEventListener('click', () => history.forward());
+const topicsBtn = document.getElementById('topicsBtn');
+backBtn.addEventListener('click', () => {
+  if (state.view === 'quiz') goToPrevious();
+  else history.back();
+});
+fwdBtn.addEventListener('click', () => {
+  if (state.view === 'quiz') advance('save');
+  else history.forward();
+});
+// Jumps straight to the Topics (Subtopics) list for whichever subject the
+// student is currently in - lets them pick a different topic to continue
+// with, without backing out of the current one step by step first.
+topicsBtn.addEventListener('click', () => {
+  if (state.subject) {
+    state.view = 'subtopics';
+    render();
+  }
+});
 paletteToggleBtn.addEventListener('click', openPalette);
 closePaletteBtn.addEventListener('click', () => paletteOverlay.classList.add('hidden'));
 submitTestBtn.addEventListener('click', openSubmitConfirm);
@@ -123,11 +139,6 @@ window.addEventListener('popstate', (event) => {
   render();
 });
 
-function updateNavButtons(){
-  backBtn.classList.toggle('hidden', state.view === 'subjects' && navHistoryIndex <= 1);
-  fwdBtn.classList.toggle('hidden', navHistoryIndex >= navMaxReachedIndex);
-}
-
 function goBack(){
   history.back();
 }
@@ -139,8 +150,9 @@ function render(){
   // any other view logic, so there's no path around it.
   if (DATA.studentAccessEnabled === false) {
     document.body.classList.remove('theme-measurements');
-    backBtn.classList.add('hidden');
+    // backBtn/fwdBtn stay simple and always clickable - nothing to disable here.
     paletteToggleBtn.classList.add('hidden');
+    topicsBtn.classList.add('hidden');
     examStrip.classList.add('hidden');
     examActionBar.classList.add('hidden');
     headerTitle.textContent = 'Power Pulse';
@@ -175,11 +187,16 @@ function render(){
 
   app.innerHTML = '';
   const inQuiz = state.view === 'quiz';
-  backBtn.classList.toggle('hidden', (state.view === 'subjects' && navHistoryIndex <= 1) || state.profileFirstRun);
-  fwdBtn.classList.toggle('hidden', navHistoryIndex >= navMaxReachedIndex || state.profileFirstRun);
+  // Back/Forward stay always visible and always clickable - no disabled
+  // state to manage. Outside a quiz, clicking with nothing to go back/
+  // forward to simply does nothing (harmless).
   paletteToggleBtn.classList.toggle('hidden', !inQuiz);
   examStrip.classList.toggle('hidden', !inQuiz);
   examActionBar.classList.toggle('hidden', !inQuiz);
+  // "Topics" jump-shortcut - only makes sense once a subject is chosen
+  // (nothing to switch between otherwise), and not on the Subtopics list
+  // itself, since that's already where it would take you.
+  topicsBtn.classList.toggle('hidden', !state.subject || state.view === 'subtopics');
 
   if (state.view === 'subjects') renderSubjects();
   else if (state.view === 'subtopics') renderSubtopics();
