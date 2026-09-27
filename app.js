@@ -66,7 +66,9 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js'));
 }
 
-backBtn.addEventListener('click', goBack);
+const fwdBtn = document.getElementById('fwdBtn');
+backBtn.addEventListener('click', () => history.back());
+fwdBtn.addEventListener('click', () => history.forward());
 paletteToggleBtn.addEventListener('click', openPalette);
 closePaletteBtn.addEventListener('click', () => paletteOverlay.classList.add('hidden'));
 submitTestBtn.addEventListener('click', openSubmitConfirm);
@@ -76,16 +78,58 @@ markReviewBtn.addEventListener('click', () => advance('marked'));
 saveNextBtn.addEventListener('click', () => advance('save'));
 prevBtn.addEventListener('click', () => goToPrevious());
 
-function goBack(){
-  if (state.view === 'subtopics') state.view = 'subjects';
-  else if (state.view === 'levels') state.view = 'subtopics';
-  else if (state.view === 'quiz') state.view = 'levels';
-  else if (state.view === 'conventional') state.view = 'levels';
-  else if (state.view === 'results') state.view = 'levels';
-  else if (state.view === 'history') state.view = 'subjects';
-  else if (state.view === 'doubt') state.view = state.doubtReturnView || 'subjects';
-  else if (state.view === 'profile') state.view = state.profileReturnView || 'subjects';
+// ---------- Page-level navigation history (Back / Forward, top of screen) ----------
+// Uses the browser's real History API so the phone's own hardware back
+// button/gesture does the exact same thing as the on-screen Back button -
+// stepping through the app's own pages (Subjects -> Topics -> Levels ->
+// Quiz -> Results, etc.) - rather than leaving the page entirely. Forward
+// works the same way in reverse. The Home icon (top-left) is the only way
+// to jump straight back to the launcher; it's a plain page link, untouched
+// by any of this and unaffected by how deep the student has navigated.
+//
+// Stepping between individual QUESTIONS within one quiz (via the
+// dedicated Previous/Save & Next buttons) does NOT create Back/Forward
+// history entries here - those buttons already handle that directly.
+// This history is for whole-PAGE navigation only.
+let navHistoryIndex = 0;
+let navMaxReachedIndex = 0;
+let isRestoringNavState = false;
+let lastPushedViewKey = null;
+
+function currentViewKey(){
+  // Distinguishes "different pages" even when state.view repeats later in
+  // the session (e.g., 'quiz' for Level-1 now, 'quiz' again for Level-2
+  // after visiting other screens in between) by including what the page
+  // is actually showing, not just its view name.
+  return [state.view, state.subject && state.subject.id, state.subtopic && state.subtopic.id, state.level].join('|');
+}
+
+function pushNavStateIfNewPage(){
+  const key = currentViewKey();
+  if (isRestoringNavState) { isRestoringNavState = false; lastPushedViewKey = key; return; }
+  if (key === lastPushedViewKey) return; // same page re-rendering (e.g., an answer selected) - not a new page
+  navHistoryIndex++;
+  navMaxReachedIndex = navHistoryIndex;
+  history.pushState({ snapshot: { ...state }, idx: navHistoryIndex }, '', '');
+  lastPushedViewKey = key;
+}
+
+window.addEventListener('popstate', (event) => {
+  if (!event.state) return; // exhausted the app's own history - let the browser fall through naturally (e.g., back to the launcher)
+  isRestoringNavState = true;
+  navHistoryIndex = event.state.idx;
+  for (const k in state) delete state[k];
+  Object.assign(state, event.state.snapshot);
   render();
+});
+
+function updateNavButtons(){
+  backBtn.classList.toggle('hidden', state.view === 'subjects' && navHistoryIndex <= 1);
+  fwdBtn.classList.toggle('hidden', navHistoryIndex >= navMaxReachedIndex);
+}
+
+function goBack(){
+  history.back();
 }
 
 // ---------- Render router ----------
@@ -116,6 +160,8 @@ function render(){
     state.profileFirstRun = true;
   }
 
+  pushNavStateIfNewPage();
+
   // Subject color theme: Power Systems keeps the default blueprint navy/copper;
   // Measurements switches to a teal/cyan "instrument panel" theme. Applies
   // whenever a subject is open (subtopics through results), reverts to
@@ -129,7 +175,8 @@ function render(){
 
   app.innerHTML = '';
   const inQuiz = state.view === 'quiz';
-  backBtn.classList.toggle('hidden', state.view === 'subjects' || state.profileFirstRun);
+  backBtn.classList.toggle('hidden', (state.view === 'subjects' && navHistoryIndex <= 1) || state.profileFirstRun);
+  fwdBtn.classList.toggle('hidden', navHistoryIndex >= navMaxReachedIndex || state.profileFirstRun);
   paletteToggleBtn.classList.toggle('hidden', !inQuiz);
   examStrip.classList.toggle('hidden', !inQuiz);
   examActionBar.classList.toggle('hidden', !inQuiz);
