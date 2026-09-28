@@ -28,10 +28,12 @@ const calcDrawer = document.getElementById('calcDrawer');
 const calcDisplay = document.getElementById('calcDisplay');
 const calcAngleModeBtn = document.getElementById('calcAngleModeBtn');
 const calcCloseBtn = document.getElementById('calcCloseBtn');
-const examActionBar = document.getElementById('examActionBar');
-const markReviewBtn = document.getElementById('markReviewBtn');
-const saveNextBtn = document.getElementById('saveNextBtn');
-const prevBtn = document.getElementById('prevBtn');
+const bottomNav = document.getElementById('bottomNav');
+const saveBtn = document.getElementById('saveBtn');
+const saveBtnLabel = document.getElementById('saveBtnLabel');
+const toastEl = document.getElementById('toast');
+let toastTimer = null;
+let saveFlashTimer = null;
 const paletteOverlay = document.getElementById('paletteOverlay');
 const paletteGrid = document.getElementById('paletteGrid');
 const closePaletteBtn = document.getElementById('closePaletteBtn');
@@ -90,9 +92,42 @@ closePaletteBtn.addEventListener('click', () => paletteOverlay.classList.add('hi
 submitTestBtn.addEventListener('click', openSubmitConfirm);
 cancelSubmitBtn.addEventListener('click', () => submitConfirmModal.classList.add('hidden'));
 confirmSubmitBtn.addEventListener('click', finishTest);
-markReviewBtn.addEventListener('click', () => advance('marked'));
-saveNextBtn.addEventListener('click', () => advance('save'));
-prevBtn.addEventListener('click', () => goToPrevious());
+saveBtn.addEventListener('click', () => handleSave());
+
+function showToast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1700);
+}
+
+function resetSaveBtn(){
+  clearTimeout(saveFlashTimer);
+  saveBtn.classList.remove('saved');
+  saveBtnLabel.textContent = 'Save';
+}
+
+// Save: an answer is recorded the instant it's chosen, so this confirms it
+// visibly ("Saved"). For a typed (fill-in) answer that's been entered but
+// not submitted yet, Save submits it - same as its own Submit button.
+function handleSave(){
+  if (state.view !== 'quiz') return;
+  const q = state.questions[state.qIndex];
+  let hasAnswer = !!state.answers[q.id];
+  if (!hasAnswer) {
+    const typedInput = app.querySelector('.fill-answer-wrap input');
+    const typedSubmit = app.querySelector('.fill-answer-wrap .btn-primary');
+    if (typedInput && typedSubmit && typedInput.value.trim()) {
+      typedSubmit.click();
+      hasAnswer = !!state.answers[q.id];
+    }
+  }
+  if (!hasAnswer) { showToast('Choose an answer first, then tap Save'); return; }
+  saveBtn.classList.add('saved');
+  saveBtnLabel.textContent = 'Saved';
+  clearTimeout(saveFlashTimer);
+  saveFlashTimer = setTimeout(resetSaveBtn, 1400);
+}
 
 // ---------- Page-level navigation history (Back / Forward, top of screen) ----------
 // Uses the browser's real History API so the phone's own hardware back
@@ -153,8 +188,8 @@ function render(){
     // backBtn/fwdBtn stay simple and always clickable - nothing to disable here.
     paletteToggleBtn.classList.add('hidden');
     topicsBtn.classList.add('hidden');
+    saveBtn.classList.add('hidden');
     examStrip.classList.add('hidden');
-    examActionBar.classList.add('hidden');
     headerTitle.textContent = 'Power Pulse';
     app.innerHTML = `
       <div class="question-card" style="text-align:center;">
@@ -192,7 +227,9 @@ function render(){
   // forward to simply does nothing (harmless).
   paletteToggleBtn.classList.toggle('hidden', !inQuiz);
   examStrip.classList.toggle('hidden', !inQuiz);
-  examActionBar.classList.toggle('hidden', !inQuiz);
+  saveBtn.classList.toggle('hidden', !inQuiz);
+  // the first-run "Welcome" form has nothing to navigate to yet
+  bottomNav.classList.toggle('hidden', !!state.profileFirstRun);
   // "Topics" jump-shortcut - only makes sense once a subject is chosen
   // (nothing to switch between otherwise), and not on the Subtopics list
   // itself, since that's already where it would take you.
@@ -649,7 +686,7 @@ function renderQuiz(){
   const q = state.questions[state.qIndex];
   headerTitle.textContent = `${state.subtopic.name} - L${state.level}`;
   examProgressText.textContent = `Question ${state.qIndex + 1} of ${state.questions.length}`;
-  prevBtn.disabled = state.qIndex === 0;
+  resetSaveBtn();
 
   if (state.status[q.id] === 'not-visited') state.status[q.id] = 'not-answered';
 
@@ -955,18 +992,16 @@ function openPalette(){
 
 // ---------- Submit ----------
 function openSubmitConfirm(){
-  let answered = 0, notAnswered = 0, marked = 0;
+  let answered = 0, notAnswered = 0;
   state.questions.forEach(q => {
     const st = state.status[q.id];
     if (st === 'answered' || st === 'answered-marked') answered++;
     else notAnswered++;
-    if (st === 'marked' || st === 'answered-marked') marked++;
   });
   submitSummary.innerHTML = `
     <div><span class="num">${answered}</span>Answered</div>
     <div><span class="num">${notAnswered}</span>Not Answered</div>
-    <div><span class="num">${marked}</span>Marked for Review</div>
-    <div><span class="num">${state.questions.length}</span>Total Questions</div>
+    <div><span class="num">${state.questions.length}</span>Total</div>
   `;
   paletteOverlay.classList.add('hidden');
   submitConfirmModal.classList.remove('hidden');
@@ -1296,7 +1331,6 @@ function renderResults(){
   headerTitle.textContent = 'Results';
   paletteToggleBtn.classList.add('hidden');
   examStrip.classList.add('hidden');
-  examActionBar.classList.add('hidden');
 
   let correct = 0, attempted = 0;
   state.questions.forEach(q => {
