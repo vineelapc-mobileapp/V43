@@ -23,17 +23,7 @@ if (!sessionStorage.getItem('cameFromLauncher')) {
 <body>
 
 <header class="app-header">
-  <a href="home.html" class="icon-btn home-link" aria-label="Home" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:auto;padding:0 4px;">
-    <span style="font-size:20px;line-height:1;">&#8962;</span>
-    <span style="font-size:8px;line-height:1;font-weight:700;letter-spacing:0.5px;">HOME</span>
-  </a>
-  <button id="backBtn" class="icon-btn" aria-label="Back">&#8592;</button>
-  <button id="fwdBtn" class="icon-btn" aria-label="Forward">&#8594;</button>
-  <button id="topicsBtn" class="icon-btn hidden" aria-label="Topics" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:auto;padding:0 4px;">
-    <span style="font-size:18px;line-height:1;">&#9776;</span>
-    <span style="font-size:8px;line-height:1;font-weight:700;letter-spacing:0.5px;">TOPICS</span>
-  </button>
-  <img src="icons/icon-192.png" alt="EE" style="width:28px;height:28px;border-radius:7px;">
+  <img src="icons/icon-192.png" alt="EE" style="width:30px;height:30px;border-radius:8px;">
   <h1 id="headerTitle">EEE Practice</h1>
   <button id="paletteToggleBtn" class="icon-btn hidden" aria-label="Question Palette">&#9638;</button>
 </header>
@@ -93,11 +83,29 @@ if (!sessionStorage.getItem('cameFromLauncher')) {
 
 <main id="app"></main>
 
-<div id="examActionBar" class="exam-action-bar hidden">
-  <button id="prevBtn" class="btn btn-secondary">&#8249; Previous</button>
-  <button id="markReviewBtn" class="btn btn-secondary">Mark for Review &amp; Next</button>
-  <button id="saveNextBtn" class="btn btn-primary">Save &amp; Next</button>
-</div>
+<nav id="bottomNav" class="bottom-nav" aria-label="Navigation">
+  <a href="home.html" id="homeBtn" class="bn-item bn-home" aria-label="Home">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h4.5v-5.5h4V20h4.5V10"/></svg>
+    <span>Home</span>
+  </a>
+  <button id="topicsBtn" class="bn-item hidden" aria-label="Topics">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>
+    <span>Topics</span>
+  </button>
+  <button id="backBtn" class="bn-item" aria-label="Back">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+    <span>Back</span>
+  </button>
+  <button id="saveBtn" class="bn-save hidden" aria-label="Save answer">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+    <span id="saveBtnLabel">Save</span>
+  </button>
+  <button id="fwdBtn" class="bn-item" aria-label="Forward">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    <span>Forward</span>
+  </button>
+</nav>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <div id="paletteOverlay" class="palette-overlay hidden">
   <div class="palette-sheet">
@@ -109,7 +117,6 @@ if (!sessionStorage.getItem('cameFromLauncher')) {
       <span><i class="dot dot-not-visited"></i>Not Visited</span>
       <span><i class="dot dot-not-answered"></i>Not Answered</span>
       <span><i class="dot dot-answered"></i>Answered</span>
-      <span><i class="dot dot-marked"></i>Marked for Review</span>
     </div>
     <div id="paletteGrid" class="palette-grid"></div>
     <button id="submitTestBtn" class="btn btn-primary full-width">Submit Test</button>
