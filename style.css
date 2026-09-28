@@ -112,7 +112,7 @@ body{
 .calc-eq{background:var(--primary);color:#fff;}
 .calc-pct{background:#F0E6FB;color:#5A2E8A;}
 
-#app{max-width:640px;margin:0 auto;padding:16px;padding-bottom:90px;}
+#app{max-width:640px;margin:0 auto;padding:16px;padding-bottom:120px;}
 
 .list-card{
   background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px;
@@ -178,15 +178,66 @@ body{
 .btn-secondary{background:#E4EAF1;color:var(--text);}
 .full-width{width:100%;margin-top:14px;}
 
-.exam-action-bar{
-  position:fixed;bottom:0;left:0;right:0;background:#fff;
-  border-top:1px solid #DCE3EC;padding:10px 16px;
-  display:flex;gap:10px;z-index:20;
-  padding-bottom:calc(10px + env(safe-area-inset-bottom));
-  box-shadow:0 -2px 8px rgba(22,39,74,0.06);
+/* ---------- Bottom navigation bar (Home / Topics / Back / Save / Forward) ---------- */
+.bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:20;
+  max-width:640px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;gap:2px;
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,0.97);
+  -webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);
+  border-top:1px solid rgba(22,39,74,0.08);
+  border-radius:22px 22px 0 0;
+  box-shadow:0 -10px 28px rgba(22,39,74,0.12);
 }
-.exam-action-bar .btn{flex:1;}
-.exam-action-bar .btn:disabled{opacity:0.4;cursor:not-allowed;}
+.bn-item{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  min-height:54px;padding:6px 2px;
+  border:none;background:none;border-radius:16px;
+  color:#55647F;text-decoration:none;cursor:pointer;font-family:inherit;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .15s,color .15s,transform .1s;
+}
+.bn-item svg{
+  width:24px;height:24px;fill:none;stroke:currentColor;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+}
+.bn-item span{
+  font-size:9.5px;font-weight:800;letter-spacing:.6px;
+  text-transform:uppercase;line-height:1;
+}
+.bn-item:active{background:rgba(22,39,74,0.09);color:var(--primary);transform:scale(.94);}
+.bn-home{color:var(--accent);}
+.bn-save{
+  flex:1.7;min-width:0;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  min-height:50px;margin:0 4px;padding:0 10px;
+  border:none;border-radius:16px;cursor:pointer;font-family:inherit;
+  font-size:15px;font-weight:800;letter-spacing:.4px;color:#fff;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent-light) 100%);
+  box-shadow:0 8px 18px rgba(22,39,74,0.26),inset 0 1px 0 rgba(255,255,255,0.4);
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .1s,box-shadow .15s,background .25s;
+}
+.bn-save svg{
+  width:20px;height:20px;fill:none;stroke:#fff;
+  stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+}
+.bn-save:active{transform:scale(.95);box-shadow:0 3px 8px rgba(22,39,74,0.25),inset 0 1px 0 rgba(255,255,255,0.3);}
+.bn-save.saved{background:linear-gradient(135deg,#2F9E52 0%,#43BC6B 100%);}
+
+.toast{
+  position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));
+  transform:translateX(-50%) translateY(8px);
+  max-width:86vw;padding:10px 18px;border-radius:999px;
+  background:rgba(22,33,58,0.95);color:#fff;
+  font-size:13px;font-weight:600;text-align:center;
+  box-shadow:0 8px 22px rgba(0,0,0,0.25);
+  opacity:0;pointer-events:none;z-index:45;
+  transition:opacity .2s,transform .2s;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 .palette-overlay{
   position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:50;
@@ -236,7 +287,7 @@ body{
 .video-wrap video{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;}
 
 .submit-summary{
-  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;font-size:14px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;font-size:12px;
 }
 .submit-summary div{background:var(--bg);border-radius:8px;padding:10px;}
 .submit-summary .num{font-size:20px;font-weight:700;display:block;font-family:var(--mono);color:var(--primary);}
