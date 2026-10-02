@@ -12,6 +12,7 @@ let state = {
   answers: {},     // qid -> {selectedIndex, isCorrect, reviewPending}
   pendingVideoQ: null,
   reviewMode: false,
+  testFinished: false, // true once Submit is confirmed - locks answers and enables question-by-question review from Results
   doubtContext: null, // the question (or null) a doubt was opened from
   finalElapsedMs: 0 // captured from the optional stopwatch when a test is submitted, 0 if never used
 };
@@ -72,6 +73,7 @@ const fwdBtn = document.getElementById('fwdBtn');
 const topicsBtn = document.getElementById('topicsBtn');
 backBtn.addEventListener('click', () => {
   if (state.view === 'quiz') goToPrevious();
+  else if (state.view === 'results') reviewQuestion(state.questions.length - 1);
   else history.back();
 });
 fwdBtn.addEventListener('click', () => {
@@ -227,7 +229,7 @@ function render(){
   // forward to simply does nothing (harmless).
   paletteToggleBtn.classList.toggle('hidden', !inQuiz);
   examStrip.classList.toggle('hidden', !inQuiz);
-  saveBtn.classList.toggle('hidden', !inQuiz);
+  saveBtn.classList.toggle('hidden', !inQuiz || state.testFinished);
   // the first-run "Welcome" form has nothing to navigate to yet
   bottomNav.classList.toggle('hidden', !!state.profileFirstRun);
   // "Topics" jump-shortcut - only makes sense once a subject is chosen
@@ -548,6 +550,7 @@ function startQuiz(level, qs){
   state.qIndex = 0;
   state.status = {};
   state.answers = {};
+  state.testFinished = false;
   qs.forEach(q => { state.status[q.id] = 'not-visited'; });
   state.status[qs[0].id] = 'not-answered';
   state.view = 'quiz';
@@ -715,6 +718,11 @@ function renderQuiz(){
     renderFillAnswerArea(q, card, existing);
   } else {
     const letters = ['A', 'B', 'C', 'D'];
+    // Reviewing a finished test, a question left unattempted: show it
+    // locked with the correct option highlighted, same as the Results
+    // list already says ("Not attempted / Correct answer: ...") - just
+    // in the full question-card view instead of the compact one.
+    const lockedUnattempted = state.testFinished && !existing;
     q.options.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.className = 'option';
@@ -722,11 +730,16 @@ function renderQuiz(){
       if (existing) {
         if (idx === existing.selectedIndex && !existing.isCorrect) letterContent = '&#10007;';
         else if (idx === q.correctIndex) letterContent = '&#10003;';
+      } else if (lockedUnattempted && idx === q.correctIndex) {
+        letterContent = '&#10003;';
       }
       btn.innerHTML = `<span class="opt-letter">${letterContent}</span><span class="opt-text">${opt}</span>`;
       if (existing) {
         btn.disabled = true;
         if (idx === existing.selectedIndex && !existing.isCorrect) btn.classList.add('wrong');
+        if (idx === q.correctIndex) btn.classList.add('correct');
+      } else if (lockedUnattempted) {
+        btn.disabled = true;
         if (idx === q.correctIndex) btn.classList.add('correct');
       } else {
         btn.onclick = () => handleAnswer(q, idx, card);
@@ -743,6 +756,10 @@ function renderQuiz(){
   if (existing) {
     if (existing.isCorrect) renderCorrectAnswerPanel(q, card);
     else renderWrongAnswerPanel(q, card);
+  } else if (state.testFinished) {
+    // Left unattempted, now reviewing - show the explanation neutrally,
+    // without implying it was answered correctly.
+    renderUnattemptedExplanationPanel(q, card);
   }
 
   // "Ask a doubt about this question" link intentionally hidden for now -
@@ -765,6 +782,18 @@ function renderFillAnswerArea(q, cardEl, existing){
     input.value = existing.typedAnswer || '';
     input.disabled = true;
     input.classList.add(existing.isCorrect ? 'correct' : 'wrong');
+  } else if (state.testFinished) {
+    // Reviewing a finished test, left unattempted - show it locked with
+    // the correct answer, no way to submit one after the fact.
+    input.placeholder = 'Not attempted';
+    input.disabled = true;
+    wrap.appendChild(input);
+    const correctLine = document.createElement('div');
+    correctLine.className = 'fill-correct-line';
+    correctLine.textContent = 'Correct answer: ' + q.correctAnswer;
+    wrap.appendChild(correctLine);
+    cardEl.appendChild(wrap);
+    return;
   } else {
     const submitBtn = document.createElement('button');
     submitBtn.className = 'btn btn-primary';
@@ -803,6 +832,7 @@ function checkFillAnswer(typed, correct){
 }
 
 function handleFillAnswer(q, typedAnswer, cardEl, inputEl){
+  if (state.testFinished) return; // reviewing - answers are locked
   const isCorrect = checkFillAnswer(typedAnswer, q.correctAnswer);
   inputEl.disabled = true;
   inputEl.classList.add(isCorrect ? 'correct' : 'wrong');
@@ -832,6 +862,7 @@ function handleFillAnswer(q, typedAnswer, cardEl, inputEl){
 }
 
 function handleAnswer(q, selectedIndex, cardEl){
+  if (state.testFinished) return; // reviewing - answers are locked
   const allOpts = cardEl.querySelectorAll('.option');
   allOpts.forEach(o => o.disabled = true);
 
@@ -868,6 +899,33 @@ function handleAnswer(q, selectedIndex, cardEl){
 // needs the reason right now. The Watch Now / After Test popup still appears
 // separately on top; this stays on the page either way so the reason is
 // never lost even if they dismiss the popup with "After Test".
+function renderUnattemptedExplanationPanel(q, cardEl){
+  const hasContent = !!(q.explanation || q.explanationImage || q.audioFile || hasVideo(q));
+  if (!hasContent) return;
+  const panel = document.createElement('div');
+  panel.className = 'correct-panel';
+  const label = document.createElement('div');
+  label.className = 'correct-panel-label';
+  label.style.color = 'var(--muted)';
+  label.textContent = 'Not attempted - here\'s the explanation:';
+  panel.appendChild(label);
+  const body = document.createElement('div');
+  body.className = 'correct-panel-body';
+  const imageHtml = q.explanationImage ? `<img src="${q.explanationImage}" alt="Explanation" class="explanation-image">` : '';
+  const explanationHtml = q.explanation ? `<p class="explanation-text">${q.explanation}</p>` : '';
+  body.innerHTML = `
+    ${imageHtml}
+    ${explanationHtml}
+    ${q.audioFile ? `<audio controls class="audio-explanation" src="${q.audioFile}"></audio>` : ''}
+    ${hasVideo(q) ? '<span class="video-link">Watch Video Solution</span>' : ''}
+  `;
+  const videoLinkEl = body.querySelector('.video-link');
+  if (videoLinkEl) videoLinkEl.onclick = () => playVideo(q, 'quiz');
+  renderMathIn(body.querySelector('.explanation-text'));
+  panel.appendChild(body);
+  cardEl.appendChild(panel);
+}
+
 function renderWrongAnswerPanel(q, cardEl){
   const hasContent = !!(q.explanation || q.explanationImage || q.audioFile || hasVideo(q));
   if (!hasContent) return; // nothing to show - the correct answer is already marked on the options themselves
@@ -958,9 +1016,23 @@ function advance(mode){
   if (state.qIndex + 1 < state.questions.length) {
     state.qIndex++;
     render();
+  } else if (state.testFinished) {
+    // Reviewing a finished test, Forward on the last question - nothing
+    // left to submit, so just return to Results instead.
+    state.view = 'results';
+    render();
   } else {
     openSubmitConfirm();
   }
+}
+
+// Jumps straight to one specific question, in review mode if the test is
+// already finished - used by the Results screen's "Review Ques" buttons
+// and by Back-from-Results (see below).
+function reviewQuestion(index){
+  state.qIndex = index;
+  state.view = 'quiz';
+  render();
 }
 
 function goToPrevious(){
@@ -1009,6 +1081,7 @@ function openSubmitConfirm(){
 
 function finishTest(){
   submitConfirmModal.classList.add('hidden');
+  state.testFinished = true;
   state.completedAt = new Date().toISOString();
   state.finalElapsedMs = getStopwatchElapsedMs(); // captured before the timer stops, only meaningful if the student actually used it
   if (stopwatch.running) toggleStopwatch(); // stop ticking, no point running in the background on Results
@@ -1364,9 +1437,11 @@ function renderResults(){
       body = `<div class="ans-line ${a.isCorrect ? 'correct-ans' : 'wrong-ans'}">Your answer: ${yourAns}</div>
               ${a.isCorrect ? '' : `<div class="ans-line correct-ans">Correct answer: ${correctDisplay}</div>`}`;
     }
-    row.innerHTML = `<div class="q">Q${i + 1}. ${q.question}</div>${body}${hasVideo(q) ? '<span class="video-link">Watch Video Solution</span>' : ''}`;
+    row.innerHTML = `<div class="q">Q${i + 1}. ${q.question}</div>${body}${hasVideo(q) ? '<span class="video-link">Watch Video Solution</span>' : ''}
+      <button class="btn btn-secondary review-ques-btn">&#8599; Review Ques</button>`;
     const videoLinkEl = row.querySelector('.video-link');
     if (videoLinkEl) videoLinkEl.onclick = () => playVideo(q, 'results');
+    row.querySelector('.review-ques-btn').onclick = () => reviewQuestion(i);
     app.appendChild(row);
   });
 
