@@ -1727,6 +1727,21 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959778/wu8vflqwjtbdwxonnthv.png"
+              },
+              {
+                "id": "power_cables_l1_new1790959867126_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959833/ugdya6hbmu2mmg8bo7t7.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "watch solution",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959863/rqqouyndvspivditqwpp.png"
               }
             ],
             "2": [
