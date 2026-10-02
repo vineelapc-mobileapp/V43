@@ -13,6 +13,7 @@ let state = {
   pendingVideoQ: null,
   reviewMode: false,
   testFinished: false, // true once Submit is confirmed - locks answers and enables question-by-question review from Results
+  reviewEntryIndex: null, // set only when "Review Ques" is tapped from Results - shows "Move to Results Page" on that one question only
   doubtContext: null, // the question (or null) a doubt was opened from
   finalElapsedMs: 0 // captured from the optional stopwatch when a test is submitted, 0 if never used
 };
@@ -73,7 +74,7 @@ const fwdBtn = document.getElementById('fwdBtn');
 const topicsBtn = document.getElementById('topicsBtn');
 backBtn.addEventListener('click', () => {
   if (state.view === 'quiz') goToPrevious();
-  else if (state.view === 'results') reviewQuestion(state.questions.length - 1);
+  else if (state.view === 'results') { state.reviewEntryIndex = null; reviewQuestion(state.questions.length - 1); }
   else history.back();
 });
 fwdBtn.addEventListener('click', () => {
@@ -551,6 +552,7 @@ function startQuiz(level, qs){
   state.status = {};
   state.answers = {};
   state.testFinished = false;
+  state.reviewEntryIndex = null;
   qs.forEach(q => { state.status[q.id] = 'not-visited'; });
   state.status[qs[0].id] = 'not-answered';
   state.view = 'quiz';
@@ -760,6 +762,23 @@ function renderQuiz(){
     // Left unattempted, now reviewing - show the explanation neutrally,
     // without implying it was answered correctly.
     renderUnattemptedExplanationPanel(q, card);
+  }
+
+  // Shown only on the exact question opened via a "Review Ques" tap from
+  // Results - a quick way back without stepping through every question
+  // in between. Moving to any other question (Forward/Back/Topics) drops
+  // this, since reviewEntryIndex no longer matches state.qIndex.
+  if (state.testFinished && state.reviewEntryIndex === state.qIndex) {
+    const toResultsBtn = document.createElement('button');
+    toResultsBtn.className = 'btn btn-secondary full-width';
+    toResultsBtn.style.marginTop = '14px';
+    toResultsBtn.textContent = 'Move to Results Page';
+    toResultsBtn.onclick = () => {
+      state.reviewEntryIndex = null;
+      state.view = 'results';
+      render();
+    };
+    card.appendChild(toResultsBtn);
   }
 
   // "Ask a doubt about this question" link intentionally hidden for now -
@@ -1441,7 +1460,7 @@ function renderResults(){
       <button class="btn btn-secondary review-ques-btn">&#8599; Review Ques</button>`;
     const videoLinkEl = row.querySelector('.video-link');
     if (videoLinkEl) videoLinkEl.onclick = () => playVideo(q, 'results');
-    row.querySelector('.review-ques-btn').onclick = () => reviewQuestion(i);
+    row.querySelector('.review-ques-btn').onclick = () => { state.reviewEntryIndex = i; reviewQuestion(i); };
     app.appendChild(row);
   });
 
