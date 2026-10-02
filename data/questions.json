@@ -1622,7 +1622,23 @@
           "id": "power_cables",
           "name": "Power Cables",
           "levels": {
-            "1": [],
+            "1": [
+              {
+                "id": "power_cables_l1_new1790959053254_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959029/xlericybgao03wlgw5ed.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "16",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959049/mwwkozv6wksj7lrt2tzd.png"
+              }
+            ],
             "2": []
           }
         },
