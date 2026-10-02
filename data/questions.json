@@ -1915,7 +1915,9 @@
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959566/olbcn4vvyazchxuyzn1j.png"
               }
             ]
-          }
+          },
+          "conceptsPdfUrl": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790968608/z7opommqykbgo4s2iz4g.pdf",
+          "conceptsPdfVisible": true
         },
         {
           "id": "load_flow_studies",
