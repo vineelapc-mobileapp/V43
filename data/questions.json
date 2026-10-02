@@ -68,6 +68,21 @@
                 "audioFile": null,
                 "explanation": "Thermal is highest around 48 %",
                 "explanationImage": null
+              },
+              {
+                "id": "power_generation_methods_l1_new1790959291518_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959227/c3ktjhkzv567pkjagswc.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "see the solution",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959274/ntzhysgciuqgkfoclvsn.png"
               }
             ],
             "2": []
@@ -1622,23 +1637,7 @@
           "id": "power_cables",
           "name": "Power Cables",
           "levels": {
-            "1": [
-              {
-                "id": "power_cables_l1_new1790959053254_0",
-                "type": "fill",
-                "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959029/xlericybgao03wlgw5ed.png",
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "16",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959049/mwwkozv6wksj7lrt2tzd.png"
-              }
-            ],
+            "1": [],
             "2": []
           }
         },
