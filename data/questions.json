@@ -1729,6 +1729,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967457/zaassxukhllhxvxsr00i.png"
+              },
+              {
+                "id": "distribution_l1_new1790968023022_0",
+                "type": "mcq",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967579/kklehdm67zd9wbwsompi.png",
+                "options": [
+                  "e1",
+                  "e2",
+                  "e3",
+                  "e4"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "with e4 open , Power loss is less ",
+                "explanationImage": null
               }
             ],
             "2": [],
