@@ -1679,6 +1679,26 @@
                 "audioFile": null,
                 "explanation": "POWER FACTOR WILL NOT EFFECTED , SO ANSWER IS 1,3 ",
                 "explanationImage": null
+              },
+              {
+                "id": "distribution_l1_new1790967406431_0",
+                "type": "mcq",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967308/x0zls7hype6oxyhjmmcg.png",
+                "options": [
+                  "75,25 A",
+                  "50, 50",
+                  "25,75",
+                  "0,100A"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967387/ncwaoqrpwkxb2dv6em7t.png"
               }
             ],
             "2": [],
