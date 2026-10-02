@@ -1646,21 +1646,6 @@
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967059/bhioeztg2lcuykkhwcgb.png"
               },
               {
-                "id": "distribution_l1_new1790967121651_0",
-                "type": "fill",
-                "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967008/uq27mvixomi9rnnl0cvu.png",
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "30.33 v",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967059/bhioeztg2lcuykkhwcgb.png"
-              },
-              {
                 "id": "distribution_l1_new1790967286956_0",
                 "type": "mcq",
                 "question": "",
@@ -1681,15 +1666,15 @@
                 "explanationImage": null
               },
               {
-                "id": "distribution_l1_new1790967406431_0",
+                "id": "distribution_l1_new1790968023022_0",
                 "type": "mcq",
                 "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967308/x0zls7hype6oxyhjmmcg.png",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967579/kklehdm67zd9wbwsompi.png",
                 "options": [
-                  "75,25 A",
-                  "50, 50",
-                  "25,75",
-                  "0,100A"
+                  "e1",
+                  "e2",
+                  "e3",
+                  "e4"
                 ],
                 "correctIndex": 3,
                 "correctAnswer": "",
@@ -1697,9 +1682,11 @@
                 "videoFile": null,
                 "videoReady": false,
                 "audioFile": null,
-                "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967387/ncwaoqrpwkxb2dv6em7t.png"
-              },
+                "explanation": "with e4 open , Power loss is less ",
+                "explanationImage": null
+              }
+            ],
+            "2": [
               {
                 "id": "distribution_l1_new1790967460062_0",
                 "type": "fill",
@@ -1731,15 +1718,15 @@
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967457/zaassxukhllhxvxsr00i.png"
               },
               {
-                "id": "distribution_l1_new1790968023022_0",
+                "id": "distribution_l1_new1790967406431_0",
                 "type": "mcq",
                 "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967579/kklehdm67zd9wbwsompi.png",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967308/x0zls7hype6oxyhjmmcg.png",
                 "options": [
-                  "e1",
-                  "e2",
-                  "e3",
-                  "e4"
+                  "75,25 A",
+                  "50, 50",
+                  "25,75",
+                  "0,100A"
                 ],
                 "correctIndex": 3,
                 "correctAnswer": "",
@@ -1747,11 +1734,10 @@
                 "videoFile": null,
                 "videoReady": false,
                 "audioFile": null,
-                "explanation": "with e4 open , Power loss is less ",
-                "explanationImage": null
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967387/ncwaoqrpwkxb2dv6em7t.png"
               }
             ],
-            "2": [],
             "conventional": [
               {
                 "id": "distribution_lconventional_new1790966895819_0",
