@@ -324,6 +324,10 @@ body{
 .result-row .ans-line{font-size:14px;margin-bottom:2px;}
 .result-row .ans-line.correct-ans{color:var(--correct);}
 .result-row .ans-line.wrong-ans{color:var(--wrong);}
+.review-ques-btn{
+  display:block;margin-top:10px;width:auto;padding:7px 14px;
+  font-size:12.5px;font-weight:700;border-radius:10px;
+}
 .result-row .not-attempted{color:var(--muted);font-style:italic;}
 .result-row .video-link{
   margin-top:8px;display:inline-block;color:var(--primary);font-weight:700;
