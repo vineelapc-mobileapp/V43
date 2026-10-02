@@ -1762,6 +1762,21 @@
                 "audioFile": null,
                 "explanation": "WATCH ATTACHED SOLUTION",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790966634/vk4lil1co2ltlcgy8rmz.png"
+              },
+              {
+                "id": "distribution_lconventional_new1790967555282_0",
+                "type": "conventional",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967506/jwruthitxcebf93xmsrl.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "WATCH DETAILED SOLUTION",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967548/ikcngoy6h5ezb66sd5sa.png"
               }
             ]
           }
