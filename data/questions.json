@@ -1659,6 +1659,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967059/bhioeztg2lcuykkhwcgb.png"
+              },
+              {
+                "id": "distribution_l1_new1790967286956_0",
+                "type": "mcq",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790967157/psufrawfy8lgrtpefan8.png",
+                "options": [
+                  "1,2",
+                  "1,3",
+                  "2.3",
+                  "ALL"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "POWER FACTOR WILL NOT EFFECTED , SO ANSWER IS 1,3 ",
+                "explanationImage": null
               }
             ],
             "2": [],
