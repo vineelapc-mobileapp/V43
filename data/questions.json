@@ -1630,7 +1630,39 @@
           "name": "Distribution",
           "levels": {
             "1": [],
-            "2": []
+            "2": [],
+            "conventional": [
+              {
+                "id": "distribution_lconventional_new1790966895819_0",
+                "type": "conventional",
+                "question": "Delhi Metro train runs between saket and Green Park  is of 6 Km apart maintained 600 V and 590 V respectively and draws a constant current of 300 A while in motion . The track resistance of go and return path is 0.04 Ω/km.\ncalculate \n(1)The point along the track where min .potential occurs\n (2) The current supplied by the two substations when the train is at the point of min.potential .\n (3) Value of Min.potential",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "WATCH ATTACHED SOLUTION",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790966634/vk4lil1co2ltlcgy8rmz.png"
+              },
+              {
+                "id": "distribution_lconventional_new1790966974614_0",
+                "type": "conventional",
+                "question": "Delhi Metro train runs between saket and Green Park  is of 6 Km apart maintained 600 V and 590 V respectively and draws a constant current of 300 A while in motion . The track resistance of go and return path is 0.04 Ω/km.\ncalculate \n(1)The point along the track where min .potential occurs\n (2) The current supplied by the two substations when the train is at the point of min.potential .\n (3) Value of Min.potential",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "WATCH ATTACHED SOLUTION",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790966634/vk4lil1co2ltlcgy8rmz.png"
+              }
+            ]
           }
         },
         {
