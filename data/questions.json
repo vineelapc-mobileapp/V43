@@ -2284,7 +2284,7 @@
           }
         }
       ],
-      "visible": true
+      "visible": false
     }
   ],
   "studentAccessEnabled": true
