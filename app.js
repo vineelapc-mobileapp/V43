@@ -15,9 +15,7 @@ let state = {
   testFinished: false, // true once Submit is confirmed - locks answers and enables question-by-question review from Results
   reviewEntryIndex: null, // set only when "Review Ques" is tapped from Results - shows "Move to Results Page" on that one question only
   doubtContext: null, // the question (or null) a doubt was opened from
-  finalElapsedMs: 0, // captured from the optional stopwatch when a test is submitted, 0 if never used
-  activeTab: 'subjects', // which of the 5 primary tabs is highlighted - Subjects and Tests lead to the same place but light up differently depending on which was tapped
-  conceptsMode: false // true when browsing via the Concepts tab - tapping a topic opens its Concepts PDF directly instead of Levels
+  finalElapsedMs: 0 // captured from the optional stopwatch when a test is submitted, 0 if never used
 };
 
 const app = document.getElementById('app');
@@ -48,60 +46,9 @@ const cancelSubmitBtn = document.getElementById('cancelSubmitBtn');
 const confirmSubmitBtn = document.getElementById('confirmSubmitBtn');
 
 // ---------- Boot ----------
-// A student can jump straight into a section from the launcher's own tab
-// bar (?tab=profile/subjects/concepts/tests/performance) - applied once,
-// here, before the very first render, then the URL is cleaned up so
-// Back/Forward and reloads behave normally afterwards.
-function applyLaunchTabParam(){
-  const params = new URLSearchParams(window.location.search);
-  const tab = params.get('tab');
-  const subjectId = params.get('subject');
-  const subtopicId = params.get('subtopic');
-
-  if (tab) {
-    if (tab === 'profile-direct') { state.profileReturnView = 'subjects'; state.view = 'profile'; }
-    else if (tab === 'subjects') { state.activeTab = 'subjects'; state.conceptsMode = false; state.view = 'subjects'; }
-    else if (tab === 'tests') { state.activeTab = 'tests'; state.conceptsMode = false; state.view = 'subjects'; }
-    else if (tab === 'concepts') { state.activeTab = 'concepts'; state.conceptsMode = true; state.view = 'subjects'; }
-    else if (tab === 'performance') { state.activeTab = 'performance'; state.view = 'history'; }
-  } else if (subjectId) {
-    // Came from the launcher's search box - jump straight to a specific
-    // subject, or straight into a specific topic's Levels screen if a
-    // topic was what matched the search.
-    const subj = DATA.subjects.find(s => s.id === subjectId);
-    if (subj) {
-      state.activeTab = 'subjects';
-      state.subject = subj;
-      if (subtopicId) {
-        const subt = subj.subtopics.find(s => s.id === subtopicId);
-        if (subt) { state.subtopic = subt; state.view = 'levels'; }
-        else { state.view = 'subtopics'; } // topic id didn't match (stale/edited data) - fall back to the topic list rather than breaking
-      } else {
-        state.view = 'subtopics';
-      }
-    }
-  }
-
-  if (tab || subjectId) history.replaceState(null, '', window.location.pathname);
-}
-
 fetch('data/questions.json')
   .then(r => r.json())
-  .then(json => {
-    DATA = json;
-    // Defensive: if anything here ever throws (a malformed URL, an
-    // older/unusual browser, anything), the app must still open normally
-    // rather than getting stuck on the static placeholder - a failure in
-    // this one optional convenience must never be able to block the
-    // actual app from starting.
-    try { applyLaunchTabParam(); } catch (err) { console.error('applyLaunchTabParam failed, continuing normally:', err); }
-    render();
-  })
-  .catch(err => {
-    console.error('Could not load question data:', err);
-    headerTitle.textContent = 'Could not load';
-    app.innerHTML = '<div class="question-card"><div class="question-text">Could not load the question data. Please check your connection and reopen the app.</div></div>';
-  });
+  .then(json => { DATA = json; render(); });
 
 fetch('data/config.json')
   .then(r => r.json())
@@ -125,69 +72,6 @@ if ('serviceWorker' in navigator) {
 
 const fwdBtn = document.getElementById('fwdBtn');
 const topicsBtn = document.getElementById('topicsBtn');
-const headerBackBtn = document.getElementById('headerBackBtn');
-const primaryTabBar = document.getElementById('primaryTabBar');
-const tabHome = document.getElementById('tabHome');
-const tabSubjects = document.getElementById('tabSubjects');
-const tabConcepts = document.getElementById('tabConcepts');
-const tabTests = document.getElementById('tabTests');
-const tabPerformance = document.getElementById('tabPerformance');
-const headerProfileBtn = document.getElementById('headerProfileBtn');
-
-headerBackBtn.addEventListener('click', () => history.back());
-// Profile moved to a top-right header icon, always reachable regardless
-// of which screen a student is on - no longer one of the 5 bottom tabs.
-headerProfileBtn.addEventListener('click', () => {
-  state.profileReturnView = state.view === 'quiz' ? 'subjects' : state.view;
-  state.view = 'profile';
-  render();
-});
-
-// ---------- Primary tab bar: Home / Subjects / Concepts / Tests / Performance ----------
-// Subjects and Tests both lead to the identical Subjects -> Topics ->
-// Levels -> Quiz flow - in this app every subject interaction IS test
-// practice, there's no separate "browse-only" content - so the two tabs
-// are intentionally two doors to the same room, distinguished only by
-// which one lights up as active.
-// Home leaves index.html entirely and goes back to the Power Pulse
-// launcher - same destination as the header logo, just also reachable
-// from the bottom bar now, matching how "Home" normally behaves in any
-// app with a tab bar.
-tabHome.addEventListener('click', () => { window.location.href = 'home.html'; });
-
-tabSubjects.addEventListener('click', () => {
-  state.activeTab = 'subjects';
-  state.conceptsMode = false;
-  state.view = 'subjects';
-  render();
-});
-tabTests.addEventListener('click', () => {
-  state.activeTab = 'tests';
-  state.conceptsMode = false;
-  state.view = 'subjects';
-  render();
-});
-tabConcepts.addEventListener('click', () => {
-  state.activeTab = 'concepts';
-  state.conceptsMode = true;
-  state.view = 'subjects';
-  render();
-});
-tabPerformance.addEventListener('click', () => {
-  state.activeTab = 'performance';
-  state.view = 'history';
-  render();
-});
-
-function updatePrimaryTabHighlight(){
-  // Home isn't tracked here - tapping it immediately leaves index.html
-  // for the launcher, so there's no "staying on this screen with Home
-  // highlighted" state to represent.
-  [tabSubjects, tabConcepts, tabTests, tabPerformance].forEach(b => b.classList.remove('active'));
-  const map = { subjects: tabSubjects, concepts: tabConcepts, tests: tabTests, performance: tabPerformance };
-  const el = map[state.activeTab];
-  if (el) el.classList.add('active');
-}
 backBtn.addEventListener('click', () => {
   if (state.view === 'quiz') goToPrevious();
   else if (state.view === 'results') { state.reviewEntryIndex = null; reviewQuestion(state.questions.length - 1); }
@@ -271,7 +155,7 @@ function currentViewKey(){
   // the session (e.g., 'quiz' for Level-1 now, 'quiz' again for Level-2
   // after visiting other screens in between) by including what the page
   // is actually showing, not just its view name.
-  return [state.view, state.subject && state.subject.id, state.subtopic && state.subtopic.id, state.level, state.conceptsMode].join('|');
+  return [state.view, state.subject && state.subject.id, state.subtopic && state.subtopic.id, state.level].join('|');
 }
 
 function pushNavStateIfNewPage(){
@@ -347,23 +231,8 @@ function render(){
   paletteToggleBtn.classList.toggle('hidden', !inQuiz);
   examStrip.classList.toggle('hidden', !inQuiz);
   saveBtn.classList.toggle('hidden', !inQuiz || state.testFinished);
-
-  // Two different bottom bars, never shown together: the quiz screen gets
-  // its own specialised Home/Topics/Back/Save/Forward bar (question-by-
-  // question navigation); every other screen gets the main Profile/
-  // Subjects/Concepts/Tests/Performance tab bar. Neither shows on the
-  // very first "Welcome" form - nothing to navigate to yet.
-  bottomNav.classList.toggle('hidden', !inQuiz || !!state.profileFirstRun);
-  primaryTabBar.classList.toggle('hidden', inQuiz || !!state.profileFirstRun);
-  updatePrimaryTabHighlight();
-
-  // Header Back - shown on "drill-down" screens reached from a tab root
-  // (Topics, Levels, Results, etc.), hidden on the five tab-root screens
-  // themselves (Subjects/Profile/Performance, where switching tabs is how
-  // you'd navigate instead) and during an active quiz (which has its own
-  // Back control in its dedicated bottom bar).
-  const tabRootViews = ['subjects', 'profile', 'history'];
-  headerBackBtn.classList.toggle('hidden', tabRootViews.includes(state.view) || inQuiz || !!state.profileFirstRun);
+  // the first-run "Welcome" form has nothing to navigate to yet
+  bottomNav.classList.toggle('hidden', !!state.profileFirstRun);
   // "Topics" jump-shortcut - only makes sense once a subject is chosen
   // (nothing to switch between otherwise), and not on the Subtopics list
   // itself, since that's already where it would take you.
@@ -457,45 +326,31 @@ function renderProfile(){
 }
 
 // ---------- Subjects / Subtopics / Levels ----------
-// ---------- Icon badges: small coloured icon tiles used on list rows
-// throughout the Subjects/Topics/Profile/Test-History screens - purely a
-// visual treatment, the navigation and data underneath is unchanged. ----------
-const ICONS = {
-  bolt: '<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/>',
-  gauge: '<path d="M12 12 16 8"/><path d="M4 13a8 8 0 1 1 16 0"/><path d="M4 13h1.5M18.5 13H20M7 6.5l1 1M17 6.5l-1 1"/>',
-  book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15.5a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 22"/><path d="M4 5.5v14A2.5 2.5 0 0 0 6.5 22"/>',
-  doc: '<path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M15 2v5h5"/>',
-  person: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
-  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
-  stack: '<path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 13 9 5 9-5"/>',
-};
-function iconBadge(iconKey, bg, fg, size){
-  return `<div class="icon-badge${size === 'sm' ? ' sm' : ''}" style="background:${bg};">
-    <svg viewBox="0 0 24 24" style="stroke:${fg};">${ICONS[iconKey] || ICONS.doc}</svg>
-  </div>`;
-}
-// One consistent colour identity per subject - Power Systems keeps its
-// established copper, Measurements its established teal; any subject a
-// teacher adds gets a calm default so a new subject never looks broken.
-function subjectIconFor(subj){
-  if (subj.id === 'eem') return iconBadge('gauge', '#E3F7FA', '#0E8A9C');
-  if (subj.id === 'power_systems') return iconBadge('bolt', '#FCEEDD', '#B9661C');
-  return iconBadge('book', '#ECEAFB', '#5B4FC4');
-}
-
 function renderSubjects(){
-  // Profile and My Test History used to live here as rows - they now
-  // have their own dedicated tabs at the bottom (Profile, Performance),
-  // so this screen is just the clean subject list, nothing else.
-  headerTitle.textContent = state.conceptsMode ? 'Concepts & Formulas' : 'Choose Subject';
+  headerTitle.textContent = 'Choose Subject';
+
+  const profileBtn = document.createElement('div');
+  profileBtn.className = 'list-card';
+  profileBtn.style.background = '#f4f6fb';
+  profileBtn.innerHTML = `<div><div>&#128100; ${studentProfile ? studentProfile.name : 'My Profile'}</div><div class="meta">${studentProfile ? studentProfile.college : 'Set up your details'}</div></div><div>&#8250;</div>`;
+  profileBtn.onclick = () => { state.profileReturnView = 'subjects'; state.view = 'profile'; render(); };
+  app.appendChild(profileBtn);
+
+  const historyBtn = document.createElement('div');
+  historyBtn.className = 'list-card';
+  historyBtn.style.background = '#eef1fb';
+  historyBtn.innerHTML = `<div><div>&#128202; My Test History</div><div class="meta">See your past scores and dates</div></div><div>&#8250;</div>`;
+  historyBtn.onclick = () => { state.view = 'history'; render(); };
+  app.appendChild(historyBtn);
 
   // "Ask a Doubt" entry point intentionally hidden for now (see note near
   // openDoubtComposer below) - re-enable once students are onboarded.
 
   DATA.subjects.filter(sub => sub.visible !== false).forEach(sub => {
     const card = document.createElement('div');
-    card.className = 'list-card';
-    card.innerHTML = `<div class="list-card-main">${subjectIconFor(sub)}<div><div>${sub.name}</div><div class="meta">${sub.subtopics.length} subtopics</div></div></div><div>&#8250;</div>`;
+    const themeClass = sub.id === 'eem' ? 'subject-measurements' : 'subject-power';
+    card.className = 'list-card ' + themeClass;
+    card.innerHTML = `<div><div>${sub.name}</div><div class="meta">${sub.subtopics.length} subtopics</div></div><div>&#8250;</div>`;
     card.onclick = () => { state.subject = sub; state.view = 'subtopics'; render(); };
     app.appendChild(card);
   });
@@ -514,31 +369,20 @@ function renderSubtopics(){
     if (url && visible) {
       const card = document.createElement('div');
       card.className = 'list-card';
-      card.innerHTML = `<div class="list-card-main">${iconBadge('stack', '#FCEEDD', '#B9661C')}<div><div>Class Work Book Solution - Part ${part}</div><div class="meta">Tap to view or download</div></div></div><div>&#8250;</div>`;
+      card.style.cssText = 'border-left:4px solid var(--accent, #C97A2B);';
+      card.innerHTML = `<div><div>📘 Class Work Book Solution - Part ${part}</div><div class="meta">Tap to view or download</div></div><div>&#8250;</div>`;
       card.onclick = () => downloadClassworkPdf(subj, part);
       app.appendChild(card);
     }
   });
 
   state.subject.subtopics.forEach(st => {
+    const l1 = (st.levels['1'] || []).length;
+    const l2 = (st.levels['2'] || []).length;
     const card = document.createElement('div');
     card.className = 'list-card';
-    if (state.conceptsMode) {
-      // Reached via the Concepts tab - tapping a topic opens its
-      // Concepts & Formulas PDF directly, skipping Levels/Quiz entirely,
-      // since the student's intent here is revision, not testing.
-      const hasPdf = st.conceptsPdfUrl && st.conceptsPdfVisible;
-      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${st.name}</div><div class="meta">${hasPdf ? 'Concepts & Formulas available' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
-      card.onclick = () => {
-        if (hasPdf) downloadConceptsPdf(st);
-        else showToast('Concepts & Formulas not yet uploaded for this topic');
-      };
-    } else {
-      const l1 = (st.levels['1'] || []).length;
-      const l2 = (st.levels['2'] || []).length;
-      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#EEF1FB', '#4C5C8C', 'sm')}<div><div>${st.name}</div><div class="meta">Level-1: ${l1} &nbsp;|&nbsp; Level-2: ${l2}</div></div></div><div>&#8250;</div>`;
-      card.onclick = () => { state.subtopic = st; state.view = 'levels'; render(); };
-    }
+    card.innerHTML = `<div><div>${st.name}</div><div class="meta">Level-1: ${l1} &nbsp;|&nbsp; Level-2: ${l2}</div></div><div>&#8250;</div>`;
+    card.onclick = () => { state.subtopic = st; state.view = 'levels'; render(); };
     app.appendChild(card);
   });
 }
@@ -650,8 +494,8 @@ function renderLevels(){
   if (state.subtopic.conceptsPdfUrl && state.subtopic.conceptsPdfVisible) {
     const pdfCard = document.createElement('div');
     pdfCard.className = 'list-card';
-    pdfCard.style.cssText = 'margin-top:14px;';
-    pdfCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>Quick Revision - Concepts &amp; Formulas</div><div class="meta">Tap to view or download</div></div></div><div>&#8250;</div>`;
+    pdfCard.style.cssText = 'border-left:4px solid var(--accent, #C97A2B);margin-top:14px;';
+    pdfCard.innerHTML = `<div><div>📄 Quick Revision - Concepts &amp; Formulas</div><div class="meta">Tap to view or download</div></div><div>&#8250;</div>`;
     pdfCard.onclick = () => downloadConceptsPdf(state.subtopic);
     app.appendChild(pdfCard);
   }
@@ -709,7 +553,6 @@ function startQuiz(level, qs){
   state.answers = {};
   state.testFinished = false;
   state.reviewEntryIndex = null;
-  state.conceptsMode = false; // defensive - concepts mode never actually reaches a quiz, but keep this clean
   qs.forEach(q => { state.status[q.id] = 'not-visited'; });
   state.status[qs[0].id] = 'not-answered';
   state.view = 'quiz';
