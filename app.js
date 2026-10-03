@@ -48,9 +48,60 @@ const cancelSubmitBtn = document.getElementById('cancelSubmitBtn');
 const confirmSubmitBtn = document.getElementById('confirmSubmitBtn');
 
 // ---------- Boot ----------
+// A student can jump straight into a section from the launcher's own tab
+// bar (?tab=profile/subjects/concepts/tests/performance) - applied once,
+// here, before the very first render, then the URL is cleaned up so
+// Back/Forward and reloads behave normally afterwards.
+function applyLaunchTabParam(){
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab');
+  const subjectId = params.get('subject');
+  const subtopicId = params.get('subtopic');
+
+  if (tab) {
+    if (tab === 'profile-direct') { state.profileReturnView = 'subjects'; state.view = 'profile'; }
+    else if (tab === 'subjects') { state.activeTab = 'subjects'; state.conceptsMode = false; state.view = 'subjects'; }
+    else if (tab === 'tests') { state.activeTab = 'tests'; state.conceptsMode = false; state.view = 'subjects'; }
+    else if (tab === 'concepts') { state.activeTab = 'concepts'; state.conceptsMode = true; state.view = 'subjects'; }
+    else if (tab === 'performance') { state.activeTab = 'performance'; state.view = 'history'; }
+  } else if (subjectId) {
+    // Came from the launcher's search box - jump straight to a specific
+    // subject, or straight into a specific topic's Levels screen if a
+    // topic was what matched the search.
+    const subj = DATA.subjects.find(s => s.id === subjectId);
+    if (subj) {
+      state.activeTab = 'subjects';
+      state.subject = subj;
+      if (subtopicId) {
+        const subt = subj.subtopics.find(s => s.id === subtopicId);
+        if (subt) { state.subtopic = subt; state.view = 'levels'; }
+        else { state.view = 'subtopics'; } // topic id didn't match (stale/edited data) - fall back to the topic list rather than breaking
+      } else {
+        state.view = 'subtopics';
+      }
+    }
+  }
+
+  if (tab || subjectId) history.replaceState(null, '', window.location.pathname);
+}
+
 fetch('data/questions.json')
   .then(r => r.json())
-  .then(json => { DATA = json; render(); });
+  .then(json => {
+    DATA = json;
+    // Defensive: if anything here ever throws (a malformed URL, an
+    // older/unusual browser, anything), the app must still open normally
+    // rather than getting stuck on the static placeholder - a failure in
+    // this one optional convenience must never be able to block the
+    // actual app from starting.
+    try { applyLaunchTabParam(); } catch (err) { console.error('applyLaunchTabParam failed, continuing normally:', err); }
+    render();
+  })
+  .catch(err => {
+    console.error('Could not load question data:', err);
+    headerTitle.textContent = 'Could not load';
+    app.innerHTML = '<div class="question-card"><div class="question-text">Could not load the question data. Please check your connection and reopen the app.</div></div>';
+  });
 
 fetch('data/config.json')
   .then(r => r.json())
@@ -76,26 +127,34 @@ const fwdBtn = document.getElementById('fwdBtn');
 const topicsBtn = document.getElementById('topicsBtn');
 const headerBackBtn = document.getElementById('headerBackBtn');
 const primaryTabBar = document.getElementById('primaryTabBar');
-const tabProfile = document.getElementById('tabProfile');
+const tabHome = document.getElementById('tabHome');
 const tabSubjects = document.getElementById('tabSubjects');
 const tabConcepts = document.getElementById('tabConcepts');
 const tabTests = document.getElementById('tabTests');
 const tabPerformance = document.getElementById('tabPerformance');
+const headerProfileBtn = document.getElementById('headerProfileBtn');
 
 headerBackBtn.addEventListener('click', () => history.back());
+// Profile moved to a top-right header icon, always reachable regardless
+// of which screen a student is on - no longer one of the 5 bottom tabs.
+headerProfileBtn.addEventListener('click', () => {
+  state.profileReturnView = state.view === 'quiz' ? 'subjects' : state.view;
+  state.view = 'profile';
+  render();
+});
 
-// ---------- Primary tab bar: Profile / Subjects / Concepts / Tests / Performance ----------
+// ---------- Primary tab bar: Home / Subjects / Concepts / Tests / Performance ----------
 // Subjects and Tests both lead to the identical Subjects -> Topics ->
 // Levels -> Quiz flow - in this app every subject interaction IS test
 // practice, there's no separate "browse-only" content - so the two tabs
 // are intentionally two doors to the same room, distinguished only by
 // which one lights up as active.
-tabProfile.addEventListener('click', () => {
-  state.activeTab = 'profile';
-  state.profileReturnView = 'subjects';
-  state.view = 'profile';
-  render();
-});
+// Home leaves index.html entirely and goes back to the Power Pulse
+// launcher - same destination as the header logo, just also reachable
+// from the bottom bar now, matching how "Home" normally behaves in any
+// app with a tab bar.
+tabHome.addEventListener('click', () => { window.location.href = 'home.html'; });
+
 tabSubjects.addEventListener('click', () => {
   state.activeTab = 'subjects';
   state.conceptsMode = false;
@@ -121,8 +180,11 @@ tabPerformance.addEventListener('click', () => {
 });
 
 function updatePrimaryTabHighlight(){
-  [tabProfile, tabSubjects, tabConcepts, tabTests, tabPerformance].forEach(b => b.classList.remove('active'));
-  const map = { profile: tabProfile, subjects: tabSubjects, concepts: tabConcepts, tests: tabTests, performance: tabPerformance };
+  // Home isn't tracked here - tapping it immediately leaves index.html
+  // for the launcher, so there's no "staying on this screen with Home
+  // highlighted" state to represent.
+  [tabSubjects, tabConcepts, tabTests, tabPerformance].forEach(b => b.classList.remove('active'));
+  const map = { subjects: tabSubjects, concepts: tabConcepts, tests: tabTests, performance: tabPerformance };
   const el = map[state.activeTab];
   if (el) el.classList.add('active');
 }
