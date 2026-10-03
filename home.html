@@ -15,7 +15,8 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
   background:#EEF3FA;
   color:#16213A;min-height:100vh;position:relative;overflow-x:hidden;
-  display:flex;align-items:center;justify-content:center;padding:20px;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px 20px calc(92px + env(safe-area-inset-bottom));
 }
 .bg-wave-top{position:fixed;top:0;left:0;width:100%;z-index:0;pointer-events:none;}
 .bg-wave-bottom{position:fixed;bottom:0;left:0;width:100%;z-index:0;pointer-events:none;}
@@ -75,6 +76,32 @@ h1 .pulse{color:#E8720C;}
 .feature .fsub{font-size:11px;color:#8894A6;}
 
 .footer-tap{margin-top:36px;font-size:11px;color:#B8C4D6;user-select:none;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+
+/* ---------- Launcher tab bar - same 5 destinations as inside the app,
+   so a student can jump straight to any section without first opening
+   "Start Practice". Styled to match this page's own brand colours. ---------- */
+.launch-tab-bar{
+  position:fixed;left:0;right:0;bottom:0;z-index:5;
+  display:flex;align-items:stretch;justify-content:space-between;
+  padding:7px 6px calc(7px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,0.97);
+  -webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);
+  border-top:1px solid rgba(22,39,74,0.08);
+  box-shadow:0 -10px 28px rgba(22,39,74,0.14);
+  border-radius:20px 20px 0 0;
+}
+.lt-item{
+  flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  min-height:58px;padding:6px 2px;border:none;background:none;border-radius:14px;cursor:pointer;
+  color:#64748B;font-family:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent;
+  transition:transform .1s,background .15s;
+}
+.lt-item:active{transform:scale(.93);background:rgba(22,39,74,0.06);}
+.lt-item .lt-icon{
+  width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+}
+.lt-item .lt-icon svg{width:18px;height:18px;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+.lt-item span.lbl{font-size:9.5px;font-weight:800;letter-spacing:.3px;line-height:1;}
 </style>
 </head>
 <body>
@@ -147,30 +174,48 @@ h1 .pulse{color:#E8720C;}
     <div class="arrow">&#8250;</div>
   </div>
 
-  <div class="features">
-    <div class="feature practice">
-      <div class="icon">&#128214;</div>
-      <div class="flabel">Practice</div>
-      <div class="fsub">Quality Questions</div>
-    </div>
-    <div class="feature concepts">
-      <div class="icon">&#127919;</div>
-      <div class="flabel">Concepts</div>
-      <div class="fsub">Learn Better</div>
-    </div>
-    <div class="feature tests">
-      <div class="icon">&#128200;</div>
-      <div class="flabel">Tests</div>
-      <div class="fsub">Track Progress</div>
-    </div>
-  </div>
-
   <div class="footer-tap">v42</div>
 </div>
+
+<nav class="launch-tab-bar" aria-label="Main sections">
+  <a href="#" class="lt-item" data-tab="profile" aria-label="Profile">
+    <div class="lt-icon" style="background:#E6F0FF;"><svg viewBox="0 0 24 24" style="stroke:#2E63C7;"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div>
+    <span class="lbl">Profile</span>
+  </a>
+  <a href="#" class="lt-item" data-tab="subjects" aria-label="Subjects">
+    <div class="lt-icon" style="background:#FCEEDD;"><svg viewBox="0 0 24 24" style="stroke:#B9661C;"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg></div>
+    <span class="lbl">Subjects</span>
+  </a>
+  <a href="#" class="lt-item" data-tab="concepts" aria-label="Concepts">
+    <div class="lt-icon" style="background:#ECEAFB;"><svg viewBox="0 0 24 24" style="stroke:#5B4FC4;"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3Z"/></svg></div>
+    <span class="lbl">Concepts</span>
+  </a>
+  <a href="#" class="lt-item" data-tab="tests" aria-label="Tests">
+    <div class="lt-icon" style="background:#E3F7FA;"><svg viewBox="0 0 24 24" style="stroke:#0E8A9C;"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M15 2v5h5"/><path d="m8.5 14 2 2 4-4.2"/></svg></div>
+    <span class="lbl">Tests</span>
+  </a>
+  <a href="#" class="lt-item" data-tab="performance" aria-label="Performance">
+    <div class="lt-icon" style="background:#E6F8EE;"><svg viewBox="0 0 24 24" style="stroke:#1F9D55;"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+    <span class="lbl">Performance</span>
+  </a>
+</nav>
 <script>
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   navigator.serviceWorker.register('service-worker.js').catch(() => {});
 }
+// Launcher tab bar - same 5 destinations as inside the app itself, so a
+// student can jump straight into any section without going through
+// "Start Practice" first. Each tap sets the same "came from launcher"
+// flag Start Practice already sets, then opens index.html with a ?tab=
+// hint that app.js reads once on startup to land on the right section.
+document.querySelectorAll('.lt-item').forEach(el => {
+  el.addEventListener('click', (e) => {
+    e.preventDefault();
+    sessionStorage.setItem('cameFromLauncher', '1');
+    window.location.href = 'index.html?tab=' + el.dataset.tab;
+  });
+});
+
 // Teacher access is intentionally not shown as a button.
 // Tap the "POWER PULSE" title 5 times within 3 seconds to reveal it.
 let taps = 0, tapTimer = null;
