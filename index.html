@@ -31,6 +31,9 @@ if (!sessionStorage.getItem('cameFromLauncher')) {
   </a>
   <h1 id="headerTitle">EEE Practice</h1>
   <button id="paletteToggleBtn" class="icon-btn hidden" aria-label="Question Palette">&#9638;</button>
+  <button id="headerProfileBtn" class="icon-btn" aria-label="Profile">
+    <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+  </button>
 </header>
 
 <div id="examStrip" class="exam-strip hidden">
@@ -89,9 +92,9 @@ if (!sessionStorage.getItem('cameFromLauncher')) {
 <main id="app"></main>
 
 <nav id="primaryTabBar" class="primary-tab-bar hidden" aria-label="Main sections">
-  <button id="tabProfile" class="ptb-item" aria-label="Profile">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
-    <span>Profile</span>
+  <button id="tabHome" class="ptb-item" aria-label="Home">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h4.5v-5.5h4V20h4.5V10"/></svg>
+    <span>Home</span>
   </button>
   <button id="tabSubjects" class="ptb-item" aria-label="Subjects">
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>
