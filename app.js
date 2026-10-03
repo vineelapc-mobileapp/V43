@@ -48,25 +48,9 @@ const cancelSubmitBtn = document.getElementById('cancelSubmitBtn');
 const confirmSubmitBtn = document.getElementById('confirmSubmitBtn');
 
 // ---------- Boot ----------
-// A student can jump straight into a section from the launcher's own tab
-// bar (?tab=profile/subjects/concepts/tests/performance) - applied once,
-// here, before the very first render, then the URL is cleaned up so
-// Back/Forward and reloads behave normally afterwards.
-function applyLaunchTabParam(){
-  const params = new URLSearchParams(window.location.search);
-  const tab = params.get('tab');
-  if (!tab) return;
-  if (tab === 'profile') { state.activeTab = 'profile'; state.profileReturnView = 'subjects'; state.view = 'profile'; }
-  else if (tab === 'subjects') { state.activeTab = 'subjects'; state.conceptsMode = false; state.view = 'subjects'; }
-  else if (tab === 'tests') { state.activeTab = 'tests'; state.conceptsMode = false; state.view = 'subjects'; }
-  else if (tab === 'concepts') { state.activeTab = 'concepts'; state.conceptsMode = true; state.view = 'subjects'; }
-  else if (tab === 'performance') { state.activeTab = 'performance'; state.view = 'history'; }
-  history.replaceState(null, '', window.location.pathname);
-}
-
 fetch('data/questions.json')
   .then(r => r.json())
-  .then(json => { DATA = json; applyLaunchTabParam(); render(); });
+  .then(json => { DATA = json; render(); });
 
 fetch('data/config.json')
   .then(r => r.json())
