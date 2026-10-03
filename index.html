@@ -23,7 +23,12 @@ if (!sessionStorage.getItem('cameFromLauncher')) {
 <body>
 
 <header class="app-header">
-  <img src="icons/icon-192.png" alt="EE" style="width:30px;height:30px;border-radius:8px;">
+  <button id="headerBackBtn" class="icon-btn hidden" aria-label="Back" style="margin-right:2px;">
+    <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+  </button>
+  <a href="home.html" aria-label="Power Pulse Home" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="icons/icon-192.png" alt="EE" style="width:30px;height:30px;border-radius:8px;">
+  </a>
   <h1 id="headerTitle">EEE Practice</h1>
   <button id="paletteToggleBtn" class="icon-btn hidden" aria-label="Question Palette">&#9638;</button>
 </header>
@@ -83,7 +88,29 @@ if (!sessionStorage.getItem('cameFromLauncher')) {
 
 <main id="app"></main>
 
-<nav id="bottomNav" class="bottom-nav" aria-label="Navigation">
+<nav id="primaryTabBar" class="primary-tab-bar hidden" aria-label="Main sections">
+  <button id="tabProfile" class="ptb-item" aria-label="Profile">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+    <span>Profile</span>
+  </button>
+  <button id="tabSubjects" class="ptb-item" aria-label="Subjects">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>
+    <span>Subjects</span>
+  </button>
+  <button id="tabConcepts" class="ptb-item" aria-label="Concepts">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3Z"/></svg>
+    <span>Concepts</span>
+  </button>
+  <button id="tabTests" class="ptb-item" aria-label="Tests">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M15 2v5h5"/><path d="m8.5 14 2 2 4-4.2"/></svg>
+    <span>Tests</span>
+  </button>
+  <button id="tabPerformance" class="ptb-item" aria-label="Performance">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    <span>Performance</span>
+  </button>
+</nav>
+<nav id="bottomNav" class="bottom-nav hidden" aria-label="Navigation">
   <a href="home.html" id="homeBtn" class="bn-item bn-home" aria-label="Home">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h4.5v-5.5h4V20h4.5V10"/></svg>
     <span>Home</span>
