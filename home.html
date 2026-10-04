@@ -15,7 +15,8 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
   background:#EEF3FA;
   color:#16213A;min-height:100vh;position:relative;overflow-x:hidden;
-  display:flex;align-items:center;justify-content:center;padding:20px;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px 20px calc(92px + env(safe-area-inset-bottom));
 }
 .bg-wave-top{position:fixed;top:0;left:0;width:100%;z-index:0;pointer-events:none;}
 .bg-wave-bottom{position:fixed;bottom:0;left:0;width:100%;z-index:0;pointer-events:none;}
@@ -38,6 +39,37 @@ h1 .pulse{color:#E8720C;}
 .attribution .bolt{color:#E8720C;}
 
 .made-easy{color:#2E4570;font-size:13px;font-weight:600;margin-bottom:30px;letter-spacing:0.2px;}
+
+/* ---------- Search: Subjects/Topics, jumps straight into a topic ---------- */
+.search-wrap{position:relative;margin-bottom:22px;text-align:left;}
+.search-box{
+  display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;
+  padding:13px 16px;box-shadow:0 3px 12px rgba(22,39,74,0.10);
+}
+.search-box svg{width:19px;height:19px;flex-shrink:0;fill:none;stroke:#8894A6;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+.search-box input{
+  border:none;outline:none;flex:1;font-size:15px;font-family:inherit;color:#16213A;background:none;
+}
+.search-box input::placeholder{color:#B0BACB;}
+.search-results{
+  position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:8;
+  background:#fff;border-radius:14px;box-shadow:0 8px 24px rgba(22,39,74,0.18);
+  max-height:290px;overflow-y:auto;
+}
+.search-result-row{
+  display:flex;align-items:center;gap:11px;padding:11px 14px;cursor:pointer;
+  border-bottom:1px solid #F0F2F7;
+}
+.search-result-row:last-child{border-bottom:none;}
+.search-result-row:active{background:#F4F6FB;}
+.search-result-row .sr-icon{
+  width:32px;height:32px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+}
+.search-result-row .sr-icon svg{width:16px;height:16px;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+.search-result-row .sr-text{min-width:0;}
+.search-result-row .sr-name{font-size:13.5px;font-weight:700;color:#16213A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.search-result-row .sr-path{font-size:11px;color:#8894A6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.search-empty{padding:16px;text-align:center;font-size:13px;color:#8894A6;}
 
 .choice{
   background:#fff;border-radius:18px;padding:20px 22px;
@@ -75,6 +107,40 @@ h1 .pulse{color:#E8720C;}
 .feature .fsub{font-size:11px;color:#8894A6;}
 
 .footer-tap{margin-top:36px;font-size:11px;color:#B8C4D6;user-select:none;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+
+.launch-profile-btn{
+  position:fixed;top:calc(16px + env(safe-area-inset-top));right:16px;z-index:6;
+  width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(255,255,255,0.9);box-shadow:0 2px 10px rgba(22,39,74,0.18);
+  display:flex;align-items:center;justify-content:center;
+}
+.launch-profile-btn svg{width:20px;height:20px;fill:none;stroke:#16274A;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ---------- Launcher tab bar - same 5 destinations as inside the app,
+   so a student can jump straight to any section without first opening
+   "Start Practice". Styled to match this page's own brand colours. ---------- */
+.launch-tab-bar{
+  position:fixed;left:0;right:0;bottom:0;z-index:5;
+  display:flex;align-items:stretch;justify-content:space-between;
+  padding:7px 6px calc(7px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,0.97);
+  -webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);
+  border-top:1px solid rgba(22,39,74,0.08);
+  box-shadow:0 -10px 28px rgba(22,39,74,0.14);
+  border-radius:20px 20px 0 0;
+}
+.lt-item{
+  flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  min-height:58px;padding:6px 2px;border:none;background:none;border-radius:14px;cursor:pointer;
+  color:#64748B;font-family:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent;
+  transition:transform .1s,background .15s;
+}
+.lt-item:active{transform:scale(.93);background:rgba(22,39,74,0.06);}
+.lt-item .lt-icon{
+  width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+}
+.lt-item .lt-icon svg{width:18px;height:18px;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+.lt-item span.lbl{font-size:9.5px;font-weight:800;letter-spacing:.3px;line-height:1;}
 </style>
 </head>
 <body>
@@ -115,6 +181,10 @@ h1 .pulse{color:#E8720C;}
   </g>
 </svg>
 
+<button class="launch-profile-btn" aria-label="Profile" onclick="sessionStorage.setItem('cameFromLauncher','1'); window.location.href='index.html?tab=profile-direct';">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+</button>
+
 <div class="wrap">
   <svg class="logo" viewBox="0 0 120 120">
     <defs>
@@ -138,6 +208,14 @@ h1 .pulse{color:#E8720C;}
   </div>
   <div class="made-easy">Made Easy Senior Faculty</div>
 
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="launchSearchInput" placeholder="Search a subject or topic..." autocomplete="off">
+    </div>
+    <div id="searchResults" class="search-results hidden"></div>
+  </div>
+
   <div class="choice" onclick="sessionStorage.setItem('cameFromLauncher','1'); window.location.href='index.html'">
     <div class="badge">EE</div>
     <div class="textcol">
@@ -147,30 +225,116 @@ h1 .pulse{color:#E8720C;}
     <div class="arrow">&#8250;</div>
   </div>
 
-  <div class="features">
-    <div class="feature practice">
-      <div class="icon">&#128214;</div>
-      <div class="flabel">Practice</div>
-      <div class="fsub">Quality Questions</div>
-    </div>
-    <div class="feature concepts">
-      <div class="icon">&#127919;</div>
-      <div class="flabel">Concepts</div>
-      <div class="fsub">Learn Better</div>
-    </div>
-    <div class="feature tests">
-      <div class="icon">&#128200;</div>
-      <div class="flabel">Tests</div>
-      <div class="fsub">Track Progress</div>
-    </div>
-  </div>
-
   <div class="footer-tap">v42</div>
 </div>
+
+<nav class="launch-tab-bar" aria-label="Main sections">
+  <a href="home.html" class="lt-item" aria-label="Home">
+    <div class="lt-icon" style="background:#E6F0FF;"><svg viewBox="0 0 24 24" style="stroke:#2E63C7;"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h4.5v-5.5h4V20h4.5V10"/></svg></div>
+    <span class="lbl">Home</span>
+  </a>
+  <a href="#" class="lt-item" data-tab="subjects" aria-label="Subjects">
+    <div class="lt-icon" style="background:#FCEEDD;"><svg viewBox="0 0 24 24" style="stroke:#B9661C;"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg></div>
+    <span class="lbl">Subjects</span>
+  </a>
+  <a href="#" class="lt-item" data-tab="concepts" aria-label="Concepts">
+    <div class="lt-icon" style="background:#ECEAFB;"><svg viewBox="0 0 24 24" style="stroke:#5B4FC4;"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3Z"/></svg></div>
+    <span class="lbl">Concepts</span>
+  </a>
+  <a href="#" class="lt-item" data-tab="tests" aria-label="Tests">
+    <div class="lt-icon" style="background:#E3F7FA;"><svg viewBox="0 0 24 24" style="stroke:#0E8A9C;"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M15 2v5h5"/><path d="m8.5 14 2 2 4-4.2"/></svg></div>
+    <span class="lbl">Tests</span>
+  </a>
+  <a href="#" class="lt-item" data-tab="performance" aria-label="Performance">
+    <div class="lt-icon" style="background:#E6F8EE;"><svg viewBox="0 0 24 24" style="stroke:#1F9D55;"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+    <span class="lbl">Performance</span>
+  </a>
+</nav>
 <script>
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   navigator.serviceWorker.register('service-worker.js').catch(() => {});
 }
+
+// ---------- Search: Subjects/Topics, jumps straight into a topic ----------
+// Loads the same question data the app itself uses (read-only here, just
+// for names) and builds a flat, searchable list of every visible subject
+// and topic, so a student can type a few letters and go straight to the
+// right place without drilling down through Subjects -> Topics manually.
+let searchIndex = [];
+fetch('data/questions.json')
+  .then(r => r.json())
+  .then(data => {
+    (data.subjects || []).filter(s => s.visible !== false).forEach(subj => {
+      searchIndex.push({ type: 'subject', subjectId: subj.id, subjectName: subj.name, name: subj.name });
+      (subj.subtopics || []).forEach(st => {
+        searchIndex.push({ type: 'subtopic', subjectId: subj.id, subjectName: subj.name, subtopicId: st.id, name: st.name });
+      });
+    });
+  })
+  .catch(() => {}); // search simply stays empty if this fails - never blocks the rest of the launcher
+
+const searchInputEl = document.getElementById('launchSearchInput');
+const searchResultsEl = document.getElementById('searchResults');
+
+function escapeHtml(s){
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+searchInputEl.addEventListener('input', () => {
+  const q = searchInputEl.value.trim().toLowerCase();
+  if (!q) { searchResultsEl.classList.add('hidden'); searchResultsEl.innerHTML = ''; return; }
+  const matches = searchIndex.filter(item => item.name.toLowerCase().includes(q)).slice(0, 12);
+  if (matches.length === 0) {
+    searchResultsEl.innerHTML = '<div class="search-empty">No matching subject or topic</div>';
+  } else {
+    searchResultsEl.innerHTML = matches.map(item => {
+      const isSubject = item.type === 'subject';
+      const iconBg = isSubject ? '#FCEEDD' : '#EEF1FB';
+      const iconColor = isSubject ? '#B9661C' : '#4C5C8C';
+      const icon = isSubject
+        ? '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15.5a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 22"/><path d="M4 5.5v14A2.5 2.5 0 0 0 6.5 22"/>'
+        : '<path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M15 2v5h5"/>';
+      const path = isSubject ? 'Subject' : escapeHtml(item.subjectName);
+      return `<div class="search-result-row" data-subject="${item.subjectId}" data-subtopic="${item.subtopicId || ''}">
+        <div class="sr-icon" style="background:${iconBg};"><svg viewBox="0 0 24 24" style="stroke:${iconColor};">${icon}</svg></div>
+        <div class="sr-text"><div class="sr-name">${escapeHtml(item.name)}</div><div class="sr-path">${path}</div></div>
+      </div>`;
+    }).join('');
+  }
+  searchResultsEl.classList.remove('hidden');
+});
+
+searchResultsEl.addEventListener('click', (e) => {
+  const row = e.target.closest('.search-result-row');
+  if (!row) return;
+  const subjectId = row.dataset.subject;
+  const subtopicId = row.dataset.subtopic;
+  sessionStorage.setItem('cameFromLauncher', '1');
+  let url = 'index.html?subject=' + encodeURIComponent(subjectId);
+  if (subtopicId) url += '&subtopic=' + encodeURIComponent(subtopicId);
+  window.location.href = url;
+});
+
+// Tapping anywhere outside the search box/results closes the dropdown
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.search-wrap')) {
+    searchResultsEl.classList.add('hidden');
+  }
+});
+// Launcher tab bar - same 5 destinations as inside the app itself, so a
+// student can jump straight into any section without going through
+// "Start Practice" first. Each tap sets the same "came from launcher"
+// flag Start Practice already sets, then opens index.html with a ?tab=
+// hint that app.js reads once on startup to land on the right section.
+document.querySelectorAll('.lt-item').forEach(el => {
+  if (!el.dataset.tab) return; // the Home item is a plain link back to this same page - nothing to intercept
+  el.addEventListener('click', (e) => {
+    e.preventDefault();
+    sessionStorage.setItem('cameFromLauncher', '1');
+    window.location.href = 'index.html?tab=' + el.dataset.tab;
+  });
+});
+
 // Teacher access is intentionally not shown as a button.
 // Tap the "POWER PULSE" title 5 times within 3 seconds to reveal it.
 let taps = 0, tapTimer = null;
