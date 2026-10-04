@@ -124,6 +124,16 @@ body{
 .list-card:active{transform:scale(0.98);border-left-color:var(--accent);}
 .list-card .meta{font-size:13px;color:var(--muted);margin-top:4px;}
 
+/* ---------- Icon badges (Subjects, Topics, Profile, Test History, etc.) ---------- */
+.list-card-main{display:flex;align-items:center;gap:13px;min-width:0;}
+.icon-badge{
+  flex-shrink:0;width:42px;height:42px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.icon-badge svg{width:22px;height:22px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.icon-badge.sm{width:36px;height:36px;border-radius:11px;}
+.icon-badge.sm svg{width:18px;height:18px;}
+
 .level-btn{
   display:inline-block;padding:10px 20px;border-radius:20px;
   background:var(--primary);background-image:linear-gradient(135deg, var(--primary), var(--primary-light));
@@ -172,11 +182,50 @@ body{
 .option.wrong{border-color:var(--wrong);background:#FBEAEA;font-weight:600;}
 .option.wrong .opt-letter{border-color:var(--wrong);background:var(--wrong);color:#fff;}
 .option[disabled]{cursor:default;}
+.option.chosen{border-color:var(--primary);background:#EAF0FA;font-weight:600;color:var(--text);}
+.option.chosen .opt-letter{border-color:var(--primary);background:var(--primary);color:#fff;}
+.fill-answer-input.chosen{border-color:var(--primary);background:#EAF0FA;color:var(--primary);font-weight:700;}
+.show-solution-btn{
+  display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:14px;
+  padding:13px 16px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:15px;
+  font-weight:800;letter-spacing:.2px;color:var(--accent);background:#FDF3E6;
+  border:1.5px solid var(--accent);-webkit-tap-highlight-color:transparent;
+  transition:transform .1s,background .15s;
+}
+.show-solution-btn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+.show-solution-btn:active{transform:scale(.97);background:#FBE8CF;}
+body.theme-measurements .show-solution-btn{color:#0E8A9C;background:#E3F7FA;border-color:#0E8A9C;}
+body.theme-measurements .show-solution-btn:active{background:#CDEFF4;}
 
 .btn{padding:12px 18px;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer;}
 .btn-primary{background:var(--primary);background-image:linear-gradient(135deg, var(--primary), var(--primary-light));color:#fff;box-shadow:0 2px 6px rgba(22,39,74,0.25);}
 .btn-secondary{background:#E4EAF1;color:var(--text);}
 .full-width{width:100%;margin-top:14px;}
+
+/* ---------- Primary tab bar (Profile / Subjects / Concepts / Tests / Performance) ---------- */
+.primary-tab-bar{
+  position:fixed;left:0;right:0;bottom:0;z-index:20;
+  max-width:640px;margin:0 auto;
+  display:flex;align-items:stretch;justify-content:space-between;
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,0.97);
+  -webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);
+  border-top:1px solid rgba(22,39,74,0.08);
+  box-shadow:0 -8px 24px rgba(22,39,74,0.10);
+}
+.ptb-item{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  min-height:56px;padding:6px 2px;border:none;background:none;border-radius:14px;
+  color:#8893A8;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;
+  transition:color .15s,background .15s,transform .1s;
+}
+.ptb-item svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s;}
+.ptb-item span{font-size:9.5px;font-weight:700;letter-spacing:.3px;line-height:1;white-space:nowrap;}
+.ptb-item:active{transform:scale(.93);}
+.ptb-item.active{color:var(--accent, #C97A2B);}
+.ptb-item.active svg{stroke-width:2.3;}
+body.theme-measurements .ptb-item.active{color:#0E8A9C;}
 
 /* ---------- Bottom navigation bar (Home / Topics / Back / Save / Forward) ---------- */
 .bottom-nav{
@@ -369,5 +418,3 @@ body.theme-measurements .score-summary .big{
 
 /* Subject-card preview accents on the Subject-selection screen itself,
    before a theme is active - gives the color association immediately. */
-.list-card.subject-power{border-left-color:#C97A2B;}
-.list-card.subject-measurements{border-left-color:#22B8CF;}
