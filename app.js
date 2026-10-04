@@ -18,7 +18,8 @@ let state = {
   finalElapsedMs: 0, // captured from the optional stopwatch when a test is submitted, 0 if never used
   activeTab: 'subjects', // which of the 5 primary tabs is highlighted - Subjects and Tests lead to the same place but light up differently depending on which was tapped
   conceptsMode: false, // true when browsing via the Concepts tab - tapping a topic opens its Concepts PDF directly instead of Levels
-  conceptsView: 'all' // Concepts tab layout: 'all' = every Quick Revision topic on one page, 'subjects' = browse subject by subject
+  conceptsView: 'all', // Concepts tab layout: 'all' = every Quick Revision topic on one page, 'subjects' = browse subject by subject
+  conceptsQuery: '' // text typed in the Concepts & Formulas search box
 };
 
 const app = document.getElementById('app');
@@ -63,7 +64,7 @@ function applyLaunchTabParam(){
     if (tab === 'profile-direct') { state.profileReturnView = 'subjects'; state.view = 'profile'; }
     else if (tab === 'subjects') { state.activeTab = 'subjects'; state.conceptsMode = false; state.view = 'subjects'; }
     else if (tab === 'tests') { state.activeTab = 'tests'; state.conceptsMode = false; state.view = 'subjects'; }
-    else if (tab === 'concepts') { state.activeTab = 'concepts'; state.conceptsMode = true; state.conceptsView = 'all'; state.view = 'subjects'; }
+    else if (tab === 'concepts') { state.activeTab = 'concepts'; state.conceptsMode = true; state.conceptsView = 'all'; state.conceptsQuery = ''; state.view = 'subjects'; }
     else if (tab === 'performance') { state.activeTab = 'performance'; state.view = 'history'; }
   } else if (subjectId) {
     // Came from the launcher's search box - jump straight to a specific
@@ -183,6 +184,7 @@ tabConcepts.addEventListener('click', () => {
   state.activeTab = 'concepts';
   state.conceptsMode = true;
   state.conceptsView = 'all';
+  state.conceptsQuery = '';
   state.view = 'subjects';
   render();
 });
@@ -284,7 +286,7 @@ function currentViewKey(){
   // the session (e.g., 'quiz' for Level-1 now, 'quiz' again for Level-2
   // after visiting other screens in between) by including what the page
   // is actually showing, not just its view name.
-  return [state.view, state.subject && state.subject.id, state.subtopic && state.subtopic.id, state.level, state.conceptsMode, state.conceptsMode ? state.conceptsView : ''].join('|');
+  return [state.view, state.subject && state.subject.id, state.subtopic && state.subtopic.id, state.level, state.conceptsMode, state.conceptsMode ? state.conceptsView : '', (state.view === 'subjects' && !state.conceptsMode) ? state.activeTab : ''].join('|');
 }
 
 function pushNavStateIfNewPage(){
@@ -513,7 +515,7 @@ function renderConceptsToggle(){
     const b = document.createElement('button');
     b.className = 'seg-btn' + (state.conceptsView === key ? ' active' : '');
     b.textContent = label;
-    b.onclick = () => { if (state.conceptsView !== key) { state.conceptsView = key; render(); } };
+    b.onclick = () => { if (state.conceptsView !== key) { state.conceptsView = key; state.conceptsQuery = ''; render(); } };
     bar.appendChild(b);
   });
   app.appendChild(bar);
@@ -521,7 +523,7 @@ function renderConceptsToggle(){
 
 // One page: every topic that has a Quick Revision sheet switched on, grouped
 // by subject. Hidden subjects and switched-off sheets never appear.
-function renderAllConcepts(){
+function renderAllConcepts(parent){
   let available = 0, missing = 0;
   const sections = [];
   DATA.subjects.filter(sub => sub.visible !== false).forEach(sub => {
@@ -535,26 +537,26 @@ function renderAllConcepts(){
     const empty = document.createElement('div');
     empty.className = 'question-card';
     empty.innerHTML = '<div class="question-text">No Quick Revision concepts have been added yet.</div><div class="meta" style="margin-top:6px;">Please check back soon.</div>';
-    app.appendChild(empty);
+    parent.appendChild(empty);
     return;
   }
 
   const intro = document.createElement('div');
   intro.className = 'concepts-intro';
   intro.textContent = `${available} Quick Revision sheet${available === 1 ? '' : 's'} - tap a topic to open it`;
-  app.appendChild(intro);
+  parent.appendChild(intro);
 
   sections.forEach(({ sub, withPdf }) => {
     const title = document.createElement('div');
     title.className = 'concepts-section-title';
     title.innerHTML = `${subjectIconFor(sub, 'sm')}<span>${sub.name}</span><span class="count">${withPdf.length} topic${withPdf.length === 1 ? '' : 's'}</span>`;
-    app.appendChild(title);
+    parent.appendChild(title);
     withPdf.forEach(st => {
       const card = document.createElement('div');
       card.className = 'list-card concept-row';
       card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>${st.name}</div><div class="meta">Quick Revision - Concepts &amp; Formulas</div></div></div><div>&#8250;</div>`;
       card.onclick = () => downloadConceptsPdf(st);
-      app.appendChild(card);
+      parent.appendChild(card);
     });
   });
 
@@ -562,30 +564,130 @@ function renderAllConcepts(){
     const note = document.createElement('div');
     note.className = 'concepts-note';
     note.textContent = `${missing} more topic${missing === 1 ? '' : 's'} will be added soon.`;
-    app.appendChild(note);
+    parent.appendChild(note);
   }
 }
 
-function renderSubjects(){
-  // Profile and My Test History live on their own tabs, so this screen is
-  // just the subject list (or, on the Concepts tab, the one-page concepts view).
-  headerTitle.textContent = state.conceptsMode ? 'Concepts & Formulas' : 'Choose Subject';
-
-  if (state.conceptsMode) {
-    renderConceptsToggle();
-    if (state.conceptsView === 'all') { renderAllConcepts(); return; }
+// ---------- Concepts & Formulas: search ----------
+// Type part of a topic (or subject) name; matching topics appear instantly,
+// grouped by subject. A topic with a sheet opens it; one without says so.
+function renderConceptSearchResults(parent, query){
+  const q = query.trim().toLowerCase();
+  let found = 0;
+  DATA.subjects.filter(sub => sub.visible !== false).forEach(sub => {
+    const subjectMatch = sub.name.toLowerCase().includes(q);
+    const hits = sub.subtopics.filter(st => subjectMatch || st.name.toLowerCase().includes(q));
+    if (!hits.length) return;
+    found += hits.length;
+    const title = document.createElement('div');
+    title.className = 'concepts-section-title';
+    title.innerHTML = `${subjectIconFor(sub, 'sm')}<span>${sub.name}</span><span class="count">${hits.length} match${hits.length === 1 ? '' : 'es'}</span>`;
+    parent.appendChild(title);
+    hits.forEach(st => {
+      const hasPdf = !!(st.conceptsPdfUrl && st.conceptsPdfVisible);
+      const card = document.createElement('div');
+      card.className = 'list-card concept-row';
+      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${st.name}</div><div class="meta">${hasPdf ? 'Quick Revision - Concepts &amp; Formulas' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
+      card.onclick = () => {
+        if (hasPdf) downloadConceptsPdf(st);
+        else showToast('Concepts & Formulas not yet uploaded for this topic');
+      };
+      parent.appendChild(card);
+    });
+  });
+  if (!found) {
+    const none = document.createElement('div');
+    none.className = 'question-card';
+    none.innerHTML = '<div class="question-text">No matching topic.</div><div class="meta" style="margin-top:6px;">Try a different word.</div>';
+    parent.appendChild(none);
   }
+}
 
-  // "Ask a Doubt" entry point intentionally hidden for now (see note near
-  // openDoubtComposer below) - re-enable once students are onboarded.
+function renderConceptsSearchBox(){
+  const wrap = document.createElement('div');
+  wrap.className = 'page-search' + (state.conceptsQuery ? ' has-text' : '');
+  wrap.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" placeholder="Search a topic..." autocomplete="off" enterkeyhint="search" aria-label="Search topics"><button type="button" class="clear" aria-label="Clear search">&#10005;</button>';
+  const input = wrap.querySelector('input');
+  const clear = wrap.querySelector('.clear');
+  input.value = state.conceptsQuery || '';
+  // only the list below is redrawn while typing, so the box keeps focus
+  input.addEventListener('input', () => {
+    state.conceptsQuery = input.value;
+    wrap.classList.toggle('has-text', !!input.value);
+    drawConceptsBody();
+  });
+  clear.addEventListener('click', () => {
+    input.value = ''; state.conceptsQuery = ''; wrap.classList.remove('has-text');
+    drawConceptsBody(); input.focus();
+  });
+  app.appendChild(wrap);
+}
 
+function drawConceptsBody(){
+  const body = document.getElementById('conceptsBody');
+  if (!body) return;
+  body.innerHTML = '';
+  if ((state.conceptsQuery || '').trim()) renderConceptSearchResults(body, state.conceptsQuery);
+  else if (state.conceptsView === 'all') renderAllConcepts(body);
+  else renderSubjectCards(body);
+}
+
+function renderSubjectCards(parent){
   DATA.subjects.filter(sub => sub.visible !== false).forEach(sub => {
     const card = document.createElement('div');
     card.className = 'list-card';
     card.innerHTML = `<div class="list-card-main">${subjectIconFor(sub)}<div><div>${sub.name}</div><div class="meta">${sub.subtopics.length} subtopics</div></div></div><div>&#8250;</div>`;
     card.onclick = () => { state.subject = sub; state.view = 'subtopics'; render(); };
-    app.appendChild(card);
+    parent.appendChild(card);
   });
+}
+
+// ---------- Tests tab: every topic on one page, grouped by subject ----------
+// Tap a topic to go straight to its Levels - no need to pick a subject first.
+function renderTestsTopics(){
+  headerTitle.textContent = 'Choose Topic';
+  const subjects = DATA.subjects.filter(sub => sub.visible !== false && sub.subtopics.length);
+  if (!subjects.length) {
+    const empty = document.createElement('div');
+    empty.className = 'question-card';
+    empty.innerHTML = '<div class="question-text">No topics available yet.</div>';
+    app.appendChild(empty);
+    return;
+  }
+  subjects.forEach(sub => {
+    const title = document.createElement('div');
+    title.className = 'concepts-section-title';
+    title.innerHTML = `${subjectIconFor(sub, 'sm')}<span>${sub.name}</span><span class="count">${sub.subtopics.length} topic${sub.subtopics.length === 1 ? '' : 's'}</span>`;
+    app.appendChild(title);
+    sub.subtopics.forEach(st => {
+      const l1 = (st.levels['1'] || []).length;
+      const l2 = (st.levels['2'] || []).length;
+      const card = document.createElement('div');
+      card.className = 'list-card';
+      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#EEF1FB', '#4C5C8C', 'sm')}<div><div>${st.name}</div><div class="meta">Level-1: ${l1} &nbsp;|&nbsp; Level-2: ${l2}</div></div></div><div>&#8250;</div>`;
+      card.onclick = () => { state.subject = sub; state.subtopic = st; state.view = 'levels'; render(); };
+      app.appendChild(card);
+    });
+  });
+}
+
+function renderSubjects(){
+  if (state.conceptsMode) {
+    headerTitle.textContent = 'Concepts & Formulas';
+    renderConceptsSearchBox();
+    renderConceptsToggle();
+    const body = document.createElement('div');
+    body.id = 'conceptsBody';
+    app.appendChild(body);
+    drawConceptsBody();
+    return;
+  }
+  if (state.activeTab === 'tests') { renderTestsTopics(); return; }
+
+  // "Ask a Doubt" entry point intentionally hidden for now (see note near
+  // openDoubtComposer below) - re-enable once students are onboarded.
+  headerTitle.textContent = 'Choose Subject';
+  renderSubjectCards(app);
 }
 
 function renderSubtopics(){
