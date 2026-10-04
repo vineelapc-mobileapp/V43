@@ -427,3 +427,11 @@ body.theme-measurements .score-summary .big{
 .concepts-section-title{display:flex;align-items:center;gap:10px;margin:18px 2px 10px;font-size:15px;font-weight:800;color:var(--primary);}
 .concepts-section-title .count{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);background:#E4EAF3;border-radius:999px;padding:3px 10px;white-space:nowrap;}
 .concepts-note{font-size:12.5px;color:var(--muted);text-align:center;margin:14px 0 4px;}
+
+/* ---------- Search box inside a page (Concepts & Formulas) ---------- */
+.page-search{display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:12px;box-shadow:0 2px 10px rgba(22,39,74,0.08);}
+.page-search svg{width:19px;height:19px;flex-shrink:0;fill:none;stroke:#8894A6;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+.page-search input{border:none;outline:none;flex:1;min-width:0;font-size:15px;font-family:inherit;color:var(--text);background:none;}
+.page-search input::placeholder{color:#B0BACB;}
+.page-search .clear{display:none;border:none;background:#E4EAF3;color:#5B6B86;width:22px;height:22px;border-radius:50%;font-size:12px;line-height:1;cursor:pointer;flex-shrink:0;}
+.page-search.has-text .clear{display:block;}
