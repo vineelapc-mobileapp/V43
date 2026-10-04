@@ -17,7 +17,8 @@ let state = {
   doubtContext: null, // the question (or null) a doubt was opened from
   finalElapsedMs: 0, // captured from the optional stopwatch when a test is submitted, 0 if never used
   activeTab: 'subjects', // which of the 5 primary tabs is highlighted - Subjects and Tests lead to the same place but light up differently depending on which was tapped
-  conceptsMode: false // true when browsing via the Concepts tab - tapping a topic opens its Concepts PDF directly instead of Levels
+  conceptsMode: false, // true when browsing via the Concepts tab - tapping a topic opens its Concepts PDF directly instead of Levels
+  conceptsView: 'all' // Concepts tab layout: 'all' = every Quick Revision topic on one page, 'subjects' = browse subject by subject
 };
 
 const app = document.getElementById('app');
@@ -62,7 +63,7 @@ function applyLaunchTabParam(){
     if (tab === 'profile-direct') { state.profileReturnView = 'subjects'; state.view = 'profile'; }
     else if (tab === 'subjects') { state.activeTab = 'subjects'; state.conceptsMode = false; state.view = 'subjects'; }
     else if (tab === 'tests') { state.activeTab = 'tests'; state.conceptsMode = false; state.view = 'subjects'; }
-    else if (tab === 'concepts') { state.activeTab = 'concepts'; state.conceptsMode = true; state.view = 'subjects'; }
+    else if (tab === 'concepts') { state.activeTab = 'concepts'; state.conceptsMode = true; state.conceptsView = 'all'; state.view = 'subjects'; }
     else if (tab === 'performance') { state.activeTab = 'performance'; state.view = 'history'; }
   } else if (subjectId) {
     // Came from the launcher's search box - jump straight to a specific
@@ -181,6 +182,7 @@ tabTests.addEventListener('click', () => {
 tabConcepts.addEventListener('click', () => {
   state.activeTab = 'concepts';
   state.conceptsMode = true;
+  state.conceptsView = 'all';
   state.view = 'subjects';
   render();
 });
@@ -282,7 +284,7 @@ function currentViewKey(){
   // the session (e.g., 'quiz' for Level-1 now, 'quiz' again for Level-2
   // after visiting other screens in between) by including what the page
   // is actually showing, not just its view name.
-  return [state.view, state.subject && state.subject.id, state.subtopic && state.subtopic.id, state.level, state.conceptsMode].join('|');
+  return [state.view, state.subject && state.subject.id, state.subtopic && state.subtopic.id, state.level, state.conceptsMode, state.conceptsMode ? state.conceptsView : ''].join('|');
 }
 
 function pushNavStateIfNewPage(){
@@ -496,17 +498,83 @@ function iconBadge(iconKey, bg, fg, size){
 // One consistent colour identity per subject - Power Systems keeps its
 // established copper, Measurements its established teal; any subject a
 // teacher adds gets a calm default so a new subject never looks broken.
-function subjectIconFor(subj){
-  if (subj.id === 'eem') return iconBadge('gauge', '#E3F7FA', '#0E8A9C');
-  if (subj.id === 'power_systems') return iconBadge('bolt', '#FCEEDD', '#B9661C');
-  return iconBadge('book', '#ECEAFB', '#5B4FC4');
+function subjectIconFor(subj, size){
+  if (subj.id === 'eem') return iconBadge('gauge', '#E3F7FA', '#0E8A9C', size);
+  if (subj.id === 'power_systems') return iconBadge('bolt', '#FCEEDD', '#B9661C', size);
+  return iconBadge('book', '#ECEAFB', '#5B4FC4', size);
+}
+
+// Concepts tab: switch between every Quick Revision topic on ONE page, and the
+// original subject-by-subject browsing (unchanged).
+function renderConceptsToggle(){
+  const bar = document.createElement('div');
+  bar.className = 'seg';
+  [['all', 'All Topics'], ['subjects', 'By Subject']].forEach(([key, label]) => {
+    const b = document.createElement('button');
+    b.className = 'seg-btn' + (state.conceptsView === key ? ' active' : '');
+    b.textContent = label;
+    b.onclick = () => { if (state.conceptsView !== key) { state.conceptsView = key; render(); } };
+    bar.appendChild(b);
+  });
+  app.appendChild(bar);
+}
+
+// One page: every topic that has a Quick Revision sheet switched on, grouped
+// by subject. Hidden subjects and switched-off sheets never appear.
+function renderAllConcepts(){
+  let available = 0, missing = 0;
+  const sections = [];
+  DATA.subjects.filter(sub => sub.visible !== false).forEach(sub => {
+    const withPdf = sub.subtopics.filter(st => st.conceptsPdfUrl && st.conceptsPdfVisible);
+    available += withPdf.length;
+    missing += sub.subtopics.length - withPdf.length;
+    if (withPdf.length) sections.push({ sub, withPdf });
+  });
+
+  if (available === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'question-card';
+    empty.innerHTML = '<div class="question-text">No Quick Revision concepts have been added yet.</div><div class="meta" style="margin-top:6px;">Please check back soon.</div>';
+    app.appendChild(empty);
+    return;
+  }
+
+  const intro = document.createElement('div');
+  intro.className = 'concepts-intro';
+  intro.textContent = `${available} Quick Revision sheet${available === 1 ? '' : 's'} - tap a topic to open it`;
+  app.appendChild(intro);
+
+  sections.forEach(({ sub, withPdf }) => {
+    const title = document.createElement('div');
+    title.className = 'concepts-section-title';
+    title.innerHTML = `${subjectIconFor(sub, 'sm')}<span>${sub.name}</span><span class="count">${withPdf.length} topic${withPdf.length === 1 ? '' : 's'}</span>`;
+    app.appendChild(title);
+    withPdf.forEach(st => {
+      const card = document.createElement('div');
+      card.className = 'list-card concept-row';
+      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>${st.name}</div><div class="meta">Quick Revision - Concepts &amp; Formulas</div></div></div><div>&#8250;</div>`;
+      card.onclick = () => downloadConceptsPdf(st);
+      app.appendChild(card);
+    });
+  });
+
+  if (missing > 0) {
+    const note = document.createElement('div');
+    note.className = 'concepts-note';
+    note.textContent = `${missing} more topic${missing === 1 ? '' : 's'} will be added soon.`;
+    app.appendChild(note);
+  }
 }
 
 function renderSubjects(){
-  // Profile and My Test History used to live here as rows - they now
-  // have their own dedicated tabs at the bottom (Profile, Performance),
-  // so this screen is just the clean subject list, nothing else.
+  // Profile and My Test History live on their own tabs, so this screen is
+  // just the subject list (or, on the Concepts tab, the one-page concepts view).
   headerTitle.textContent = state.conceptsMode ? 'Concepts & Formulas' : 'Choose Subject';
+
+  if (state.conceptsMode) {
+    renderConceptsToggle();
+    if (state.conceptsView === 'all') { renderAllConcepts(); return; }
+  }
 
   // "Ask a Doubt" entry point intentionally hidden for now (see note near
   // openDoubtComposer below) - re-enable once students are onboarded.
