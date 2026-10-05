@@ -15,7 +15,8 @@ let state = {
   testFinished: false, // true once Submit is confirmed - locks answers and enables question-by-question review from Results
   reviewEntryIndex: null, // set only when "Review Ques" is tapped from Results - shows "Move to Results Page" on that one question only
   doubtContext: null, // the question (or null) a doubt was opened from
-  finalElapsedMs: 0, // captured from the optional stopwatch when a test is submitted, 0 if never used
+  finalElapsedMs: 0, // total test time, captured when a test is submitted
+  finalTimerPaused: false, // true if the student paused the timer during that test
   activeTab: 'subjects', // which of the 5 primary tabs is highlighted - Subjects and Tests lead to the same place but light up differently depending on which was tapped
   conceptsMode: false, // true when browsing via the Concepts tab - tapping a topic opens its Concepts PDF directly instead of Levels
   conceptsView: 'all', // Concepts tab layout: 'all' = every Quick Revision topic on one page, 'subjects' = browse subject by subject
@@ -903,10 +904,11 @@ function startQuiz(level, qs){
   state.status[qs[0].id] = 'not-answered';
   state.view = 'quiz';
   resetStopwatch(); // fresh test, fresh timer - previous test's time never carries over
+  startStopwatch(); // the timer starts the moment the test opens
   render();
 }
 
-// ---------- Optional Stopwatch ----------
+// ---------- Test timer: starts automatically when a test opens, stops on submit ----------
 // Purely informational for the student - never enforced, never limits the
 // test. Starts at 0, tap to start/pause, resets automatically on a new test.
 // ---------- Scientific calculator (opens as a bottom drawer, doesn't cover
@@ -995,41 +997,67 @@ calcDrawer.addEventListener('click', (e) => {
   calcUpdateDisplay();
 });
 
-let stopwatch = { running: false, elapsedMs: 0, startedAt: null, intervalId: null };
+let stopwatch = { running: false, paused: false, everPaused: false, elapsedMs: 0, startedAt: null, intervalId: null };
 
 function formatStopwatch(ms){
   const totalSec = Math.floor(ms / 1000);
-  const m = String(Math.floor(totalSec / 60)).padStart(2, '0');
-  const s = String(totalSec % 60).padStart(2, '0');
-  return `${m}:${s}`;
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const sec = String(totalSec % 60).padStart(2, '0');
+  return h > 0 ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${String(m).padStart(2, '0')}:${sec}`;
 }
 function updateStopwatchDisplay(){
   const current = stopwatch.elapsedMs + (stopwatch.running ? Date.now() - stopwatch.startedAt : 0);
-  stopwatchDisplay.textContent = '\u23F1 ' + formatStopwatch(current);
+  const paused = stopwatch.paused;
+  stopwatchDisplay.textContent = (paused ? '\u23F8 ' : '\u23F1 ') + formatStopwatch(current) + (paused ? ' Paused' : '');
   stopwatchDisplay.classList.toggle('running', stopwatch.running);
+  // paused = amber, the same colours as the "Self-paced" tag beside it
+  stopwatchDisplay.style.background = paused ? 'var(--accent-light)' : '';
+  stopwatchDisplay.style.color = paused ? '#4A2E00' : '';
+  stopwatchDisplay.style.borderColor = paused ? 'var(--accent)' : '';
 }
-function toggleStopwatch(){
-  if (stopwatch.running) {
-    stopwatch.elapsedMs += Date.now() - stopwatch.startedAt;
-    stopwatch.running = false;
-    clearInterval(stopwatch.intervalId);
-  } else {
-    stopwatch.startedAt = Date.now();
-    stopwatch.running = true;
-    stopwatch.intervalId = setInterval(updateStopwatchDisplay, 1000);
-  }
+function startStopwatch(){   // also used to resume after a pause
+  if (stopwatch.running) return;
+  stopwatch.startedAt = Date.now();
+  stopwatch.running = true;
+  stopwatch.paused = false;
+  stopwatch.intervalId = setInterval(updateStopwatchDisplay, 1000);
+  updateStopwatchDisplay();
+}
+function pauseStopwatch(){
+  if (!stopwatch.running) return;
+  stopwatch.elapsedMs += Date.now() - stopwatch.startedAt;
+  stopwatch.running = false;
+  stopwatch.paused = true;
+  stopwatch.everPaused = true;
+  clearInterval(stopwatch.intervalId);
+  updateStopwatchDisplay();
+}
+function stopStopwatch(){   // final stop at submit - works from running OR paused
+  if (stopwatch.running) stopwatch.elapsedMs += Date.now() - stopwatch.startedAt;
+  stopwatch.running = false;
+  stopwatch.paused = false;
+  clearInterval(stopwatch.intervalId);
   updateStopwatchDisplay();
 }
 function resetStopwatch(){
   clearInterval(stopwatch.intervalId);
-  stopwatch = { running: false, elapsedMs: 0, startedAt: null, intervalId: null };
+  stopwatch = { running: false, paused: false, everPaused: false, elapsedMs: 0, startedAt: null, intervalId: null };
   if (stopwatchDisplay) updateStopwatchDisplay();
 }
 function getStopwatchElapsedMs(){
   return stopwatch.elapsedMs + (stopwatch.running ? Date.now() - stopwatch.startedAt : 0);
 }
 if (stopwatchDisplay) {
-  stopwatchDisplay.addEventListener('click', toggleStopwatch);
+  // The timer starts by itself; tap it to pause or resume. Ignored once the test is submitted
+  // (Results and Review show the final time).
+  stopwatchDisplay.style.cursor = 'pointer';
+  stopwatchDisplay.setAttribute('aria-label', 'Test timer - tap to pause or resume');
+  stopwatchDisplay.addEventListener('click', () => {
+    if (state.view !== 'quiz' || state.testFinished) return;
+    if (stopwatch.running) { pauseStopwatch(); showToast('Timer paused - tap it to resume'); }
+    else if (stopwatch.paused) startStopwatch();
+  });
 }
 
 // ---------- Quiz (exam-hall view) ----------
@@ -1449,8 +1477,9 @@ function finishTest(){
   submitConfirmModal.classList.add('hidden');
   state.testFinished = true;
   state.completedAt = new Date().toISOString();
-  state.finalElapsedMs = getStopwatchElapsedMs(); // captured before the timer stops, only meaningful if the student actually used it
-  if (stopwatch.running) toggleStopwatch(); // stop ticking, no point running in the background on Results
+  state.finalElapsedMs = getStopwatchElapsedMs(); // total time the timer counted, captured as it is submitted
+  state.finalTimerPaused = stopwatch.everPaused;
+  stopStopwatch(); // freeze it (even if it was paused) - review screens show this final time
   recordTestHistory();
   state.view = 'results';
   render();
@@ -1702,7 +1731,7 @@ function renderHistory(){
     const row = document.createElement('div');
     row.className = 'result-row';
     const timeLine = h.elapsedMs > 0
-      ? `<div class="ans-line" style="color:var(--muted);font-family:var(--mono);">&#9201; ${formatStopwatch(h.elapsedMs)}</div>`
+      ? `<div class="ans-line" style="color:var(--muted);font-family:var(--mono);">&#9201; Total time ${formatStopwatch(h.elapsedMs)}</div>`
       : '';
     row.innerHTML = `
       <div class="q">${h.subtopic} - Level ${h.level}</div>
@@ -1782,10 +1811,9 @@ function renderResults(){
   const dateLine = state.completedAt
     ? `<div style="font-size:12px;opacity:0.85;margin-top:4px;">Completed: ${formatDate(state.completedAt)}</div>`
     : '';
-  const timeLine = state.finalElapsedMs > 0
-    ? `<div style="font-size:12px;opacity:0.85;margin-top:2px;font-family:var(--mono);">&#9201; Time taken: ${formatStopwatch(state.finalElapsedMs)}</div>`
-    : '';
-  summary.innerHTML = `<div class="big">${correct} / ${state.questions.length}</div><div>${state.subtopic.name} - Level ${state.level} &nbsp;(${attempted} attempted)</div>${dateLine}${timeLine}`;
+  const timeLine = `<div style="font-size:15px;font-weight:700;margin-top:6px;font-family:var(--mono);">&#9201; Total time: ${formatStopwatch(state.finalElapsedMs || 0)}</div>`
+    + (state.finalTimerPaused ? '<div style="font-size:11px;opacity:0.8;margin-top:2px;">(time while paused is not counted)</div>' : '');
+  summary.innerHTML = `<div class="big">${correct} / ${state.questions.length}</div><div>${state.subtopic.name} - Level ${state.level} &nbsp;(${attempted} attempted)</div>${timeLine}${dateLine}`;
   app.appendChild(summary);
 
   state.questions.forEach((q, i) => {
