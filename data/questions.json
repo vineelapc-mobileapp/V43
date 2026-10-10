@@ -2171,51 +2171,6 @@
             "1": [],
             "2": [
               {
-                "id": "protective_relays_l2_new1791618892834_0",
-                "type": "fill",
-                "question": "𝑻𝒘𝒐 𝒓𝒆𝒍𝒂𝒚𝒔 R1 𝒂𝒏𝒅 𝑹2  𝒂𝒓𝒆 𝒄𝒐𝒏𝒏𝒆𝒄𝒕𝒆𝒅 𝒊𝒏 𝒕𝒘𝒐 𝒔𝒆𝒄𝒕𝒊𝒐𝒏𝒔 𝒐𝒇 𝒂 𝒇𝒆𝒆𝒅𝒆𝒓 𝒂𝒔 𝒔𝒉𝒐𝒘𝒏 𝒃𝒆𝒍𝒐𝒘 𝑪𝑻𝒔 𝒂𝒓𝒆 𝒐𝒇 𝒓𝒂𝒕𝒊𝒐 𝟏𝟎𝟎𝟎/𝟓 𝑨 . 𝑻𝒉𝒆 𝒑𝒍𝒖𝒈 𝒔𝒆𝒕𝒕𝒊𝒏𝒈 𝒐𝒇 𝒓𝒆𝒍𝒂𝒚  𝑹𝟏 𝒂𝒏𝒅 𝑹2 𝒂𝒓𝒆 𝟏𝟎𝟎 %  𝒂𝒏𝒅 𝟏𝟐𝟓 % . The operating characteristics of the relay is given in the table for TMS =1 . The TMS of 𝑹_𝟏  relay is 0.3 .The time grading scheme has discriminative margin of 0.5 sec between the relays . A 3- phase fault at point F results in a fault current of 5000A . Find (1) the actual operating times of 𝑹1 𝒂𝒏𝒅 𝑹2 .   (2) TMS of 𝑹2",
-                "questionImage": null,
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "Ato of R1 = 1.2 sec , Ato of R2 = 1.7 Sec , Tms of R2 = 0.34 ",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": null
-              },
-              {
-                "id": "protective_relays_l2_new1791618946859_0",
-                "type": "fill",
-                "question": "𝑻𝒘𝒐 𝒓𝒆𝒍𝒂𝒚𝒔 R1 𝒂𝒏𝒅 𝑹2  𝒂𝒓𝒆 𝒄𝒐𝒏𝒏𝒆𝒄𝒕𝒆𝒅 𝒊𝒏 𝒕𝒘𝒐 𝒔𝒆𝒄𝒕𝒊𝒐𝒏𝒔 𝒐𝒇 𝒂 𝒇𝒆𝒆𝒅𝒆𝒓 𝒂𝒔 𝒔𝒉𝒐𝒘𝒏 𝒃𝒆𝒍𝒐𝒘 𝑪𝑻𝒔 𝒂𝒓𝒆 𝒐𝒇 𝒓𝒂𝒕𝒊𝒐 𝟏𝟎𝟎𝟎/𝟓 𝑨 . 𝑻𝒉𝒆 𝒑𝒍𝒖𝒈 𝒔𝒆𝒕𝒕𝒊𝒏𝒈 𝒐𝒇 𝒓𝒆𝒍𝒂𝒚  𝑹𝟏 𝒂𝒏𝒅 𝑹2 𝒂𝒓𝒆 𝟏𝟎𝟎 %  𝒂𝒏𝒅 𝟏𝟐𝟓 % . The operating characteristics of the relay is given in the table for TMS =1 . The TMS of 𝑹_𝟏  relay is 0.3 .The time grading scheme has discriminative margin of 0.5 sec between the relays . A 3- phase fault at point F results in a fault current of 5000A . \nFind (1) the actual operating times of 𝑹1 𝒂𝒏𝒅 𝑹2\n(2) TMS of 𝑹2",
-                "questionImage": null,
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "Ato of R1 = 1.2 sec , Ato of R2 = 1.7 Sec , Tms of R2 = 0.34 ",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": null
-              },
-              {
-                "id": "protective_relays_l2_new1791618974601_0",
-                "type": "fill",
-                "question": "𝑻𝒘𝒐 𝒓𝒆𝒍𝒂𝒚𝒔 R1 𝒂𝒏𝒅 𝑹2  𝒂𝒓𝒆 𝒄𝒐𝒏𝒏𝒆𝒄𝒕𝒆𝒅 𝒊𝒏 𝒕𝒘𝒐 𝒔𝒆𝒄𝒕𝒊𝒐𝒏𝒔 𝒐𝒇 𝒂 𝒇𝒆𝒆𝒅𝒆𝒓 𝒂𝒔 𝒔𝒉𝒐𝒘𝒏 𝒃𝒆𝒍𝒐𝒘 𝑪𝑻𝒔 𝒂𝒓𝒆 𝒐𝒇 𝒓𝒂𝒕𝒊𝒐 𝟏𝟎𝟎𝟎/𝟓 𝑨 . 𝑻𝒉𝒆 𝒑𝒍𝒖𝒈 𝒔𝒆𝒕𝒕𝒊𝒏𝒈 𝒐𝒇 𝒓𝒆𝒍𝒂𝒚  𝑹𝟏 𝒂𝒏𝒅 𝑹2 𝒂𝒓𝒆 𝟏𝟎𝟎 %  𝒂𝒏𝒅 𝟏𝟐𝟓 % . The operating characteristics of the relay is given in the table for TMS =1 . The TMS of 𝑹_𝟏  relay is 0.3 .The time grading scheme has discriminative margin of 0.5 sec between the relays . A 3- phase fault at point F results in a fault current of 5000A . \nFind (1) the actual operating times of 𝑹1 𝒂𝒏𝒅 𝑹2\n(2) TMS of 𝑹2",
-                "questionImage": null,
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": " 1.2 sec , 1.7 Sec ,  0.34 ",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": null
-              },
-              {
                 "id": "protective_relays_l2_new1791619180439_0",
                 "type": "fill",
                 "question": "𝑻𝒘𝒐 𝒓𝒆𝒍𝒂𝒚𝒔 R1 𝒂𝒏𝒅 𝑹2  𝒂𝒓𝒆 𝒄𝒐𝒏𝒏𝒆𝒄𝒕𝒆𝒅 𝒊𝒏 𝒕𝒘𝒐 𝒔𝒆𝒄𝒕𝒊𝒐𝒏𝒔 𝒐𝒇 𝒂 𝒇𝒆𝒆𝒅𝒆𝒓 𝒂𝒔 𝒔𝒉𝒐𝒘𝒏 𝒃𝒆𝒍𝒐𝒘 𝑪𝑻𝒔 𝒂𝒓𝒆 𝒐𝒇 𝒓𝒂𝒕𝒊𝒐 𝟏𝟎𝟎𝟎/𝟓 𝑨 . 𝑻𝒉𝒆 𝒑𝒍𝒖𝒈 𝒔𝒆𝒕𝒕𝒊𝒏𝒈 𝒐𝒇 𝒓𝒆𝒍𝒂𝒚  𝑹𝟏 𝒂𝒏𝒅 𝑹2 𝒂𝒓𝒆 𝟏𝟎𝟎 %  𝒂𝒏𝒅 𝟏𝟐𝟓 % . The operating characteristics of the relay is given in the table for TMS =1 . The TMS of 𝑹_𝟏  relay is 0.3 .The time grading scheme has discriminative margin of 0.5 sec between the relays . A 3- phase fault at point F results in a fault current of 5000A . \nFind (1) the actual operating times of 𝑹1 𝒂𝒏𝒅 𝑹2\n(2) TMS of 𝑹2",
@@ -2228,7 +2183,7 @@
                 "videoReady": false,
                 "audioFile": null,
                 "explanation": "",
-                "explanationImage": null
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791626981/xnjwpuoybszvri8nbywp.png"
               }
             ]
           }
