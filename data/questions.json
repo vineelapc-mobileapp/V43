@@ -2198,6 +2198,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791627253/do8kue2gyh4buwdok1nx.png"
+              },
+              {
+                "id": "protective_relays_l1_new1791632323100_0",
+                "type": "mcq",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791632170/o1cwhmvcmlxreyu9yrmq.png",
+                "options": [
+                  "P",
+                  "Q",
+                  "R",
+                  "S"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "I1 lags V1 ith large magnitude , so fault at Q",
+                "explanationImage": null
               }
             ],
             "2": [
