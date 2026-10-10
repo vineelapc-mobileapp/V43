@@ -2168,7 +2168,23 @@
           "id": "protective_relays",
           "name": "Protective Relays",
           "levels": {
-            "1": [],
+            "1": [
+              {
+                "id": "protective_relays_l1_new1791627154168_0",
+                "type": "fill",
+                "question": "An over-current relay, having a current setting of 125% connected to a supply circuit through acurrent transformer of ratio 400/5 A. The pick- up value is__ A.",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "6.25",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Ipk = CT secondary current X PSB = 5 X 1.25 = 6.25 A ",
+                "explanationImage": null
+              }
+            ],
             "2": [
               {
                 "id": "protective_relays_l2_new1791619180439_0",
