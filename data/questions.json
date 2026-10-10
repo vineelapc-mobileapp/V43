@@ -2250,6 +2250,26 @@
                 "audioFile": null,
                 "explanation": "R1, R6 are back up relays ",
                 "explanationImage": null
+              },
+              {
+                "id": "protective_relays_l2_new1791629128003_0",
+                "type": "mcq",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791628927/gjmuvxkax0tmihapqplr.png",
+                "options": [
+                  "1,4",
+                  "2,3,5",
+                  "2,3",
+                  "2,4, 5"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "2 and 3 are DOC",
+                "explanationImage": null
               }
             ]
           }
