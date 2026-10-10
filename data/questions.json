@@ -2183,6 +2183,21 @@
                 "audioFile": null,
                 "explanation": "Ipk = CT secondary current X PSB = 5 X 1.25 = 6.25 A ",
                 "explanationImage": null
+              },
+              {
+                "id": "protective_relays_l1_new1791627257285_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791627217/fzwz3ba1cnjtcxeossz0.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "0.227 sec",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791627253/do8kue2gyh4buwdok1nx.png"
               }
             ],
             "2": [
