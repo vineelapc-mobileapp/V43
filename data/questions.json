@@ -2357,6 +2357,36 @@
                 "audioFile": null,
                 "explanation": "watch solution ",
                 "explanationImage": null
+              },
+              {
+                "id": "protective_relays_lconventional_new1791638608500_0",
+                "type": "conventional",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791638583/gystrgfy8uea4xcuvg6k.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Watch solution",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791638604/vvflmoymuhaafxvnpgb0.png"
+              },
+              {
+                "id": "protective_relays_lconventional_new1791638866812_0",
+                "type": "conventional",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791638583/gystrgfy8uea4xcuvg6k.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Watch solution",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791638604/vvflmoymuhaafxvnpgb0.png"
               }
             ]
           }
