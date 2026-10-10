@@ -2233,6 +2233,26 @@
                 "audioFile": null,
                 "explanation": "Vf1 leads If1 and Vf2 leads IF2",
                 "explanationImage": null
+              },
+              {
+                "id": "protective_relays_l1_new1791632828543_0",
+                "type": "mcq",
+                "question": "For a Ring main Protrction with one source with n Substations , how many lines , OC and DOC relays are required for Protection ?",
+                "questionImage": null,
+                "options": [
+                  "n,n,n",
+                  "2n,2n-2, 2n",
+                  "2n,2n, (2n-2)",
+                  "n, 2, (2n-2)"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "n - lines \n Each line requires 2 Relays \n@ relays are OC kept at source \n(2n-2) relays are kept in remaining lines ",
+                "explanationImage": null
               }
             ],
             "2": [
