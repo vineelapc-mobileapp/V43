@@ -2215,6 +2215,21 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791626981/xnjwpuoybszvri8nbywp.png"
+              },
+              {
+                "id": "protective_relays_l2_new1791627372971_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791627339/oopisg33g9kk9ajo4mjj.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "watch solution",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791627369/dgez1yytz9zwouawtdtb.png"
               }
             ]
           }
