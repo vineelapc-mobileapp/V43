@@ -2342,6 +2342,21 @@
                 "audioFile": null,
                 "explanation": "watch answer in attchemnet",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791629423/i1a2qwkqiogyby7i6dyk.png"
+              },
+              {
+                "id": "protective_relays_lconventional_new1791638567858_0",
+                "type": "conventional",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791638469/f1jziwu5drdh8krsqgrr.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "watch solution ",
+                "explanationImage": null
               }
             ]
           }
