@@ -436,8 +436,27 @@
       };
     });
   }
+
+  // ---------- main-screen tile: draw a diagram first, it becomes a new question's figure ----------
+  function wireTile() {
+    const ref = document.getElementById('photoAsQuestionBtn');
+    if (!ref || document.getElementById('ddTileBtn')) return;
+    const tile = document.createElement('div');
+    tile.className = ref.className; tile.id = 'ddTileBtn';
+    tile.style.gridColumn = '1 / -1';
+    tile.innerHTML = '<span class="icon">\u270F\uFE0F</span>Draw Diagram<span class="sub">Draw a circuit with R, L, C, source and switch symbols - it becomes the question figure, add options after</span>';
+    ref.after(tile);
+    tile.onclick = () => window.openDiagramEditor({
+      onSave: async blob => {
+        const input = document.getElementById('photoAsQuestionInput');
+        const file = new File([blob], 'diagram_' + Date.now() + '.png', { type: 'image/png' });
+        const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+  }
   let raf = 0;
-  const sched = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; wire(); }); };
+  const sched = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; wire(); wireTile(); }); };
   new MutationObserver(sched).observe(document.documentElement, { childList: true, subtree: true });
-  wire();
+  wire(); wireTile();
 })();
