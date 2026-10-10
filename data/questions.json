@@ -2251,7 +2251,7 @@
                 "videoFile": null,
                 "videoReady": false,
                 "audioFile": null,
-                "explanation": "n - lines \n Each line requires 2 Relays \n@ relays are OC kept at source \n(2n-2) relays are kept in remaining lines ",
+                "explanation": "n - lines \n Each line requires 2 Relays relays are OC kept at source \n(2n-2) DOC  relays are kept in Load other ends of lines ",
                 "explanationImage": null
               }
             ],
