@@ -435,3 +435,13 @@ body.theme-measurements .score-summary .big{
 .page-search input::placeholder{color:#B0BACB;}
 .page-search .clear{display:none;border:none;background:#E4EAF3;color:#5B6B86;width:22px;height:22px;border-radius:50%;font-size:12px;line-height:1;cursor:pointer;flex-shrink:0;}
 .page-search.has-text .clear{display:block;}
+
+/* NEW v79: Conventional page - wide, roomy answer area, nothing hidden behind the bottom bar */
+#app.conv-wide{max-width:900px;padding:10px 8px 190px;}
+#app.conv-wide .question-card{margin-bottom:18px;padding:16px 14px;}
+.conv-answer{margin-top:14px;background:#F6F9FD;border:1px solid #DCE3EC;border-left:4px solid var(--accent);border-radius:10px;padding:14px 12px;}
+.conv-solution{font-size:15px;line-height:1.9;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:anywhere;min-height:120px;}
+.conv-solution .katex{font-size:1.08em;}
+.conv-solution .katex-display{margin:4px 0;overflow-x:auto;overflow-y:hidden;padding:4px 0;}
+.conv-answer .explanation-image{max-width:100%;height:auto;display:block;margin:12px 0;border-radius:8px;}
+.conv-answer .audio-explanation{width:100%;margin-top:10px;}

@@ -364,6 +364,7 @@ function render(){
   }
 
   app.innerHTML = '';
+  app.classList.remove('conv-wide');
   const inQuiz = state.view === 'quiz';
   // Back/Forward stay always visible and always clickable - no disabled
   // state to manage. Outside a quiz, clicking with nothing to go back/
@@ -852,6 +853,7 @@ function renderLevels(){
 // palette, since these aren't machine-gradable multiple-choice questions.
 function renderConventional(){
   headerTitle.textContent = state.subtopic.name + ' - Conventional';
+  app.classList.add('conv-wide'); // wider page + roomy answer area
   const qs = state.subtopic.levels['conventional'] || [];
   qs.forEach((q, i) => {
     const card = document.createElement('div');
@@ -861,7 +863,7 @@ function renderConventional(){
       <div class="question-text">Q${i + 1}. ${q.question || ''}</div>
       ${qImgHtml}
       <button class="btn btn-secondary full-width reveal-answer-btn" style="margin-top:10px;">Show Model Answer</button>
-      <div class="conv-answer hidden" style="margin-top:12px;"></div>
+      <div class="conv-answer hidden"></div>
     `;
     const revealBtn = card.querySelector('.reveal-answer-btn');
     const answerDiv = card.querySelector('.conv-answer');
@@ -872,7 +874,7 @@ function renderConventional(){
         const audioHtml = q.audioFile ? `<audio controls class="audio-explanation" src="${q.audioFile}"></audio>` : '';
         const videoHtml = hasVideo(q) ? '<span class="video-link">Watch Video Solution</span>' : '';
         answerDiv.innerHTML = `
-          <p class="explanation-text">${q.explanation || 'No model answer provided yet.'}</p>
+          <div class="explanation-text conv-solution">${q.explanation || 'No model answer provided yet.'}</div>
           ${explImgHtml}
           ${audioHtml}
           ${videoHtml}
