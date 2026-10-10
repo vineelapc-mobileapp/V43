@@ -2218,6 +2218,21 @@
                 "audioFile": null,
                 "explanation": "I1 lags V1 ith large magnitude , so fault at Q",
                 "explanationImage": null
+              },
+              {
+                "id": "protective_relays_l1_new1791632590855_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791632355/ur4pmybxg8vwg9bsqb9a.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "Answer is B",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Vf1 leads If1 and Vf2 leads IF2",
+                "explanationImage": null
               }
             ],
             "2": [
