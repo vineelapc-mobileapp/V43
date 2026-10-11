@@ -456,9 +456,18 @@ body.theme-measurements .score-summary .big{
   margin:10px auto 14px;background:#fff;border:1px solid #DCE3EC;border-radius:10px;padding:4px;box-sizing:border-box;
 }
 
-/* ===== V86 NEW: Choose Subject page background (power-line photo) ===== */
-body.bg-subjects{
-  background-image:linear-gradient(rgba(8,18,45,0.35),rgba(8,18,45,0.55)),url('bg-subjects.jpg');
-  background-size:cover;background-position:center top;background-attachment:fixed;background-repeat:no-repeat;
+/* ===== V86/V88 NEW: Choose Subject page background (whole photo centred, blurred copy fills the rest) ===== */
+body.bg-subjects{background-image:none;background-color:#8fb55a;}
+body.bg-subjects::before{
+  content:'';position:fixed;inset:-20px;z-index:-1;
+  background:url('bg-subjects.jpg') center center/cover no-repeat;
+  filter:blur(16px) saturate(1.1);
 }
-body.bg-subjects .list-card{background:rgba(255,255,255,0.94);box-shadow:0 2px 8px rgba(0,0,0,0.35);}
+body.bg-subjects::after{
+  content:'';position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);
+  aspect-ratio:622/349;z-index:-1;
+  background:url('bg-subjects.jpg') center center/100% 100% no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);
+}
+body.bg-subjects .list-card{background:rgba(255,255,255,0.93);box-shadow:0 2px 8px rgba(0,0,0,0.25);}
