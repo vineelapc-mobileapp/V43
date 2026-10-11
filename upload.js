@@ -316,9 +316,9 @@ function renderVerifyTab(){
   overview.style.background = '#eef1fb';
   const sizeBytes = new Blob([JSON.stringify(DATA)]).size;
   const sizeMB = sizeBytes / (1024 * 1024);
-  const sizeColor = sizeBytes > 900000 ? 'var(--wrong)' : (sizeBytes > 600000 ? '#e65100' : 'var(--correct)');
-  const sizeWarning = sizeBytes > 900000
-    ? '<br><span style="color:var(--wrong);font-weight:700;">⚠ Over GitHub\'s ~1 MB Publish limit - Publish to GitHub will be blocked until this is smaller (remove a heavy uploaded video, or use a Link instead).</span>'
+  const sizeColor = sizeBytes > 20000000 ? 'var(--wrong)' : (sizeBytes > 8000000 ? '#e65100' : 'var(--correct)'); // V83 NEW: limits raised (Git Data API)
+  const sizeWarning = sizeBytes > 20000000
+    ? '<br><span style="color:var(--wrong);font-weight:700;">⚠ Over 20 MB - Publish to GitHub will be blocked until this is smaller (remove a heavy uploaded video, or use a Link instead).</span>'
     : '';
   overview.innerHTML = `
     <h3>Overview</h3>
@@ -1560,6 +1560,75 @@ function populateSubtopics(){
   });
 }
 subjectSelect.addEventListener('change', populateSubtopics);
+
+// ---------- Add New Subject (with Save) ----------
+const addSubjectToggle = document.getElementById('addSubjectToggle');
+const addSubjectBody = document.getElementById('addSubjectBody');
+const newSubjectInput = document.getElementById('newSubjectInput');
+const saveSubjectBtn = document.getElementById('saveSubjectBtn');
+const newSubjectStatus = document.getElementById('newSubjectStatus');
+
+addSubjectToggle.addEventListener('click', () => {
+  addSubjectBody.classList.toggle('open');
+  newSubjectInput.focus();
+});
+
+saveSubjectBtn.addEventListener('click', () => {
+  const name = newSubjectInput.value.trim();
+  if (!name) {
+    newSubjectStatus.textContent = 'Type a subject name first.';
+    newSubjectStatus.className = 'status-line error';
+    return;
+  }
+  const id = slugify(name);
+  if (DATA.subjects.some(s => s.id === id || s.name.toLowerCase() === name.toLowerCase())) {
+    newSubjectStatus.textContent = 'That subject already exists.';
+    newSubjectStatus.className = 'status-line error';
+    return;
+  }
+  // A new subject starts with every feature the existing ones have -
+  // visible by default, no topics yet, no Class Work Book PDFs yet - all
+  // added the same way as Power Systems / Measurements already are.
+  DATA.subjects.push({ id, name, visible: true, subtopics: [] });
+  populateSubjects();
+  subjectSelect.value = id;
+  populateSubtopics();
+  newSubjectInput.value = '';
+  pendingTopicChanges = true;
+  updateExportBarVisibility();
+  newSubjectStatus.textContent = `Added "${name}" as a new subject. Use "Manage Topics" above to add its first topic, then Download or Publish to GitHub to make it visible to students.`;
+  newSubjectStatus.className = 'status-line ok';
+});
+
+const deleteSubjectBtn = document.getElementById('deleteSubjectBtn');
+const deleteSubjectStatus = document.getElementById('deleteSubjectStatus');
+
+deleteSubjectBtn.addEventListener('click', () => {
+  const subj = DATA.subjects.find(s => s.id === subjectSelect.value);
+  if (!subj) {
+    deleteSubjectStatus.textContent = 'No subject selected.';
+    deleteSubjectStatus.className = 'status-line error';
+    return;
+  }
+  if (DATA.subjects.length <= 1) {
+    deleteSubjectStatus.textContent = 'Cannot delete the only remaining subject.';
+    deleteSubjectStatus.className = 'status-line error';
+    return;
+  }
+  let qCount = 0;
+  subj.subtopics.forEach(st => {
+    qCount += (st.levels['1'] || []).length + (st.levels['2'] || []).length + (st.levels['conventional'] || []).length;
+  });
+  const confirmMsg = `Delete the entire subject "${subj.name}"? This permanently removes all ${subj.subtopics.length} topic(s) and ${qCount} question(s) inside it, plus its Class Work Book PDFs. This can't be undone once published.`;
+  if (!window.confirm(confirmMsg)) return;
+
+  DATA.subjects = DATA.subjects.filter(s => s.id !== subj.id);
+  populateSubjects();
+  pendingTopicChanges = true;
+  updateExportBarVisibility();
+  deleteSubjectStatus.textContent = `Deleted "${subj.name}" and everything in it. Use Download or Publish to GitHub below to make this permanent for students.`;
+  deleteSubjectStatus.className = 'status-line ok';
+});
 
 // ---------- Add New Topic (with Save) ----------
 const addTopicToggle = document.getElementById('addTopicToggle');
@@ -2876,12 +2945,12 @@ publishBtn.addEventListener('click', async () => {
   const contentStr = JSON.stringify(DATA, null, 2);
   const sizeBytes = new Blob([contentStr]).size;
   const sizeMB = sizeBytes / (1024 * 1024);
-  if (sizeBytes > 900000) {
+  if (sizeBytes > 20000000) { // V83 NEW: was 900000 (Contents API); now Git Data API
     const websiteNote = sizeMB > 25
       ? `Your file is ${sizeMB.toFixed(2)} MB, which is also too big for GitHub's website upload (25 MB limit) - you'll need to shrink it first using the Storage Report before either option below will work.`
       : `1) Tap "Download File" below, then on github.com go to your repo → data folder → click questions.json → the pencil (edit) icon → replace the content → Commit. GitHub's website accepts files up to 25 MB this way.`;
     showPublishError(
-      `Can't publish automatically - your question bank is now ${sizeMB.toFixed(2)} MB, over GitHub's ~1 MB limit for this kind of update (this is a GitHub limit, not an app bug).\n\n` +
+      `Can't publish automatically - your question bank is now ${sizeMB.toFixed(2)} MB, over the 20 MB safe limit for Publish.\n\n` +
       `This is almost always caused by an uploaded video file or several images.\n\n` +
       `Fastest fix: go to "2. Verify Uploaded Data" → tap "🔍 Show Storage Report" - it lists your heaviest questions first, with a one-tap button to remove each uploaded video/image. Removing the biggest one or two usually solves this immediately.\n\n` +
       `${websiteNote}\n\n` +
@@ -2893,42 +2962,57 @@ publishBtn.addEventListener('click', async () => {
   publishBtn.disabled = true;
   setStatus('Connecting to GitHub...');
 
-  const apiBase = `https://api.github.com/repos/${s.user}/${s.repo}/contents/${s.path}`;
+  // V83 NEW: publish through the Git Data API (blob -> tree -> commit -> ref).
+  // The old Contents API refused files over ~1 MB; blobs accept up to 100 MB.
+  const repoBase = `https://api.github.com/repos/${s.user}/${s.repo}`;
   const headers = {
     'Authorization': 'Bearer ' + s.token,
-    'Accept': 'application/vnd.github+json'
+    'Accept': 'application/vnd.github+json',
+    'Content-Type': 'application/json'
+  };
+  const gh = async (url, opts, what) => {
+    const r = await fetch(url, opts);
+    if (!r.ok) {
+      const errBody = await r.text();
+      throw new Error(`${what} failed (HTTP ${r.status}). ${errBody.slice(0,300)}`);
+    }
+    return r.json();
   };
 
   try {
-    // 1. Get current file SHA (required by GitHub to update an existing file)
-    setStatus('Fetching current file from GitHub...');
-    const getRes = await fetch(`${apiBase}?ref=${encodeURIComponent(s.branch)}`, { headers });
-    if (!getRes.ok) {
-      const errBody = await getRes.text();
-      throw new Error(`Could not read current file (HTTP ${getRes.status}). Check username/repo/path/token. ${errBody.slice(0,300)}`);
-    }
-    const getJson = await getRes.json();
-    const sha = getJson.sha;
+    const branch = encodeURIComponent(s.branch);
+    setStatus('Step 1/5: reading the latest version from GitHub...');
+    const ref = await gh(`${repoBase}/git/ref/heads/${branch}`, { headers }, 'Reading branch (check username/repo/branch/token)');
+    const parentSha = ref.object.sha;
+    const parent = await gh(`${repoBase}/git/commits/${parentSha}`, { headers }, 'Reading last commit');
 
-    // 2. Push updated content
-    setStatus('Publishing update to GitHub...');
+    setStatus(`Step 2/5: uploading the question bank (${sizeMB.toFixed(2)} MB)...`);
     const base64Content = btoa(unescape(encodeURIComponent(contentStr)));
+    const blob = await gh(`${repoBase}/git/blobs`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ content: base64Content, encoding: 'base64' })
+    }, 'Uploading file');
 
-    const putRes = await fetch(apiBase, {
-      method: 'PUT',
-      headers: { ...headers, 'Content-Type': 'application/json' },
+    setStatus('Step 3/5: preparing the commit...');
+    const tree = await gh(`${repoBase}/git/trees`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ base_tree: parent.tree.sha, tree: [{ path: s.path, mode: '100644', type: 'blob', sha: blob.sha }] })
+    }, 'Creating tree');
+
+    setStatus('Step 4/5: saving the commit...');
+    const commit = await gh(`${repoBase}/git/commits`, {
+      method: 'POST', headers,
       body: JSON.stringify({
         message: `Add ${addedCount} question(s) to ${subtopicName} (Level ${level}) via Teacher Upload`,
-        content: base64Content,
-        sha,
-        branch: s.branch
+        tree: tree.sha, parents: [parentSha]
       })
-    });
+    }, 'Creating commit');
 
-    if (!putRes.ok) {
-      const errBody = await putRes.text();
-      throw new Error(`Publish failed (HTTP ${putRes.status}). ${errBody.slice(0,300)}`);
-    }
+    setStatus('Step 5/5: publishing...');
+    await gh(`${repoBase}/git/refs/heads/${branch}`, {
+      method: 'PATCH', headers,
+      body: JSON.stringify({ sha: commit.sha })
+    }, 'Updating branch');
 
     const topicNote = pendingTopicChanges ? ' New topic(s) published too.' : '';
     setStatus(`Published! Added ${addedCount} question(s) to ${subtopicName} (Level ${level}).${topicNote} Students will see it after GitHub Pages rebuilds (~1-2 min).`, 'ok');
