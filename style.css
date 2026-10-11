@@ -445,3 +445,13 @@ body.theme-measurements .score-summary .big{
 .conv-solution .katex-display{margin:4px 0;overflow-x:auto;overflow-y:hidden;padding:4px 0;}
 .conv-answer .explanation-image{max-width:100%;height:auto;display:block;margin:12px 0;border-radius:8px;}
 .conv-answer .audio-explanation{width:100%;margin-top:10px;}
+
+/* ===== V81 NEW: uniform look for ALL questions & solutions (teacher-uploaded and built-in) ===== */
+.question-text,.opt-text,.explanation-text{font-family:inherit;white-space:pre-line;word-wrap:break-word;overflow-wrap:anywhere;}
+.question-text{color:var(--text);font-size:17px;font-weight:600;line-height:1.45;}
+.opt-text{line-height:1.4;}
+.correct-panel-body .explanation-text,.wrong-panel .explanation-text{font-size:14px;font-weight:400;line-height:1.65;color:var(--text);}
+.question-image,.explanation-image,.correct-panel-body .explanation-image,.wrong-panel .explanation-image{
+  display:block;width:auto;max-width:100%;height:auto;max-height:420px;object-fit:contain;
+  margin:10px auto 14px;background:#fff;border:1px solid #DCE3EC;border-radius:10px;padding:4px;box-sizing:border-box;
+}
