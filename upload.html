@@ -225,6 +225,28 @@ textarea.raw-text{
     </div>
   </div>
 
+  <button id="addSubjectToggle" class="settings-toggle" style="margin-bottom:12px;">&#9881; Manage Subjects (Add / Delete)</button>
+  <div id="addSubjectBody" class="settings-body">
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Add a new subject</h3>
+      <div class="hint">A new subject gets every feature Power Systems and Measurements already have - topics, Level-1/Level-2/Conventional questions, per-topic Concepts &amp; Formulas PDFs, and its own Class Work Book Solution (Part 1/Part 2). Nothing about your existing subjects is touched.</div>
+      <div class="field-row" style="margin-top:10px;">
+        <div class="field-col">
+          <label>New Subject Name</label>
+          <input type="text" id="newSubjectInput" placeholder="e.g. Control Systems By BALAJI sir">
+        </div>
+      </div>
+      <button id="saveSubjectBtn" class="btn btn-primary full-width">Save New Subject</button>
+      <div id="newSubjectStatus" class="status-line"></div>
+    </div>
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Delete a subject</h3>
+      <div class="hint">Deletes the subject currently selected above (in the Subject dropdown) and permanently removes every topic and question inside it. This can't be undone once published.</div>
+      <button id="deleteSubjectBtn" class="btn btn-secondary full-width" style="margin-top:10px;color:var(--wrong);">&#128465; Delete Selected Subject</button>
+      <div id="deleteSubjectStatus" class="status-line"></div>
+    </div>
+  </div>
+
   <button id="addTopicToggle" class="settings-toggle" style="margin-bottom:12px;">&#9881; Manage Topics (Add / Delete)</button>
   <div id="addTopicBody" class="settings-body">
     <div class="settings-panel">

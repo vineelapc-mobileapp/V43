@@ -1851,6 +1851,22 @@ function showPublishError(msg){
   overlay.querySelector('#dismissPublishError').onclick = () => overlay.remove();
 }
 
+// V87 NEW: full-screen progress box so Publish never looks "dead" on a phone
+// (status messages at the top of the page are out of sight after scrolling).
+let publishProgressEl = null;
+function showPublishProgress(text){
+  if (!publishProgressEl) {
+    publishProgressEl = document.createElement('div');
+    publishProgressEl.className = 'modal';
+    publishProgressEl.style.zIndex = '200';
+    publishProgressEl.innerHTML = '<div class="modal-box" style="max-width:380px;text-align:center;"><h2 style="margin-bottom:10px;">Publishing to GitHub...</h2><p id="publishProgressText" style="font-size:15px;line-height:1.5;"></p><p style="font-size:12px;color:var(--muted);margin-top:10px;">Please wait and keep this page open. A 4 MB file can take up to a minute on mobile data.</p></div>';
+    document.body.appendChild(publishProgressEl);
+  }
+  publishProgressEl.querySelector('#publishProgressText').textContent = text;
+  setStatus(text);
+}
+function hidePublishProgress(){ if (publishProgressEl) { publishProgressEl.remove(); publishProgressEl = null; } }
+
 async function handleFile(file){
   const ext = file.name.split('.').pop().toLowerCase();
   setStatus('Reading ' + file.name + ' ...');
@@ -2931,11 +2947,12 @@ publishBtn.addEventListener('click', async () => {
 
   if (!validateAllQuestionCards()) return;
 
-  const { addedCount, subtopicName, level } = mergeIntoData();
-  if (addedCount === 0 && !pendingTopicChanges) {
-    setStatus('No complete questions to publish - fill in all options and mark a correct answer first.', 'error');
-    return;
-  }
+  let merged;
+  try { merged = mergeIntoData(); }
+  catch (e) { console.error(e); showPublishError('Could not prepare the data: ' + e.message + '\n\nOpen "1. Upload" and choose the Subject, Topic and Level, then tap Publish again.'); return; }
+  const { addedCount, subtopicName, level } = merged;
+  // V87 NEW: edits made to EXISTING questions (Verify tab) change DATA directly and add
+  // no new question, so they must still publish - never end silently.
 
   // GitHub's Contents API (what Publish uses) fails on writes over roughly
   // 1 MB - a much stricter limit than the 100 MB normal Git push allows.
@@ -2960,7 +2977,7 @@ publishBtn.addEventListener('click', async () => {
   }
 
   publishBtn.disabled = true;
-  setStatus('Connecting to GitHub...');
+  showPublishProgress('Connecting to GitHub...');
 
   // V83 NEW: publish through the Git Data API (blob -> tree -> commit -> ref).
   // The old Contents API refused files over ~1 MB; blobs accept up to 100 MB.
@@ -2971,7 +2988,12 @@ publishBtn.addEventListener('click', async () => {
     'Content-Type': 'application/json'
   };
   const gh = async (url, opts, what) => {
-    const r = await fetch(url, opts);
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 240000); // V87 NEW: never hang forever
+    let r;
+    try { r = await fetch(url, { ...opts, signal: ctl.signal }); }
+    catch (e) { throw new Error(`${what} did not finish (${e.name === 'AbortError' ? 'timed out after 4 minutes' : 'network problem: ' + e.message}). Check your internet and try again.`); }
+    finally { clearTimeout(timer); }
     if (!r.ok) {
       const errBody = await r.text();
       throw new Error(`${what} failed (HTTP ${r.status}). ${errBody.slice(0,300)}`);
@@ -2981,41 +3003,42 @@ publishBtn.addEventListener('click', async () => {
 
   try {
     const branch = encodeURIComponent(s.branch);
-    setStatus('Step 1/5: reading the latest version from GitHub...');
+    showPublishProgress('Step 1 of 5: reading the latest version from GitHub...');
     const ref = await gh(`${repoBase}/git/ref/heads/${branch}`, { headers }, 'Reading branch (check username/repo/branch/token)');
     const parentSha = ref.object.sha;
     const parent = await gh(`${repoBase}/git/commits/${parentSha}`, { headers }, 'Reading last commit');
 
-    setStatus(`Step 2/5: uploading the question bank (${sizeMB.toFixed(2)} MB)...`);
+    showPublishProgress(`Step 2 of 5: uploading the question bank (${sizeMB.toFixed(2)} MB)...`);
     const base64Content = btoa(unescape(encodeURIComponent(contentStr)));
     const blob = await gh(`${repoBase}/git/blobs`, {
       method: 'POST', headers,
       body: JSON.stringify({ content: base64Content, encoding: 'base64' })
     }, 'Uploading file');
 
-    setStatus('Step 3/5: preparing the commit...');
+    showPublishProgress('Step 3 of 5: preparing the commit...');
     const tree = await gh(`${repoBase}/git/trees`, {
       method: 'POST', headers,
       body: JSON.stringify({ base_tree: parent.tree.sha, tree: [{ path: s.path, mode: '100644', type: 'blob', sha: blob.sha }] })
     }, 'Creating tree');
 
-    setStatus('Step 4/5: saving the commit...');
+    showPublishProgress('Step 4 of 5: saving the commit...');
     const commit = await gh(`${repoBase}/git/commits`, {
       method: 'POST', headers,
       body: JSON.stringify({
-        message: `Add ${addedCount} question(s) to ${subtopicName} (Level ${level}) via Teacher Upload`,
+        message: addedCount ? `Add ${addedCount} question(s) to ${subtopicName} (Level ${level}) via Teacher Upload` : 'Update question bank (edits) via Teacher Upload',
         tree: tree.sha, parents: [parentSha]
       })
     }, 'Creating commit');
 
-    setStatus('Step 5/5: publishing...');
+    showPublishProgress('Step 5 of 5: publishing...');
     await gh(`${repoBase}/git/refs/heads/${branch}`, {
       method: 'PATCH', headers,
       body: JSON.stringify({ sha: commit.sha })
     }, 'Updating branch');
 
+    hidePublishProgress();
     const topicNote = pendingTopicChanges ? ' New topic(s) published too.' : '';
-    setStatus(`Published! Added ${addedCount} question(s) to ${subtopicName} (Level ${level}).${topicNote} Students will see it after GitHub Pages rebuilds (~1-2 min).`, 'ok');
+    setStatus(`Published! ${addedCount ? 'Added ' + addedCount + ' question(s) to ' + subtopicName + ' (Level ' + level + ').' : 'Your edits are saved to GitHub.'}${topicNote} Students will see it after GitHub Pages rebuilds (~1-2 min).`, 'ok');
     showQuestionCountSummary(addedCount, subtopicName, level, 'Published');
     clearDraft(); // successfully published - no need to keep the local safety-net copy
     parsedQuestions = [];
@@ -3027,8 +3050,10 @@ publishBtn.addEventListener('click', async () => {
     pendingSourceImages = [];
   } catch (err) {
     console.error(err);
+    hidePublishProgress();
     showPublishError('Publish error: ' + err.message);
   } finally {
+    hidePublishProgress();
     publishBtn.disabled = false;
   }
 });
