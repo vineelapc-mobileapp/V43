@@ -328,6 +328,7 @@ function render(){
   // any other view logic, so there's no path around it.
   if (DATA.studentAccessEnabled === false) {
     document.body.classList.remove('theme-measurements');
+    document.body.classList.remove('bg-subjects');
     // backBtn/fwdBtn stay simple and always clickable - nothing to disable here.
     paletteToggleBtn.classList.add('hidden');
     topicsBtn.classList.add('hidden');
@@ -363,6 +364,8 @@ function render(){
     document.body.classList.remove('theme-measurements');
   }
 
+  // V86 NEW: power-line photo behind the Choose Subject page only
+  document.body.classList.toggle('bg-subjects', state.view === 'subjects' && !state.conceptsMode && state.activeTab === 'subjects');
   app.innerHTML = '';
   app.classList.remove('conv-wide');
   const inQuiz = state.view === 'quiz';

@@ -1,9 +1,10 @@
-const CACHE_NAME = 'eee-practice-v85';
+const CACHE_NAME = 'eee-practice-v86';
 const ASSETS = [
   './',
   './home.html',
   './index.html',
   './style.css',
+  './bg-subjects.jpg',
   './app.js',
   './manifest.json',
   './manifest-upload.json',

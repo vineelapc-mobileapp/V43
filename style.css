@@ -455,3 +455,10 @@ body.theme-measurements .score-summary .big{
   display:block;width:auto;max-width:100%;height:auto;max-height:420px;object-fit:contain;
   margin:10px auto 14px;background:#fff;border:1px solid #DCE3EC;border-radius:10px;padding:4px;box-sizing:border-box;
 }
+
+/* ===== V86 NEW: Choose Subject page background (power-line photo) ===== */
+body.bg-subjects{
+  background-image:linear-gradient(rgba(8,18,45,0.35),rgba(8,18,45,0.55)),url('bg-subjects.jpg');
+  background-size:cover;background-position:center top;background-attachment:fixed;background-repeat:no-repeat;
+}
+body.bg-subjects .list-card{background:rgba(255,255,255,0.94);box-shadow:0 2px 8px rgba(0,0,0,0.35);}
