@@ -2149,7 +2149,7 @@
               {
                 "id": "transmission_line_parameters_l2_new1789829798705_0",
                 "type": "fill",
-                "question": "A single phase transmission line and a telephone line are both symmetrically strung one below the other, in horizontal configurations, on a Common tower. The shortest and longest distances between the Phase and telephone conductors are 2.5 m and 3m. The voltage ( V/ Km) induced in the telephone circuit, due to SO Hz Current of 100A in the power circuit is __. [GATE-2006]",
+                "question": "A single phase transmission line and a telephone line are both symmetrically strung one below the other, in horizontal configurations, on a Common tower. The shortest and longest distances between the Phase and telephone conductors are 2.5 m and 3m. The voltage ( V/ Km) induced in the telephone circuit, due to 50 Hz Current of 100A in the power circuit is __. [GATE-2006]",
                 "questionImage": null,
                 "options": [],
                 "correctIndex": null,
