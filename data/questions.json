@@ -70,21 +70,6 @@
                 "explanationImage": null
               },
               {
-                "id": "power_generation_methods_l1_new1790959291518_0",
-                "type": "fill",
-                "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959227/c3ktjhkzv567pkjagswc.png",
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "see the solution",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959274/ntzhysgciuqgkfoclvsn.png"
-              },
-              {
                 "id": "power_generation_methods_l1_mt1",
                 "type": "mcq",
                 "question": "In a Pelton wheel hydro-electric station, the water is delivered to the turbine under:",
