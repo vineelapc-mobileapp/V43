@@ -1116,7 +1116,11 @@ function renderQuiz(){
         letterContent = '&#10003;';
       }
       btn.innerHTML = `<span class="opt-letter">${letterContent}</span><span class="opt-text">${opt}</span>`;
-      if (existing) {
+      if (existing && !revealed && !state.testFinished) {
+        // *V90* answer not yet revealed: the student may change the option
+        if (idx === existing.selectedIndex) btn.classList.add('chosen');
+        btn.onclick = () => handleAnswer(q, idx, card);
+      } else if (existing) {
         btn.disabled = true;
         if (revealed) {
           if (idx === existing.selectedIndex && !existing.isCorrect) btn.classList.add('wrong');
@@ -1186,6 +1190,20 @@ function renderFillAnswerArea(q, cardEl, existing){
   input.inputMode = 'decimal';
 
   const revealed = !!existing && (state.testFinished || !!existing.solutionShown);
+  if (existing && !revealed && !state.testFinished) {
+    // V90: not yet revealed - the typed answer can still be changed
+    input.value = existing.typedAnswer || '';
+    input.classList.add('chosen');
+    const upd = document.createElement('button');
+    upd.className = 'btn btn-primary';
+    upd.textContent = 'Update Answer';
+    upd.onclick = () => { if (input.value.trim()) handleFillAnswer(q, input.value.trim(), cardEl, input); };
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') upd.click(); });
+    wrap.appendChild(input);
+    wrap.appendChild(upd);
+    cardEl.appendChild(wrap);
+    return;
+  }
   if (existing) {
     input.value = existing.typedAnswer || '';
     input.disabled = true;
@@ -1242,15 +1260,16 @@ function checkFillAnswer(typed, correct){
 function handleFillAnswer(q, typedAnswer, cardEl, inputEl){
   if (state.testFinished) return; // reviewing - answers are locked
   const isCorrect = checkFillAnswer(typedAnswer, q.correctAnswer);
-  inputEl.disabled = true;
+  const prevF = state.answers[q.id];
+  if (prevF && prevF.solutionShown) return;
   inputEl.classList.add('chosen'); // neutral - no right/wrong yet
   const submitBtn = cardEl.querySelector('.fill-answer-wrap .btn-primary');
-  if (submitBtn) submitBtn.remove();
+  if (submitBtn) submitBtn.textContent = 'Update Answer';
 
   const wasMarked = state.status[q.id] === 'marked' || state.status[q.id] === 'answered-marked';
   state.status[q.id] = wasMarked ? 'answered-marked' : 'answered';
   state.answers[q.id] = { typedAnswer, isCorrect, reviewPending: false, solutionShown: false };
-  renderSolutionGate(q, cardEl);
+  if (!cardEl.querySelector('.show-solution-btn')) renderSolutionGate(q, cardEl);
 }
 
 // "Show Solution" gate: after a student answers, only THEIR choice is shown
@@ -1282,15 +1301,19 @@ function revealSolution(q){
 
 function handleAnswer(q, selectedIndex, cardEl){
   if (state.testFinished) return; // reviewing - answers are locked
+  const prev = state.answers[q.id];
+  if (prev && prev.solutionShown) return; // locked once the solution is shown
+  if (prev && prev.selectedIndex === selectedIndex) return; // same option - nothing to change
   const allOpts = cardEl.querySelectorAll('.option');
-  allOpts.forEach(o => o.disabled = true);
+  // V90: options stay clickable so a mis-tap can be corrected before Show Solution
+  allOpts.forEach(o => o.classList.remove('chosen'));
   allOpts[selectedIndex].classList.add('chosen'); // neutral - no right/wrong yet
 
   const isCorrect = selectedIndex === q.correctIndex;
   const wasMarked = state.status[q.id] === 'marked' || state.status[q.id] === 'answered-marked';
   state.status[q.id] = wasMarked ? 'answered-marked' : 'answered';
   state.answers[q.id] = { selectedIndex, isCorrect, reviewPending: false, solutionShown: false };
-  renderSolutionGate(q, cardEl);
+  if (!cardEl.querySelector('.show-solution-btn')) renderSolutionGate(q, cardEl);
 }
 
 // Shown immediately below the options on a wrong answer - unlike the correct-
