@@ -146,7 +146,7 @@ function renderVerifyTab(){
     classworkBox.style.background = '#F4F6FB';
     const classworkTitle = document.createElement('h3');
     classworkTitle.style.margin = '0 0 8px 0';
-    classworkTitle.textContent = '📘 Class Work Book Solution';
+    classworkTitle.textContent = '📘 Class Work Book (Questions + Solutions)';
     classworkBox.appendChild(classworkTitle);
 
     function buildSubjectPdfRow(partLabel, urlField, visibleField){
@@ -233,8 +233,11 @@ function renderVerifyTab(){
       return row;
     }
 
-    classworkBox.appendChild(buildSubjectPdfRow('Part 1', 'classworkPart1Url', 'classworkPart1Visible'));
-    classworkBox.appendChild(buildSubjectPdfRow('Part 2', 'classworkPart2Url', 'classworkPart2Visible'));
+    // V92 NEW: separate Questions PDF for each part (old Solutions slots unchanged)
+    classworkBox.appendChild(buildSubjectPdfRow('Part 1 - Questions', 'classworkPart1QUrl', 'classworkPart1QVisible'));
+    classworkBox.appendChild(buildSubjectPdfRow('Part 1 - Solutions', 'classworkPart1Url', 'classworkPart1Visible'));
+    classworkBox.appendChild(buildSubjectPdfRow('Part 2 - Questions', 'classworkPart2QUrl', 'classworkPart2QVisible'));
+    classworkBox.appendChild(buildSubjectPdfRow('Part 2 - Solutions', 'classworkPart2Url', 'classworkPart2Visible'));
     subjBox.appendChild(classworkBox);
 
     const table = document.createElement('div');

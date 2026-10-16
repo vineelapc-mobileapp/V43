@@ -702,16 +702,19 @@ function renderSubtopics(){
   // before the topic list, only for whichever parts the teacher has both
   // uploaded AND explicitly switched on.
   const subj = state.subject;
+  // V92 NEW: Questions card and Solutions card for each part.
   [1, 2].forEach(part => {
-    const url = part === 1 ? subj.classworkPart1Url : subj.classworkPart2Url;
-    const visible = part === 1 ? subj.classworkPart1Visible : subj.classworkPart2Visible;
-    if (url && visible) {
-      const card = document.createElement('div');
-      card.className = 'list-card';
-      card.innerHTML = `<div class="list-card-main">${iconBadge('stack', '#FCEEDD', '#B9661C')}<div><div>Class Work Book Solution - Part ${part}</div><div class="meta">Tap to view or download</div></div></div><div>&#8250;</div>`;
-      card.onclick = () => downloadClassworkPdf(subj, part);
-      app.appendChild(card);
-    }
+    [['Q', 'Questions'], ['', 'Solutions']].forEach(([k, label]) => {
+      const url = subj['classworkPart' + part + k + 'Url'];
+      const visible = subj['classworkPart' + part + k + 'Visible'];
+      if (url && visible) {
+        const card = document.createElement('div');
+        card.className = 'list-card';
+        card.innerHTML = `<div class="list-card-main">${iconBadge('stack', '#FCEEDD', '#B9661C')}<div><div>Class Work Book ${label} - Part ${part}</div><div class="meta">Tap to view or download</div></div></div><div>&#8250;</div>`;
+        card.onclick = () => downloadClassworkPdf(subj, part, k);
+        app.appendChild(card);
+      }
+    });
   });
 
   state.subject.subtopics.forEach(st => {
@@ -748,10 +751,11 @@ async function downloadConceptsPdf(subtopic){
   await downloadPdfSafely(url, filename);
 }
 
-async function downloadClassworkPdf(subject, part){
-  const url = part === 1 ? subject.classworkPart1Url : subject.classworkPart2Url;
+async function downloadClassworkPdf(subject, part, k){
+  k = k || '';
+  const url = subject['classworkPart' + part + k + 'Url'];
   if (!url) return;
-  const filename = subject.name.replace(/[^a-z0-9]/gi, '_') + `_Classwork_Part${part}.pdf`;
+  const filename = subject.name.replace(/[^a-z0-9]/gi, '_') + `_Classwork_Part${part}_${k ? 'Questions' : 'Solutions'}.pdf`;
   await downloadPdfSafely(url, filename);
 }
 
