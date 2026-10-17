@@ -2088,6 +2088,7 @@ function buildSymbolToolbar(){
 
 function renderMathPreviewInto(box, text){
   box.textContent = text || '(nothing typed yet)';
+  box.style.whiteSpace = 'pre-wrap'; // V94 NEW: keep line breaks in preview
   box.style.display = 'block';
   if (window.renderMathInElement) {
     try {
@@ -2616,13 +2617,87 @@ function buildQuestionCard(q, opts){
 
   box.appendChild(buildSymbolToolbar());
 
+  // V94 NEW: bigger auto-growing box, and the "Why the other options?"
+  // part is split into one editable box per option (a)(b)(c)(d).
+  const WHY_MARK = '\n\nWhy the other options?\n';
   const explTextarea = document.createElement('textarea');
   explTextarea.placeholder = "Explanation, e.g. Corona loss varies with frequency: P = k(f + 25)(V-V0)^2 ... For proper equation typesetting, wrap LaTeX in $ $, e.g. $\\omega C V^2 \\cos\\delta$";
-  explTextarea.style.minHeight = '70px';
-  explTextarea.value = q.explanation || '';
-  explTextarea.oninput = () => { q.explanation = explTextarea.value; if (opts.onChange) opts.onChange(); };
+  explTextarea.style.cssText = 'min-height:120px;resize:vertical;';
   trackFocus(explTextarea);
   box.appendChild(explTextarea);
+
+  const whyBox = document.createElement('div');
+  whyBox.style.cssText = 'margin-top:8px;';
+  box.appendChild(whyBox);
+  let whyInputs = null; // null = this question has no "Why the other options?" part
+
+  function autosize(t){
+    t.style.height = 'auto';
+    if (t.scrollHeight > 0) t.style.height = Math.min(t.scrollHeight + 2, 700) + 'px';
+  }
+  function splitExpl(s){
+    const k = s.indexOf(WHY_MARK);
+    if (k < 0) return { main: s, notes: null };
+    const notes = [];
+    s.slice(k + WHY_MARK.length).split('\n').forEach(line => {
+      const m = line.match(/^\(([a-z])\)\s?(.*)$/i);
+      if (m) notes.push(m[2]);
+      else if (notes.length) notes[notes.length - 1] += '\n' + line;
+    });
+    return { main: s.slice(0, k), notes };
+  }
+  function joinExpl(){
+    if (!whyInputs) return explTextarea.value;
+    const letters = 'abcdefghij';
+    return explTextarea.value + WHY_MARK + whyInputs.map((t, n) => '(' + letters[n] + ') ' + t.value).join('\n');
+  }
+  function onExplEdit(){ q.explanation = joinExpl(); if (opts.onChange) opts.onChange(); }
+  function buildWhyInputs(notes){
+    whyBox.innerHTML = '';
+    whyInputs = null;
+    const isMcq = !opts.forceConventional && q.type !== 'conventional' && Array.isArray(q.options) && q.options.length > 1;
+    if (!isMcq) return;
+    if (!notes) {
+      const add = document.createElement('button');
+      add.type = 'button';
+      add.className = 'btn btn-secondary';
+      add.style.cssText = 'font-size:12px;padding:6px 10px;';
+      add.textContent = "➕ Add 'Why the other options?' boxes";
+      add.onclick = () => { q.explanation = explTextarea.value + WHY_MARK + q.options.map((o, n) => '(' + 'abcdefghij'[n] + ') ').join('\n'); refreshExplFields(); if (opts.onChange) opts.onChange(); };
+      whyBox.appendChild(add);
+      return;
+    }
+    const head = document.createElement('div');
+    head.className = 'row-label';
+    head.textContent = 'Why the other options? - one box for each option (✘ = wrong, ✔ = correct)';
+    whyBox.appendChild(head);
+    whyInputs = [];
+    const count = Math.max(notes.length, q.options.length);
+    for (let n = 0; n < count; n++) {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;gap:6px;align-items:flex-start;margin-bottom:6px;';
+      const lab = document.createElement('div');
+      lab.textContent = '(' + 'abcdefghij'[n] + ')';
+      lab.style.cssText = 'font-weight:700;padding-top:10px;min-width:26px;';
+      const t = document.createElement('textarea');
+      t.value = notes[n] || '';
+      t.style.cssText = 'flex:1;min-height:48px;resize:vertical;';
+      t.oninput = () => { autosize(t); onExplEdit(); };
+      trackFocus(t);
+      row.appendChild(lab); row.appendChild(t);
+      whyBox.appendChild(row);
+      whyInputs.push(t);
+      setTimeout(() => autosize(t), 0);
+    }
+  }
+  function refreshExplFields(){
+    const p = splitExpl(q.explanation || '');
+    explTextarea.value = p.main;
+    buildWhyInputs(p.notes);
+    setTimeout(() => autosize(explTextarea), 0);
+  }
+  explTextarea.oninput = () => { autosize(explTextarea); onExplEdit(); };
+  refreshExplFields();
 
   const previewToggle = document.createElement('button');
   previewToggle.type = 'button';
@@ -2633,7 +2708,7 @@ function buildQuestionCard(q, opts){
   previewBox.style.cssText = 'display:none;background:#f4f6fb;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:14px;';
   previewToggle.onclick = () => {
     if (previewBox.style.display === 'block') { previewBox.style.display = 'none'; }
-    else { renderMathPreviewInto(previewBox, explTextarea.value); }
+    else { renderMathPreviewInto(previewBox, joinExpl()); }
   };
   box.appendChild(previewToggle);
   box.appendChild(previewBox);
@@ -2678,12 +2753,12 @@ function buildQuestionCard(q, opts){
       if (ext === 'txt') {
         const text = await file.text();
         q.explanation = (q.explanation ? q.explanation + '\n' : '') + text.trim();
-        explTextarea.value = q.explanation;
+        refreshExplFields();
       } else if (ext === 'pdf') {
         setStatus('Reading PDF for explanation...');
         const text = await extractPdfText(file);
         q.explanation = (q.explanation ? q.explanation + '\n' : '') + text.trim();
-        explTextarea.value = q.explanation;
+        refreshExplFields();
         setStatus('Explanation text added from PDF.', 'ok');
       } else if (['jpg','jpeg','png'].includes(ext) || file.type.startsWith('image/')) {
         if (cloudinaryConfigured || firebaseSignedIn) {
