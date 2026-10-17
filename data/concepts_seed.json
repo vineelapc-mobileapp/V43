@@ -1,0 +1,1532 @@
+{
+"power_generation_methods": {
+"title": "Power Generation (Hydro, Thermal, Gas, Nuclear, PSP, Solar, Wind)",
+"items": [
+{
+"h": "Hydro-electric"
+},
+{
+"f": "P=\\rho g Q H\\eta=9.81\\,Q\\,H\\,\\eta\\ \\text{kW}",
+"n": "P = electrical power output (kW); ρ = density of water (1000 kg/m³); g = 9.81 m/s²; Q = water discharge (m³/s); H = net head of water, height of water level above the turbine less losses (m); η = overall efficiency (turbine × generator)"
+},
+{
+"f": "E=P\\,t,\\qquad E_{\\text{stored}}(\\text{kWh})=\\dfrac{\\rho g V H\\eta}{3.6\\times10^{6}}\\approx\\dfrac{V H\\eta}{367}",
+"n": "E = energy (kWh); P = power (kW); t = time (h); V = volume of water stored (m³); H = head (m); η = overall efficiency; 3.6 × 10⁶ J = 1 kWh"
+},
+{
+"f": "N_s=\\dfrac{N\\sqrt{P}}{H^{5/4}}",
+"n": "N_s = specific speed of the turbine; N = rotational speed (rpm); P = turbine power (kW); H = head (m). Pelton: low N_s (H > 300 m); Francis: medium (30–300 m); Kaplan: high N_s (H < 30 m)"
+},
+{
+"f": "v_{jet}=C_v\\sqrt{2gH},\\qquad u_{bucket}\\approx0.45\\,v_{jet}",
+"n": "v_jet = velocity of the water jet (m/s); C_v = velocity coefficient of the nozzle (0.97–0.99); g = 9.81 m/s²; H = head at the nozzle (m); u_bucket = peripheral speed of the Pelton wheel buckets (m/s)"
+},
+{
+"h": "Thermal (Rankine cycle)"
+},
+{
+"f": "\\eta_{cycle}=\\dfrac{(h_1-h_2)-(h_4-h_3)}{h_1-h_4}\\ ;\\ \\ \\eta_{Carnot}=1-\\dfrac{T_L}{T_H}",
+"n": "η_cycle = Rankine cycle efficiency; h = enthalpy of steam/water (kJ/kg): h₁ turbine inlet, h₂ turbine exit, h₃ condenser exit, h₄ pump exit; T_H, T_L = highest and lowest absolute temperatures of the cycle (K)"
+},
+{
+"f": "\\eta_{overall}=\\eta_{boiler}\\,\\eta_{cycle}\\,\\eta_{turbine}\\,\\eta_{gen}\\,\\eta_{aux}",
+"n": "η_overall = station efficiency (heat in coal to electricity sent out); η_boiler = boiler efficiency; η_turbine = turbine efficiency; η_gen = generator efficiency; η_aux = auxiliary (station-use) factor"
+},
+{
+"f": "\\text{Heat rate}=\\dfrac{860}{\\eta_{overall}}\\ \\text{kcal/kWh},\\qquad \\text{Coal}(\\text{kg/h})=\\dfrac{P(\\text{kW})\\times860}{\\eta_{overall}\\,CV(\\text{kcal/kg})}",
+"n": "Heat rate = heat needed per kWh; 860 kcal = heat equivalent of 1 kWh; P = station output (kW); CV = calorific value of coal (kcal/kg)"
+},
+{
+"f": "\\text{Steam rate}=\\dfrac{3600}{h_1-h_2}\\ \\text{kg/kWh},\\quad \\eta_{boiler}=\\dfrac{\\dot m_s(h_s-h_{fw})}{\\dot m_f\\,CV}",
+"n": "Steam rate = steam used per kWh; 3600 kJ = 1 kWh; ṁ_s = steam flow (kg/h); h_s = enthalpy of steam leaving boiler; h_fw = enthalpy of feed water; ṁ_f = fuel burnt (kg/h); CV = calorific value (kJ/kg)"
+},
+{
+"h": "Gas turbine (Brayton) and combined cycle"
+},
+{
+"f": "\\eta_{Brayton}=1-\\dfrac{1}{r_p^{(\\gamma-1)/\\gamma}},\\qquad \\dfrac{T_2}{T_1}=r_p^{(\\gamma-1)/\\gamma}",
+"n": "η_Brayton = ideal gas-turbine efficiency; r_p = pressure ratio of the compressor (p₂/p₁); γ = ratio of specific heats (1.4 for air); T₁ = compressor inlet, T₂ = compressor outlet temperature (K)"
+},
+{
+"f": "W_{net}=c_p(T_3-T_4)-c_p(T_2-T_1),\\qquad r_{p,opt}=\\Big(\\dfrac{T_3}{T_1}\\Big)^{\\frac{\\gamma}{2(\\gamma-1)}}",
+"n": "W_net = net work per kg of air (kJ/kg); c_p = specific heat of air at constant pressure (≈ 1.005 kJ/kg·K); T₃ = turbine inlet, T₄ = turbine outlet temperature (K); r_p,opt = pressure ratio for maximum net work"
+},
+{
+"f": "\\text{Back-work ratio}=\\dfrac{W_{compressor}}{W_{turbine}}\\ (\\approx0.4\\text{–}0.6),\\qquad \\eta_{cc}=\\eta_g+(1-\\eta_g)\\,\\eta_s",
+"n": "W_compressor = work absorbed by the compressor; W_turbine = work produced by the turbine; η_cc = combined-cycle efficiency; η_g = gas-turbine efficiency; η_s = efficiency of the steam cycle fed by the exhaust heat"
+},
+{
+"h": "Nuclear"
+},
+{
+"f": "E=\\Delta m\\,c^2,\\quad 1\\ \\text{amu}=931\\ \\text{MeV},\\quad E_{fission}\\approx200\\ \\text{MeV}",
+"n": "E = energy released (J); Δm = mass lost, the mass defect (kg); c = speed of light (3 × 10⁸ m/s); amu = atomic mass unit; MeV = mega electron-volt (1 MeV = 1.602 × 10⁻¹³ J); E_fission = energy per fission of U-235"
+},
+{
+"f": "\\text{fissions/s}=\\dfrac{P}{200\\times1.602\\times10^{-13}}\\approx3.1\\times10^{16}\\ \\text{per MW},\\qquad \\approx1\\ \\text{g U-235 per MW-day}",
+"n": "fissions/s = number of U-235 nuclei splitting each second; P = thermal power (W); 200 × 1.602 × 10⁻¹³ J = energy of one fission; about 1 g of U-235 is fissioned per MW of thermal power per day"
+},
+{
+"f": "k=\\dfrac{\\text{neutrons in one generation}}{\\text{neutrons in the previous generation}}=k_\\infty P_{NL},\\quad k_\\infty=\\eta f p\\,\\varepsilon",
+"n": "k = multiplication factor (1 critical, > 1 supercritical, < 1 subcritical); k_∞ = factor for an infinite core; P_NL = non-leakage probability; η = neutrons produced per neutron absorbed in fuel; f = thermal utilisation factor; p = resonance escape probability; ε = fast fission factor"
+},
+{
+"h": "Pumped-storage plant (PSP)"
+},
+{
+"f": "P_{gen}=\\rho g Q H\\,\\eta_t\\eta_g,\\qquad P_{pump}=\\dfrac{\\rho g Q H}{\\eta_p\\eta_m}",
+"n": "P_gen = output power in generating mode (W); P_pump = input power in pumping mode (W); ρ = 1000 kg/m³; g = 9.81 m/s²; Q = flow (m³/s); H = head between lower and upper reservoir (m); η_t = turbine, η_g = generator, η_p = pump, η_m = motor efficiency"
+},
+{
+"f": "\\eta_{cycle}=\\dfrac{E_{gen}}{E_{pump}}=\\eta_p\\eta_m\\,\\eta_t\\eta_g\\approx0.70\\text{–}0.80,\\qquad E(\\text{kWh})\\approx\\dfrac{V H\\eta}{367}",
+"n": "η_cycle = round-trip (cycle) efficiency; E_gen = energy generated (kWh); E_pump = energy used in pumping (kWh); V = volume of water moved to the upper reservoir (m³); H = head (m)"
+},
+{
+"h": "Solar photovoltaic"
+},
+{
+"f": "P=\\eta\\,A\\,G\\ ;\\quad P_{mp}=V_{mp}I_{mp}\\ ;\\quad FF=\\dfrac{V_{mp}I_{mp}}{V_{oc}I_{sc}}",
+"n": "P = module output (W); η = module efficiency; A = module area (m²); G = solar irradiance (W/m²; STC = 1000 W/m², 25 °C, AM 1.5); P_mp, V_mp, I_mp = power, voltage, current at the maximum power point; V_oc = open-circuit voltage; I_sc = short-circuit current; FF = fill factor"
+},
+{
+"f": "P(T)=P_{STC}\\,[1+\\gamma\\,(T_c-25)],\\qquad T_c=T_a+\\dfrac{NOCT-20}{800}\\,G",
+"n": "P(T) = output at cell temperature T_c; P_STC = rated power at 25 °C; γ = temperature coefficient (≈ −0.004 per °C for silicon); T_c = cell temperature (°C); T_a = ambient temperature (°C); NOCT = nominal operating cell temperature (°C); G = irradiance (W/m²)"
+},
+{
+"f": "\\text{Series: }V\\ \\text{adds, same }I\\ ;\\qquad \\text{Parallel: }I\\ \\text{adds, same }V\\ ;\\qquad G_{tilt}=G_b\\cos\\theta+G_d+G_r",
+"n": "V = voltage, I = current of the modules; G_tilt = irradiance on the tilted panel (W/m²); G_b = beam (direct) component; θ = angle of incidence between the sun's rays and the panel normal; G_d = diffuse component; G_r = ground-reflected component"
+},
+{
+"f": "E=P_{kWp}\\times PSH\\times PR,\\qquad CUF=\\dfrac{E_{year}}{P_{rated}\\times8760}",
+"n": "E = daily energy (kWh); P_kWp = array rating at STC (kW peak); PSH = peak sun hours per day (h, equal to the daily insolation in kWh/m²); PR = performance ratio (0.75–0.85); CUF = capacity utilisation factor; E_year = annual energy (kWh); P_rated = rated power (kW); 8760 = hours in a year"
+},
+{
+"f": "I=I_L-I_0\\Big(e^{qV/nkT}-1\\Big),\\qquad \\delta=23.45^\\circ\\sin\\Big[\\tfrac{360}{365}(284+n)\\Big]",
+"n": "I = cell current (A); I_L = light-generated current (A); I_0 = diode reverse saturation current (A); q = electron charge (1.602 × 10⁻¹⁹ C); V = cell voltage; n = diode ideality factor; k = Boltzmann constant; T = absolute temperature (K); δ = solar declination angle; n = day of the year (1 to 365)"
+},
+{
+"h": "Wind"
+},
+{
+"f": "P_{wind}=\\tfrac12\\rho A v^3\\ ;\\quad P_{out}=\\tfrac12\\rho A v^3\\,C_p\\,\\eta_m\\eta_g\\ ;\\quad A=\\pi R^2",
+"n": "P_wind = power in the wind (W); ρ = air density (1.225 kg/m³ at sea level, 15 °C); A = swept area of the rotor (m²); R = blade (rotor) radius (m); v = wind speed (m/s); C_p = power coefficient of the rotor; η_m = mechanical (gearbox) efficiency; η_g = generator efficiency"
+},
+{
+"f": "C_{p,max}=\\dfrac{16}{27}=0.593\\ (\\text{Betz}),\\qquad v_{rotor}=\\dfrac{v_1+v_2}{2}=\\tfrac23v_1,\\ v_2=\\tfrac13v_1",
+"n": "C_p,max = Betz limit, the maximum fraction of wind power that can be extracted; v₁ = wind speed upstream of the rotor (m/s); v₂ = wind speed far downstream (m/s); v_rotor = speed through the rotor plane (m/s)"
+},
+{
+"f": "\\lambda=\\dfrac{\\omega R}{v}=\\dfrac{2\\pi NR}{60\\,v},\\qquad \\dfrac{v_2}{v_1}=\\Big(\\dfrac{h_2}{h_1}\\Big)^{\\alpha}\\ (\\alpha\\approx\\tfrac17)",
+"n": "λ = tip-speed ratio (blade tip speed/wind speed); ω = angular speed of the rotor (rad/s); N = rotor speed (rpm); R = blade radius (m); v = wind speed (m/s); v₁, v₂ = wind speeds at heights h₁, h₂ (m); α = wind-shear exponent (≈ 1/7 for open country)"
+},
+{
+"f": "CF=\\dfrac{E_{year}}{P_{rated}\\times8760},\\qquad E_{year}=P_{rated}\\times CF\\times8760",
+"n": "CF = capacity factor; E_year = energy generated in a year (kWh or MWh); P_rated = rated power of the turbine or farm; 8760 = hours in a year. Cut-in ≈ 3–4 m/s, rated ≈ 11–14 m/s, cut-out ≈ 25 m/s"
+},
+{
+"h": "Plant factors (all stations)"
+},
+{
+"f": "\\text{Capacity factor}=\\dfrac{E_{actual}}{P_{rated}\\times T},\\quad \\text{Load factor}=\\dfrac{P_{avg}}{P_{max}},\\quad \\text{Plant use factor}=\\dfrac{E_{actual}}{P_{rated}\\times T_{operating}}",
+"n": "E_actual = energy generated in the period; P_rated = installed capacity; T = total hours in the period; P_avg = average load; P_max = maximum (peak) demand; T_operating = hours the plant was actually in service. Base load: nuclear, thermal, run-of-river; peak: hydro with storage, gas, PSP"
+}
+]
+},
+"economic_load_dispatch": {
+"title": "Economic Load Dispatch",
+"items": [
+{
+"h": "Without losses"
+},
+{
+"f": "F_i=a_iP_i^2+b_iP_i+c_i\\qquad IC_i=\\dfrac{dF_i}{dP_i}=2a_iP_i+b_i",
+"n": "₹/h and ₹/MWh"
+},
+{
+"f": "\\dfrac{dF_1}{dP_1}=\\dfrac{dF_2}{dP_2}=\\dots=\\lambda,\\qquad \\sum P_i=P_D",
+"n": "equal incremental cost"
+},
+{
+"f": "P_i=\\dfrac{\\lambda-b_i}{2a_i},\\qquad \\lambda=\\dfrac{P_D+\\sum \\frac{b_i}{2a_i}}{\\sum \\frac{1}{2a_i}}",
+"n": ""
+},
+{
+"f": "\\dfrac{dF}{dP}=\\lambda\\ (P_{min}<P<P_{max});\\ \\ \\le\\lambda\\ (P=P_{max});\\ \\ \\ge\\lambda\\ (P=P_{min})",
+"n": "with generation limits"
+},
+{
+"f": "\\Delta C\\approx\\lambda\\,\\Delta P_D",
+"n": "cost of an extra MW at the load"
+},
+{
+"h": "With transmission losses"
+},
+{
+"f": "P_L=\\sum_i\\sum_jP_iB_{ij}P_j,\\qquad \\dfrac{\\partial P_L}{\\partial P_i}=2\\sum_jB_{ij}P_j",
+"n": "B-coefficients (MW⁻¹)"
+},
+{
+"f": "\\sum P_i=P_D+P_L",
+"n": ""
+},
+{
+"f": "\\dfrac{dF_i}{dP_i}+\\lambda\\dfrac{\\partial P_L}{\\partial P_i}=\\lambda\\ \\Rightarrow\\ \\dfrac{dF_i}{dP_i}=\\lambda\\Big(1-\\dfrac{\\partial P_L}{\\partial P_i}\\Big)",
+"n": "coordination equation"
+},
+{
+"f": "PF_i=\\dfrac{1}{1-\\partial P_L/\\partial P_i},\\qquad PF_i\\,\\dfrac{dF_i}{dP_i}=\\lambda",
+"n": "penalty factor"
+},
+{
+"h": "Remember"
+},
+{
+"f": "\\text{Unit commitment}\\ne\\text{economic dispatch}",
+"n": "UC decides which units are on (hours/days); ED shares the load among units already on"
+},
+{
+"f": "\\text{Saving}=C(\\text{equal sharing})-C(\\text{optimum})",
+"n": ""
+}
+]
+},
+"load_frequency_control": {
+"title": "Load Frequency Control",
+"items": [
+{
+"h": "Governor and regulation"
+},
+{
+"f": "R=\\dfrac{\\Delta f/f_0}{\\Delta P/P_{rated}}\\ \\ (\\text{pu}),\\qquad R\\ (\\text{Hz/MW})=\\dfrac{\\%R\\times f_0}{100\\,P_{rated}}",
+"n": ""
+},
+{
+"f": "\\Delta P_g=\\Delta P_{ref}-\\dfrac{1}{R}\\Delta f",
+"n": "speed-changer setting ΔP_ref"
+},
+{
+"f": "D=\\dfrac{\\Delta P_L}{\\Delta f}\\ (\\text{MW/Hz}),\\qquad B=\\dfrac1R+D",
+"n": "area frequency response characteristic"
+},
+{
+"h": "Steady state"
+},
+{
+"f": "\\Delta f_{ss}=\\dfrac{-\\Delta P_D}{1/R+D}\\qquad(\\text{single area})",
+"n": ""
+},
+{
+"f": "\\Delta f_{ss}=\\dfrac{-\\Delta P_D}{\\frac1{R_1}+\\frac1{R_2}+D_1+D_2}\\qquad(\\text{two areas})",
+"n": "tie-line flow found from either area"
+},
+{
+"f": "\\Delta P_{i}=-\\dfrac{\\Delta f}{R_i}",
+"n": "units on droop share a load change in proportion to rating/R"
+},
+{
+"h": "Dynamics and AGC"
+},
+{
+"f": "G_p(s)=\\dfrac{K_p}{1+sT_p},\\quad K_p=\\dfrac1D,\\quad T_p=\\dfrac{2H}{fD}",
+"n": "power-system block"
+},
+{
+"f": "ACE=\\Delta P_{tie}+B\\,\\Delta f",
+"n": "integral control drives ACE to zero"
+},
+{
+"f": "\\text{With integral control: } \\Delta f_{ss}=0",
+"n": "primary control leaves a frequency error; secondary control removes it"
+},
+{
+"f": "\\dfrac{dP_{tie}}{d\\delta}=\\dfrac{|V_1||V_2|}{X}\\cos\\delta_0=P_s",
+"n": "synchronising coefficient of the tie-line"
+}
+]
+},
+"transmission_line_parameters": {
+"title": "Transmission Line Parameters",
+"items": [
+{
+"h": "Resistance and inductance"
+},
+{
+"f": "R=\\dfrac{\\rho l}{A},\\qquad \\dfrac{R_2}{R_1}=\\dfrac{T+t_2}{T+t_1}",
+"n": "temperature effect"
+},
+{
+"f": "L_{int}=\\dfrac{\\mu_0}{8\\pi}=0.5\\times10^{-7}\\ \\text{H/m},\\qquad r'=0.7788\\,r",
+"n": "GMR of a solid round conductor"
+},
+{
+"f": "L_{\\text{1-φ loop}}=4\\times10^{-7}\\ln\\dfrac{D}{r'}\\ \\text{H/m}",
+"n": ""
+},
+{
+"f": "L_{\\text{3-φ, per phase}}=2\\times10^{-7}\\ln\\dfrac{GMD}{GMR}\\ \\text{H/m},\\quad GMD=\\sqrt[3]{D_{12}D_{23}D_{31}}",
+"n": "transposed line"
+},
+{
+"f": "GMR_{bundle}=\\sqrt{r'd}\\ (2),\\ \\ \\sqrt[3]{r'd^2}\\ (3),\\ \\ 1.09\\sqrt[4]{r'd^3}\\ (4)",
+"n": "bundled conductors"
+},
+{
+"h": "Capacitance"
+},
+{
+"f": "C_n=\\dfrac{2\\pi\\varepsilon_0}{\\ln(GMD/r)}\\ \\text{F/m}=\\dfrac{0.02413}{\\log_{10}(GMD/r)}\\ \\mu\\text{F/km}",
+"n": "use actual radius r (bundle: r_b = √(r d))"
+},
+{
+"f": "C_{ab}=\\dfrac{\\pi\\varepsilon_0}{\\ln(D/r)}=\\dfrac{C_n}{2}\\qquad (\\text{1-φ line})",
+"n": ""
+},
+{
+"f": "X_L=2\\pi fL,\\quad X_C=\\dfrac1{2\\pi fC},\\quad I_c=2\\pi fC\\,V_{ph}",
+"n": "charging current"
+},
+{
+"h": "Other points"
+},
+{
+"f": "S=\\dfrac{wl^2}{8T}",
+"n": "sag (level supports)"
+},
+{
+"f": "\\text{Skin effect: } R_{ac}>R_{dc};\\quad \\text{ground raises } C\\text{, lowers } L\\ \\text{slightly}",
+"n": "transposition balances the phases"
+},
+{
+"f": "\\varepsilon_0=8.854\\times10^{-12}\\ \\text{F/m},\\quad \\mu_0=4\\pi\\times10^{-7}\\ \\text{H/m}",
+"n": ""
+}
+]
+},
+"transmission_line_performance": {
+"title": "Transmission Line Performance",
+"items": [
+{
+"h": "ABCD constants"
+},
+{
+"f": "V_s=AV_r+BI_r,\\quad I_s=CV_r+DI_r,\\quad AD-BC=1",
+"n": "for a passive reciprocal network"
+},
+{
+"f": "\\text{Short: } A=D=1,\\ B=Z,\\ C=0",
+"n": ""
+},
+{
+"f": "\\text{Nominal-π: } A=D=1+\\dfrac{ZY}{2},\\ B=Z,\\ C=Y\\Big(1+\\dfrac{ZY}{4}\\Big)",
+"n": ""
+},
+{
+"f": "\\text{Nominal-T: } A=D=1+\\dfrac{ZY}{2},\\ B=Z\\Big(1+\\dfrac{ZY}{4}\\Big),\\ C=Y",
+"n": ""
+},
+{
+"f": "\\text{Long: } A=D=\\cosh\\gamma l,\\ B=Z_c\\sinh\\gamma l,\\ C=\\dfrac{\\sinh\\gamma l}{Z_c}",
+"n": "γ = √(zy), Z_c = √(z/y)"
+},
+{
+"f": "\\text{Lossless: } A=D=\\cos\\beta l,\\ B=jZ_c\\sin\\beta l,\\ C=\\dfrac{j\\sin\\beta l}{Z_c}",
+"n": "β = ω√(LC)"
+},
+{
+"h": "Regulation, efficiency, Ferranti"
+},
+{
+"f": "\\%\\,\\text{Reg}=\\dfrac{|V_{r,NL}|-|V_{r,FL}|}{|V_{r,FL}|}\\times100,\\quad |V_{r,NL}|=\\dfrac{|V_s|}{|A|}",
+"n": ""
+},
+{
+"f": "\\Delta V\\approx I\\,(R\\cos\\phi\\pm X\\sin\\phi)",
+"n": "+ lagging pf, − leading pf"
+},
+{
+"f": "\\eta=\\dfrac{P_r}{P_s}\\times100",
+"n": ""
+},
+{
+"f": "V_r=\\dfrac{V_s}{\\cos\\beta l}\\qquad(\\text{open-ended lossless line})",
+"n": "Ferranti effect ∝ l²"
+},
+{
+"h": "Combinations"
+},
+{
+"f": "\\text{Cascade: } \\begin{bmatrix}A&B\\\\C&D\\end{bmatrix}=\\begin{bmatrix}A_1&B_1\\\\C_1&D_1\\end{bmatrix}\\begin{bmatrix}A_2&B_2\\\\C_2&D_2\\end{bmatrix}",
+"n": ""
+},
+{
+"f": "\\text{Parallel: } A=\\dfrac{A_1B_2+A_2B_1}{B_1+B_2},\\ \\ B=\\dfrac{B_1B_2}{B_1+B_2}",
+"n": ""
+},
+{
+"f": "\\lambda=\\dfrac{2\\pi}{\\beta},\\qquad v=\\dfrac{1}{\\sqrt{LC}}",
+"n": "wavelength and velocity"
+}
+]
+},
+"power_flow_through_transmission_line": {
+"title": "Power Flow Through a Transmission Line",
+"items": [
+{
+"h": "General (ABCD) form"
+},
+{
+"f": "S_r=\\dfrac{|V_s||V_r|}{|B|}\\angle(\\beta-\\delta)-\\dfrac{|A||V_r|^2}{|B|}\\angle(\\beta-\\alpha)",
+"n": "A = |A|∠α, B = |B|∠β, δ = angle of V_s over V_r"
+},
+{
+"f": "P_r=\\dfrac{|V_sV_r|}{|B|}\\cos(\\beta-\\delta)-\\dfrac{|A||V_r|^2}{|B|}\\cos(\\beta-\\alpha)",
+"n": ""
+},
+{
+"f": "Q_r=\\dfrac{|V_sV_r|}{|B|}\\sin(\\beta-\\delta)-\\dfrac{|A||V_r|^2}{|B|}\\sin(\\beta-\\alpha)",
+"n": ""
+},
+{
+"f": "P_{r,max}\\ \\text{at}\\ \\delta=\\beta:\\ \\dfrac{|V_sV_r|}{|B|}-\\dfrac{|A||V_r|^2}{|B|}\\cos(\\beta-\\alpha)",
+"n": ""
+},
+{
+"h": "Lossless line (R = 0)"
+},
+{
+"f": "P=\\dfrac{|V_s||V_r|}{X}\\sin\\delta,\\qquad P_{max}=\\dfrac{|V_s||V_r|}{X}\\ \\ (\\delta=90^\\circ)",
+"n": "three-phase: use line-to-line voltages"
+},
+{
+"f": "Q_r=\\dfrac{|V_r|}{X}\\big(|V_s|\\cos\\delta-|V_r|\\big),\\quad Q_s=\\dfrac{|V_s|}{X}\\big(|V_s|-|V_r|\\cos\\delta\\big)",
+"n": ""
+},
+{
+"f": "Q\\approx\\dfrac{|V|\\,\\Delta |V|}{X}\\ \\ (\\delta\\ \\text{small})",
+"n": "P is controlled mainly by δ, Q mainly by voltage difference"
+},
+{
+"f": "X_{eff}=X(1-k_{se}),\\qquad P_{max}\\propto\\dfrac1{X_{eff}}",
+"n": "series compensation"
+},
+{
+"f": "P_{loss}=P_s-P_r=3I^2R",
+"n": ""
+},
+{
+"f": "\\dfrac{dP}{d\\delta}=P_{max}\\cos\\delta>0",
+"n": "stable operation (steady-state stability limit at δ = 90°)"
+}
+]
+},
+"voltage_reactive_power_control": {
+"title": "Voltage and Reactive Power Control",
+"items": [
+{
+"h": "Voltage drop and reactive power"
+},
+{
+"f": "\\Delta V\\approx\\dfrac{PR+QX}{V}",
+"n": ""
+},
+{
+"f": "Q_{12}\\approx\\dfrac{V_1}{X}(V_1-V_2)",
+"n": "Q flows from the higher to the lower voltage"
+},
+{
+"f": "\\dfrac{\\Delta V}{V}\\approx\\dfrac{Q}{S_{sc}}",
+"n": "S_sc = short-circuit level at the bus"
+},
+{
+"h": "Shunt compensation"
+},
+{
+"f": "Q_c=V^2\\omega C=\\dfrac{V^2}{X_c},\\qquad Q_c\\propto V^2",
+"n": "capacitor output falls with the square of the voltage"
+},
+{
+"f": "Q_L=\\dfrac{V^2}{X_L}",
+"n": "shunt reactor; used for light-load voltage rise (Ferranti)"
+},
+{
+"f": "\\Delta V_{rise}\\approx\\dfrac{Q_c\\,X_s}{V}",
+"n": ""
+},
+{
+"f": "Q_{SVC}=V^2\\,(B_C-B_L)",
+"n": ""
+},
+{
+"f": "Q_{sync.\\ cond.}\\approx\\dfrac{V(E-V)}{X_s}",
+"n": "over-excited: supplies vars; under-excited: absorbs"
+},
+{
+"h": "Series compensation and taps"
+},
+{
+"f": "k=\\dfrac{X_c}{X_L},\\qquad \\Delta V\\approx I\\big[R\\cos\\phi+(X_L-X_c)\\sin\\phi\\big]",
+"n": ""
+},
+{
+"f": "\\text{tap step}=\\dfrac{\\text{total tap range}}{\\text{number of steps}}",
+"n": "e.g. ±10% in 16 steps = 1.25% per step"
+},
+{
+"f": "\\text{Off-nominal ratio } a:1,\\quad V_2=\\dfrac{V_1}{a}",
+"n": "tap changing controls Q-flow by changing voltage"
+},
+{
+"f": "\\text{Methods: shunt C/L, series C, tap changers, synchronous condensers, SVC, STATCOM}",
+"n": ""
+}
+]
+},
+"surge_impedance_loading_sil": {
+"title": "Surge Impedance Loading (SIL)",
+"items": [
+{
+"h": "Surge impedance and SIL"
+},
+{
+"f": "Z_c=\\sqrt{\\dfrac{L}{C}}=\\sqrt{\\dfrac{z}{y}}\\ (\\text{lossless})",
+"n": "≈ 250–400 Ω for overhead lines"
+},
+{
+"f": "SIL=\\dfrac{V_{LL}^2}{Z_c}\\ \\ \\text{MW}\\quad(V_{LL}\\ \\text{in kV},\\ Z_c\\ \\text{in}\\ \\Omega)",
+"n": ""
+},
+{
+"f": "\\text{At SIL: } Q_{gen}=\\omega CV^2=Q_{abs}=\\omega LI^2\\ \\Rightarrow\\ \\text{flat voltage profile}",
+"n": ""
+},
+{
+"f": "P<SIL:\\ \\text{line generates vars, } V_r\\uparrow;\\qquad P>SIL:\\ \\text{line absorbs vars, } V_r\\downarrow",
+"n": ""
+},
+{
+"h": "Wave quantities"
+},
+{
+"f": "\\beta=\\omega\\sqrt{LC},\\quad v=\\dfrac{1}{\\sqrt{LC}},\\quad \\lambda=\\dfrac vf,\\quad \\theta=\\beta l",
+"n": "electrical length"
+},
+{
+"f": "P_{max}=\\dfrac{V_sV_r}{Z_c\\sin\\beta l}=\\dfrac{SIL}{\\sin\\beta l}\\ \\ (V_s=V_r)",
+"n": "lossless line"
+},
+{
+"h": "Effect of compensation"
+},
+{
+"f": "\\text{Series } k_{se}:\\ \\ Z_c'=Z_c\\sqrt{1-k_{se}},\\quad SIL'=\\dfrac{SIL}{\\sqrt{1-k_{se}}}",
+"n": "SIL increases"
+},
+{
+"f": "\\text{Shunt } k_{sh}:\\ \\ Z_c'=\\dfrac{Z_c}{\\sqrt{1-k_{sh}}},\\quad SIL'=SIL\\sqrt{1-k_{sh}}",
+"n": "SIL decreases"
+},
+{
+"f": "\\text{Bundling: } L\\downarrow,\\ C\\uparrow\\ \\Rightarrow\\ Z_c\\downarrow,\\ SIL\\uparrow",
+"n": ""
+},
+{
+"f": "\\text{SIL}\\propto V^2\\ \\text{(approx. 130 MW at 220 kV, 500 MW at 400 kV, 2300 MW at 765 kV)}",
+"n": ""
+}
+]
+},
+"power_factor_control": {
+"title": "Power Factor Control",
+"items": [
+{
+"h": "Power triangle"
+},
+{
+"f": "P=\\sqrt3V_LI_L\\cos\\phi,\\quad Q=\\sqrt3V_LI_L\\sin\\phi,\\quad S=\\sqrt{P^2+Q^2}",
+"n": ""
+},
+{
+"f": "\\cos\\phi=\\dfrac PS,\\qquad \\tan\\phi=\\dfrac QP",
+"n": ""
+},
+{
+"h": "Improvement by capacitors"
+},
+{
+"f": "Q_c=P(\\tan\\phi_1-\\tan\\phi_2)",
+"n": "kVAr of capacitor for pf change cosφ₁ → cosφ₂"
+},
+{
+"f": "C_{\\Delta}=\\dfrac{Q_c}{3\\,\\omega V_L^2},\\qquad C_{Y}=\\dfrac{Q_c}{\\omega V_L^2}",
+"n": "per phase (Q_c total 3-phase)"
+},
+{
+"f": "I_c=\\dfrac{Q_c}{\\sqrt3V_L}",
+"n": ""
+},
+{
+"f": "\\text{kVA reduction}=\\dfrac{P}{\\cos\\phi_1}-\\dfrac{P}{\\cos\\phi_2}",
+"n": "maximum-demand charges fall"
+},
+{
+"f": "\\text{Loss}=3I^2R=\\dfrac{P^2R}{V^2\\cos^2\\phi}\\ \\Rightarrow\\ \\text{loss}\\propto\\dfrac1{\\cos^2\\phi}",
+"n": ""
+},
+{
+"h": "Synchronous motor and combined loads"
+},
+{
+"f": "P_{total}=\\sum P_i,\\quad Q_{total}=\\sum Q_i,\\quad \\cos\\phi=\\dfrac{P_{total}}{\\sqrt{P_{total}^2+Q_{total}^2}}",
+"n": "lagging loads +Q, leading loads −Q"
+},
+{
+"f": "Q_{motor}=\\sqrt3V_LI\\sin\\phi\\ \\ (\\text{leading, over-excited})",
+"n": "a synchronous motor can supply vars while giving mechanical power"
+},
+{
+"f": "\\Delta V\\approx\\dfrac{PR+(Q-Q_c)X}{V}",
+"n": "capacitor also reduces voltage drop"
+},
+{
+"f": "\\text{Over-compensation gives a leading pf and a voltage rise}",
+"n": ""
+}
+]
+},
+"corona": {
+"title": "Corona",
+"items": [
+{
+"h": "Critical voltages"
+},
+{
+"f": "g_0=30\\ \\text{kV/cm (peak)}=21.1\\ \\text{kV/cm (rms)}",
+"n": "breakdown strength of air at 76 cm Hg, 25 °C"
+},
+{
+"f": "\\delta=\\dfrac{3.92\\,b}{273+t}",
+"n": "air density factor, b = pressure in cm Hg, t in °C"
+},
+{
+"f": "V_c=g_0\\,\\delta\\,m\\,r\\ln\\dfrac Dr=21.1\\,m\\,\\delta\\,r\\ln\\dfrac Dr\\ \\text{kV (rms, phase)}",
+"n": "m = surface irregularity factor (0.8–1)"
+},
+{
+"f": "V_v=21.1\\,m_v\\,\\delta\\,r\\Big(1+\\dfrac{0.3}{\\sqrt{\\delta r}}\\Big)\\ln\\dfrac Dr",
+"n": "visual critical voltage (r in cm)"
+},
+{
+"f": "g_{max}=\\dfrac{V}{r\\ln(D/r)}",
+"n": "surface gradient; corona starts when g_max ≥ g₀δ"
+},
+{
+"h": "Corona loss (Peek)"
+},
+{
+"f": "P_c=\\dfrac{241}{\\delta}(f+25)\\sqrt{\\dfrac rD}\\,(V-V_c)^2\\times10^{-5}\\ \\ \\text{kW/km/phase}",
+"n": "V and V_c: rms phase voltages in kV; valid for V > V_c"
+},
+{
+"f": "\\text{Foul weather: } V_c\\downarrow\\ (\\approx0.8V_c)\\ \\Rightarrow\\ \\text{loss many times larger}",
+"n": ""
+},
+{
+"h": "Effects and remedies"
+},
+{
+"f": "\\text{Effects: power loss, radio interference, ozone and nitrous oxide, noise, harmonics}",
+"n": ""
+},
+{
+"f": "\\text{Reduced by: larger } r,\\ \\text{larger } D,\\ \\text{bundled / hollow conductors}",
+"n": ""
+},
+{
+"f": "V_c\\propto r\\ln(D/r)\\ \\ \\Rightarrow\\ \\ \\text{smaller spacing increases corona}",
+"n": ""
+}
+]
+},
+"overhead_line_insulators": {
+"title": "Overhead Line Insulators",
+"items": [
+{
+"h": "Voltage distribution in a string"
+},
+{
+"f": "k=\\dfrac{C_{shunt}}{C_{self}}\\ (\\text{pin-to-earth/self capacitance}),\\quad \\text{unit next to the cross-arm}=V_1",
+"n": ""
+},
+{
+"f": "V_2=V_1(1+k),\\qquad V_3=V_1(1+3k+k^2)",
+"n": "3-disc string"
+},
+{
+"f": "V_4=V_1(1+6k+5k^2+k^3)",
+"n": "4-disc string"
+},
+{
+"f": "V=V_1+V_2+V_3=V_1(3+4k+k^2)",
+"n": "(3 discs)"
+},
+{
+"f": "\\text{String efficiency}=\\dfrac{V_{string}}{n\\times V_{\\text{disc nearest the conductor}}}\\times100",
+"n": "always < 100%"
+},
+{
+"f": "n=\\dfrac{V_{ph}}{V_{disc}\\times\\eta_{string}}",
+"n": "number of discs"
+},
+{
+"h": "Improving the string efficiency"
+},
+{
+"f": "\\text{Longer cross-arm}\\ (k\\downarrow),\\ \\text{grading ring},\\ \\text{capacitance grading}",
+"n": "the disc nearest the line has the largest voltage"
+},
+{
+"f": "\\text{Grading ring: } \\text{adds capacitance from the metal fittings to the line}",
+"n": ""
+},
+{
+"h": "Insulator ratings and types"
+},
+{
+"f": "\\text{Safety factor}=\\dfrac{\\text{puncture voltage}}{\\text{flash-over voltage}}",
+"n": "puncture strength should exceed flash-over"
+},
+{
+"f": "\\text{Wet flash-over}\\approx0.8\\times\\text{dry flash-over}",
+"n": ""
+},
+{
+"f": "\\text{Pin: up to 33 kV;\\ suspension: above 33 kV;\\ strain: dead ends;\\ shackle: LV}",
+"n": ""
+},
+{
+"f": "\\text{Number of discs (approx.): 11 kV–1, 33 kV–3, 66 kV–5, 132 kV–9, 220 kV–14}",
+"n": "typical values"
+}
+]
+},
+"distribution": {
+"title": "Distribution",
+"items": [
+{
+"h": "DC distributors"
+},
+{
+"f": "\\text{Concentrated loads, end-fed: } \\Delta V=\\sum I_k\\,r_k\\ \\ (\\text{loop resistance per section})",
+"n": ""
+},
+{
+"f": "\\text{Uniformly loaded, end-fed: } \\Delta V=\\dfrac{I\\,R}{2}",
+"n": "I = total load current, R = total loop resistance"
+},
+{
+"f": "\\text{Fed at both ends: find } I_A,\\ I_B\\ \\text{from KVL; the point of minimum potential has } \\textstyle\\sum I=0",
+"n": ""
+},
+{
+"f": "\\text{Ring main: one KVL equation for the loop, then } \\sum\\Delta V=0",
+"n": ""
+},
+{
+"h": "AC distribution"
+},
+{
+"f": "\\Delta V\\approx I(R\\cos\\phi\\pm X\\sin\\phi)\\ \\ (1\\text{-φ: loop } R,X)",
+"n": "+ lagging, − leading"
+},
+{
+"f": "\\Delta V_{L}\\approx\\sqrt3\\,I\\,(R\\cos\\phi+X\\sin\\phi)\\ \\ (3\\text{-φ, per-phase } R,X)",
+"n": ""
+},
+{
+"f": "\\text{Loss}=3I^2R=\\dfrac{P^2R}{V_L^2\\cos^2\\phi}",
+"n": ""
+},
+{
+"f": "V_{ph}=\\dfrac{V_L}{\\sqrt3}\\qquad 400\\ \\text{V}\\to230\\ \\text{V}\\ (3\\text{-φ 4-wire})",
+"n": ""
+},
+{
+"h": "Economy"
+},
+{
+"f": "\\text{Kelvin's law: annual energy-loss cost}=\\text{annual charges on the variable capital cost}",
+"n": "gives the economical conductor area"
+},
+{
+"f": "I_{economic}=\\dfrac{S\\ \\text{(current density)}\\times A}{}\\ \\ \\text{then check voltage drop and thermal limit}",
+"n": ""
+},
+{
+"f": "\\%\\text{ Regulation}=\\dfrac{V_{NL}-V_{FL}}{V_{FL}}\\times100",
+"n": ""
+},
+{
+"f": "\\text{Ring/interconnected systems are more reliable and have lower voltage drop than radial}",
+"n": ""
+}
+]
+},
+"load_flow_studies": {
+"title": "Load Flow Studies",
+"items": [
+{
+"h": "Bus types and Y-bus"
+},
+{
+"f": "\\text{Slack: } |V|,\\delta\\ \\text{specified;\\quad PV: } P,|V|;\\quad \\text{PQ: } P,Q",
+"n": ""
+},
+{
+"f": "Y_{ii}=\\sum_{j}y_{ij}+y_{i0},\\qquad Y_{ij}=-y_{ij}",
+"n": "off-diagonal = negative of the line admittance"
+},
+{
+"f": "P_i-jQ_i=V_i^*\\sum_{k}Y_{ik}V_k",
+"n": ""
+},
+{
+"h": "Gauss–Seidel"
+},
+{
+"f": "V_i^{(m+1)}=\\dfrac1{Y_{ii}}\\Big[\\dfrac{P_i-jQ_i}{V_i^{(m)*}}-\\sum_{k\\ne i}Y_{ik}V_k\\Big]",
+"n": ""
+},
+{
+"f": "V_{acc}=V_{old}+\\alpha\\,(V_{new}-V_{old}),\\quad \\alpha\\approx1.4\\text{–}1.7",
+"n": "acceleration factor"
+},
+{
+"f": "\\text{PV bus: keep the angle, reset }|V|\\text{ to the schedule}",
+"n": ""
+},
+{
+"h": "Newton–Raphson and decoupled"
+},
+{
+"f": "\\begin{bmatrix}\\Delta P\\\\\\Delta Q\\end{bmatrix}=\\begin{bmatrix}J_1&J_2\\\\J_3&J_4\\end{bmatrix}\\begin{bmatrix}\\Delta\\delta\\\\\\Delta|V|\\end{bmatrix}",
+"n": "Jacobian size = (n−1) + n_PQ"
+},
+{
+"f": "\\text{Equations: }2(n-1)\\ \\text{for PQ buses only}",
+"n": ""
+},
+{
+"f": "[B']\\Delta\\delta=\\dfrac{\\Delta P}{|V|}\\ (n-1),\\qquad [B'']\\Delta|V|=\\dfrac{\\Delta Q}{|V|}\\ (n_{PQ})",
+"n": "fast decoupled: R ≪ X, small δ, |V| ≈ 1"
+},
+{
+"h": "DC load flow and line flows"
+},
+{
+"f": "P_{ik}=\\dfrac{\\delta_i-\\delta_k}{X_{ik}},\\qquad [P]=[B'][\\delta]",
+"n": ""
+},
+{
+"f": "S_{ik}=V_iI_{ik}^*,\\qquad S_{loss}=S_{ik}+S_{ki}",
+"n": "the slack bus supplies the system losses"
+},
+{
+"f": "\\text{PV bus beyond } Q_{max}\\ \\Rightarrow\\ \\text{treat as PQ with } Q=Q_{max}",
+"n": ""
+}
+]
+},
+"per_unit_system": {
+"title": "Per Unit System",
+"items": [
+{
+"h": "Definitions"
+},
+{
+"f": "\\text{Quantity (pu)}=\\dfrac{\\text{actual value}}{\\text{base value}}",
+"n": ""
+},
+{
+"f": "Z_{base}=\\dfrac{kV_{base}^2}{MVA_{base}}\\ (\\Omega),\\qquad I_{base}=\\dfrac{MVA_{base}}{\\sqrt3\\,kV_{base}}\\ (\\text{kA})",
+"n": "kV: line-to-line, MVA: 3-phase"
+},
+{
+"f": "Z_{pu}=\\dfrac{Z(\\Omega)}{Z_{base}}=\\dfrac{Z(\\Omega)\\,MVA_{base}}{kV_{base}^2}",
+"n": ""
+},
+{
+"h": "Change of base"
+},
+{
+"f": "Z_{pu,new}=Z_{pu,old}\\Big(\\dfrac{kV_{old}}{kV_{new}}\\Big)^2\\Big(\\dfrac{MVA_{new}}{MVA_{old}}\\Big)",
+"n": ""
+},
+{
+"h": "Multi-voltage systems"
+},
+{
+"f": "kV_{base,2}=kV_{base,1}\\times\\dfrac{\\text{rated kV of side 2}}{\\text{rated kV of side 1}}",
+"n": "base voltages follow the transformer ratio"
+},
+{
+"f": "Z_{pu}\\ \\text{of a transformer is the same on either side}",
+"n": ""
+},
+{
+"f": "\\text{Transformer: } Z_{pu}=\\dfrac{\\%Z}{100}=\\dfrac{V_{sc}}{V_{rated}}",
+"n": ""
+},
+{
+"h": "Fault quantities"
+},
+{
+"f": "I_{f,pu}=\\dfrac{1}{Z_{pu}},\\qquad I_f=I_{base}\\,I_{f,pu}",
+"n": ""
+},
+{
+"f": "S_{sc}=\\dfrac{MVA_{base}}{Z_{pu}}",
+"n": ""
+},
+{
+"f": "\\text{Advantages: no voltage-level conversion, transformer ratio disappears, values lie near 1.0}",
+"n": ""
+},
+{
+"f": "V_{pu}\\approx1.0,\\qquad S_{pu}=\\dfrac{S}{S_{base}}",
+"n": ""
+}
+]
+},
+"symmetrical_faults": {
+"title": "Symmetrical (3-Phase) Faults",
+"items": [
+{
+"h": "Fault current"
+},
+{
+"f": "I_f=\\dfrac{V_{pf}}{Z_{th}+Z_f}=\\dfrac{1}{Z_{th}+Z_f}\\ \\text{pu}",
+"n": "pre-fault voltage 1.0 pu"
+},
+{
+"f": "I_f(\\text{A})=I_{base}\\times I_{f,pu},\\qquad S_{sc}=\\sqrt3V_LI_f=\\dfrac{MVA_{base}}{X_{pu}}",
+"n": ""
+},
+{
+"f": "I_{sc}=I_{rated}\\times\\dfrac{100}{\\%X}",
+"n": ""
+},
+{
+"h": "Machine behaviour"
+},
+{
+"f": "I''=\\dfrac{E''}{X''_d}>I'=\\dfrac{E'}{X'_d}>I=\\dfrac{E}{X_d}",
+"n": "subtransient > transient > steady state"
+},
+{
+"f": "i(t)=\\text{AC (decaying)}+\\text{DC offset};\\quad \\text{asymmetrical rms}\\approx1.6\\times\\text{symmetrical}",
+"n": "maximum offset"
+},
+{
+"h": "Z-bus method"
+},
+{
+"f": "I_f(k)=\\dfrac{V_k(0)}{Z_{kk}+Z_f},\\qquad V_i(F)=V_i(0)-Z_{ik}I_f(k)",
+"n": ""
+},
+{
+"f": "I_{ij}=\\dfrac{V_i(F)-V_j(F)}{z_{ij}}",
+"n": "post-fault current in a line"
+},
+{
+"h": "Reactor and breaker"
+},
+{
+"f": "X_{reactor}=X_{required}-X_{existing}\\ \\ (\\text{pu, on a common base})",
+"n": "current-limiting reactor"
+},
+{
+"f": "\\text{Breaking MVA}=\\sqrt3\\,V_{rated}\\,I_{b}\\qquad \\text{Making current}\\approx2.55\\,I_{sc,rms}",
+"n": ""
+},
+{
+"f": "\\text{Neglect loads, resistance and pre-fault currents (simple method); use sub-transient reactance}",
+"n": ""
+}
+]
+},
+"symmetrical_components": {
+"title": "Symmetrical Components",
+"items": [
+{
+"h": "Operator a"
+},
+{
+"f": "a=1\\angle120^\\circ=-\\tfrac12+j\\tfrac{\\sqrt3}{2},\\quad a^2=1\\angle240^\\circ,\\quad a^3=1,\\quad 1+a+a^2=0",
+"n": ""
+},
+{
+"h": "Resolution"
+},
+{
+"f": "V_{a0}=\\tfrac13(V_a+V_b+V_c),\\ \\ V_{a1}=\\tfrac13(V_a+aV_b+a^2V_c),\\ \\ V_{a2}=\\tfrac13(V_a+a^2V_b+aV_c)",
+"n": ""
+},
+{
+"f": "V_a=V_0+V_1+V_2,\\quad V_b=V_0+a^2V_1+aV_2,\\quad V_c=V_0+aV_1+a^2V_2",
+"n": ""
+},
+{
+"f": "I_n=3I_{a0}",
+"n": "neutral current"
+},
+{
+"f": "S=V_aI_a^*+V_bI_b^*+V_cI_c^*=3\\big(V_0I_0^*+V_1I_1^*+V_2I_2^*\\big)",
+"n": "power is invariant with this scaling"
+},
+{
+"f": "\\text{Voltage unbalance}=\\dfrac{|V_2|}{|V_1|}\\times100",
+"n": ""
+},
+{
+"h": "Sequence impedances"
+},
+{
+"f": "\\text{Lines: } Z_1=Z_2,\\quad Z_0\\approx2\\text{–}3.5\\,Z_1",
+"n": ""
+},
+{
+"f": "\\text{Transformers: } Z_1=Z_2=Z_0\\ (\\text{leakage}),\\ \\ \\text{zero-sequence path depends on the connection}",
+"n": ""
+},
+{
+"f": "\\text{Neutral impedance } Z_n \\Rightarrow 3Z_n\\ \\text{in the zero-sequence network}",
+"n": ""
+},
+{
+"f": "\\text{Y–Δ: } +30^\\circ\\ (\\text{positive}),\\ -30^\\circ\\ (\\text{negative}),\\ \\text{no zero-sequence through } \\Delta",
+"n": "ANSI/IEEE convention"
+},
+{
+"f": "\\text{Positive: only source; negative and zero: no source}",
+"n": ""
+}
+]
+},
+"unsymmetrical_faults": {
+"title": "Unsymmetrical Faults",
+"items": [
+{
+"h": "Single line-to-ground (LG)"
+},
+{
+"f": "I_{a0}=I_{a1}=I_{a2}=\\dfrac{E_a}{Z_1+Z_2+Z_0+3Z_f},\\qquad I_f=3I_{a0}",
+"n": "sequence networks in series"
+},
+{
+"h": "Line-to-line (LL)"
+},
+{
+"f": "I_{a1}=-I_{a2}=\\dfrac{E_a}{Z_1+Z_2+Z_f},\\quad I_{a0}=0,\\quad I_b=-I_c=-j\\sqrt3\\,I_{a1}",
+"n": "networks in parallel; no zero-sequence current"
+},
+{
+"h": "Double line-to-ground (LLG)"
+},
+{
+"f": "I_{a1}=\\dfrac{E_a}{Z_1+\\dfrac{Z_2(Z_0+3Z_f)}{Z_2+Z_0+3Z_f}},\\quad I_{a0}=-I_{a1}\\dfrac{Z_2}{Z_2+Z_0+3Z_f}",
+"n": ""
+},
+{
+"f": "I_f=3I_{a0}\\quad (\\text{ground current})",
+"n": ""
+},
+{
+"h": "Three-phase and comparison"
+},
+{
+"f": "I_{3\\phi}=\\dfrac{E_a}{Z_1+Z_f}",
+"n": ""
+},
+{
+"f": "\\dfrac{I_{LG}}{I_{3\\phi}}=\\dfrac{3Z_1}{Z_1+Z_2+Z_0}\\quad(Z_f=0)",
+"n": "LG exceeds 3-φ when Z₀ < Z₁ (with Z₁ = Z₂)"
+},
+{
+"f": "V_{a1}=E_a-I_{a1}Z_1,\\quad V_{a2}=-I_{a2}Z_2,\\quad V_{a0}=-I_{a0}Z_0",
+"n": ""
+},
+{
+"f": "\\text{Fault current: } I_{3\\phi}\\ \\text{usually max for line faults; } I_{LG}\\ \\text{near generators/solidly grounded}",
+"n": ""
+},
+{
+"f": "\\text{With a solidly grounded neutral: } Z_f=0,\\ Z_n=0",
+"n": ""
+}
+]
+},
+"zbus_algorithm_and_applications": {
+"title": "Z-Bus Algorithm and Applications",
+"items": [
+{
+"h": "Basics"
+},
+{
+"f": "Z_{bus}=Y_{bus}^{-1},\\qquad V_{bus}=Z_{bus}\\,I_{bus}",
+"n": "Z-bus is symmetric and, in general, full; Y-bus is sparse"
+},
+{
+"f": "Z_{ii}=\\text{Thevenin impedance at bus }i,\\qquad Z_{ik}=\\dfrac{V_i}{I_k}\\Big|_{\\text{other }I=0}",
+"n": ""
+},
+{
+"h": "Building Z-bus (branch impedance z_b added)"
+},
+{
+"f": "\\text{Type 1: new bus } p\\ \\text{to reference: }\\begin{bmatrix}Z_{old}&0\\\\0&z_b\\end{bmatrix}",
+"n": ""
+},
+{
+"f": "\\text{Type 2: new bus } p\\ \\text{to existing bus } k:\\ \\ Z_{pi}=Z_{ki},\\ \\ Z_{pp}=Z_{kk}+z_b",
+"n": ""
+},
+{
+"f": "\\text{Type 3: existing bus } k\\ \\text{to reference:}\\ \\ Z_{ij}^{new}=Z_{ij}-\\dfrac{Z_{ik}Z_{kj}}{Z_{kk}+z_b}",
+"n": ""
+},
+{
+"f": "\\text{Type 4: between existing buses } k,m:\\ \\ Z_{ij}^{new}=Z_{ij}-\\dfrac{(Z_{ik}-Z_{im})(Z_{kj}-Z_{mj})}{Z_{kk}+Z_{mm}-2Z_{km}+z_b}",
+"n": ""
+},
+{
+"h": "Fault analysis"
+},
+{
+"f": "I_f(k)=\\dfrac{V_k(0)}{Z_{kk}+Z_f}",
+"n": ""
+},
+{
+"f": "V_i(F)=V_i(0)-Z_{ik}\\,I_f(k)",
+"n": ""
+},
+{
+"f": "I_{ij}=\\dfrac{V_i(F)-V_j(F)}{z_{ij}}",
+"n": ""
+},
+{
+"f": "\\text{Unsymmetrical faults: use } Z_{kk}^{(1)},Z_{kk}^{(2)},Z_{kk}^{(0)}\\ \\text{in place of } Z_1,Z_2,Z_0",
+"n": ""
+}
+]
+},
+"stability_basics": {
+"title": "Power System Stability Basics",
+"items": [
+{
+"h": "Swing equation"
+},
+{
+"f": "\\dfrac{H}{\\pi f}\\dfrac{d^2\\delta}{dt^2}=P_m-P_e=P_a\\quad(\\text{pu}),\\qquad M=\\dfrac{HS}{180f}\\ \\text{MJ/elec-deg}",
+"n": ""
+},
+{
+"f": "H=\\dfrac{\\text{stored KE at synchronous speed (MJ)}}{S_{rated}\\ (\\text{MVA})},\\qquad H_{eq}=\\dfrac{\\sum H_iS_i}{S_{base}}",
+"n": ""
+},
+{
+"f": "\\alpha=\\dfrac{\\pi f}{H}(P_m-P_e)\\ \\text{rad/s}^2",
+"n": ""
+},
+{
+"h": "Power-angle and steady-state limit"
+},
+{
+"f": "P_e=\\dfrac{EV}{X}\\sin\\delta,\\qquad P_{max}=\\dfrac{EV}{X}\\ \\text{at}\\ \\delta=90^\\circ",
+"n": "X = X'_d + X_t + X_line (transient model uses E′)"
+},
+{
+"f": "P_s=\\dfrac{dP_e}{d\\delta}=P_{max}\\cos\\delta_0\\ \\ (\\text{synchronising coefficient})",
+"n": ""
+},
+{
+"f": "\\omega_n=\\sqrt{\\dfrac{\\pi fP_s}{H}}\\ \\text{rad/s},\\qquad f_n=\\dfrac{\\omega_n}{2\\pi}",
+"n": "small-oscillation frequency (0.5–2 Hz)"
+},
+{
+"h": "Time domain"
+},
+{
+"f": "\\delta(t)=\\delta_0+\\dfrac{\\pi f\\,P_a}{2H}t^2\\quad(P_a\\ \\text{constant})",
+"n": ""
+},
+{
+"f": "\\Delta\\delta_n=\\Delta\\delta_{n-1}+k\\,P_{a,n-1},\\quad k=\\dfrac{180f}{H}(\\Delta t)^2\\ (\\text{deg})",
+"n": "point-by-point method"
+},
+{
+"f": "\\text{Types: steady-state, transient (large disturbance), dynamic}",
+"n": ""
+},
+{
+"f": "\\text{Improvement: fast clearing, auto-reclosing, series compensation, high-speed excitation}",
+"n": ""
+}
+]
+},
+"equal_area_criteria_cases": {
+"title": "Equal Area Criterion – Cases",
+"items": [
+{
+"h": "Angles"
+},
+{
+"f": "\\delta_0=\\sin^{-1}\\dfrac{P_m}{P_{max1}},\\qquad \\delta_{max}=\\pi-\\sin^{-1}\\dfrac{P_m}{P_{max3}}",
+"n": "P_max1 pre-fault, P_max2 during fault, P_max3 post-fault"
+},
+{
+"h": "Areas"
+},
+{
+"f": "A_1=\\int_{\\delta_0}^{\\delta_c}(P_m-P_{max2}\\sin\\delta)\\,d\\delta=P_m(\\delta_c-\\delta_0)+P_{max2}(\\cos\\delta_c-\\cos\\delta_0)",
+"n": ""
+},
+{
+"f": "A_2=\\int_{\\delta_c}^{\\delta_{max}}(P_{max3}\\sin\\delta-P_m)\\,d\\delta,\\qquad \\text{stable if } A_2\\ge A_1",
+"n": ""
+},
+{
+"h": "Critical clearing angle"
+},
+{
+"f": "\\cos\\delta_c=\\dfrac{P_m(\\delta_{max}-\\delta_0)+P_{max3}\\cos\\delta_{max}-P_{max2}\\cos\\delta_0}{P_{max3}-P_{max2}}",
+"n": ""
+},
+{
+"f": "P_{max2}=0:\\ \\ \\cos\\delta_c=\\dfrac{P_m}{P_{max3}}(\\delta_{max}-\\delta_0)+\\cos\\delta_{max}",
+"n": "terminal 3-φ fault"
+},
+{
+"f": "\\text{Same pre/post fault, } P_m=\\tfrac12P_{max}:\\ \\ \\delta_0=30^\\circ,\\ \\delta_{max}=150^\\circ,\\ \\delta_c=79.6^\\circ",
+"n": ""
+},
+{
+"h": "Critical clearing time"
+},
+{
+"f": "t_c=\\sqrt{\\dfrac{2H(\\delta_c-\\delta_0)}{\\pi f\\,P_m}}\\quad(P_e=0\\ \\text{during the fault; angles in rad})",
+"n": "depends on H; the angle δ_c does not"
+},
+{
+"h": "Sudden changes"
+},
+{
+"f": "\\text{Sudden load step } P_0\\to P_1:\\ \\ P_1(\\delta_m-\\delta_0)=P_{max}(\\cos\\delta_0-\\cos\\delta_m)",
+"n": ""
+},
+{
+"f": "\\text{Limit: } \\delta_m=\\pi-\\sin^{-1}\\dfrac{P_1}{P_{max}}\\ \\ \\text{(sudden step or line outage)}",
+"n": ""
+}
+]
+},
+"protection_basics": {
+"title": "Protection Basics",
+"items": [
+{
+"h": "Requirements"
+},
+{
+"f": "\\text{Selectivity, speed, sensitivity, reliability (dependability + security), stability}",
+"n": ""
+},
+{
+"f": "R_{system}=1-(1-R_{primary})(1-R_{backup})",
+"n": "independent primary and backup"
+},
+{
+"h": "Current transformer"
+},
+{
+"f": "K_n=\\dfrac{I_{pn}}{I_{sn}},\\qquad \\text{Ratio error}=\\dfrac{K_nI_s-I_p}{I_p}\\times100",
+"n": ""
+},
+{
+"f": "\\text{Burden (VA)}=I_{sn}^2\\,Z_b,\\qquad R_b=\\dfrac{VA}{I_{sn}^2}",
+"n": ""
+},
+{
+"f": "V_{k}\\approx ALF\\times I_{sn}\\,(R_{ct}+R_b)\\qquad (\\text{5P20: 5\\% composite error at 20}\\times I_n)",
+"n": ""
+},
+{
+"f": "\\text{CT secondary must never be open-circuited;\\ VT secondary must never be short-circuited}",
+"n": ""
+},
+{
+"h": "Differential protection"
+},
+{
+"f": "I_d=|I_1-I_2|,\\qquad \\text{operate if } I_d>k\\,\\dfrac{I_1+I_2}{2}+I_{min}",
+"n": "percentage (biased) differential"
+},
+{
+"f": "\\text{Transformer: CT ratio}\\ =\\dfrac{I_{rated}}{1\\text{ or }5\\text{ A}};\\ \\ \\text{Y–Δ: CTs in Δ on the Y side, Y on the Δ side}",
+"n": ""
+},
+{
+"f": "I_{rated}=\\dfrac{S}{\\sqrt3\\,V_L}",
+"n": ""
+},
+{
+"f": "\\text{Inrush: 2nd harmonic}\\ >15\\text{–}20\\%\\ \\Rightarrow\\ \\text{restrain}",
+"n": ""
+},
+{
+"f": "\\text{Unprotected winding (REF)}=\\dfrac{I_{setting}}{I_{f,max}}\\times100\\ \\%",
+"n": ""
+}
+]
+},
+"protective_relays": {
+"title": "Protective Relays",
+"items": [
+{
+"h": "Overcurrent relay"
+},
+{
+"f": "PSM=\\dfrac{I_{fault}\\ (\\text{CT secondary})}{\\text{plug setting}\\times I_{rated,relay}}=\\dfrac{I_f}{CTR\\times PS\\times I_{n}}",
+"n": ""
+},
+{
+"f": "t=TMS\\times\\dfrac{k}{PSM^{\\alpha}-1}:\\ \\ \\text{SI: }\\dfrac{0.14}{PSM^{0.02}-1},\\ \\ \\text{VI: }\\dfrac{13.5}{PSM-1},\\ \\ \\text{EI: }\\dfrac{80}{PSM^2-1},\\ \\ \\text{LTI: }\\dfrac{120}{PSM-1}",
+"n": "IEC standard inverse curves"
+},
+{
+"f": "\\text{Grading margin}=t_{CB}+t_{overshoot}+t_{safety}\\ \\approx0.4\\ \\text{s}",
+"n": ""
+},
+{
+"h": "Distance relay"
+},
+{
+"f": "Z_{sec}=Z_{pri}\\times\\dfrac{CTR}{VTR},\\qquad CTR=\\dfrac{I_p}{I_s},\\ \\ VTR=\\dfrac{V_p}{V_s}",
+"n": "relay settings in secondary ohms"
+},
+{
+"f": "Z_1\\approx80\\%,\\ \\ Z_2\\approx120\\%\\ (\\text{or }100\\%+50\\%\\text{ of next}),\\ \\ Z_3\\approx\\text{backup}",
+"n": "zone reaches (of the protected line)"
+},
+{
+"f": "\\text{Operates if } Z_{apparent}=\\dfrac{V}{I}<Z_{set}",
+"n": ""
+},
+{
+"h": "Torque equations"
+},
+{
+"f": "T=K_1I^2-K_2V^2-K_3\\ \\ \\text{(impedance: operates for } \\dfrac VI<\\sqrt{K_1/K_2})",
+"n": ""
+},
+{
+"f": "T=K\\,VI\\cos(\\theta-\\tau)-K_0\\ \\ \\text{(directional)}",
+"n": ""
+},
+{
+"f": "T=K_1I^2+K_2V^2+K_3VI\\cos(\\theta-\\tau)+K\\ \\ (\\text{universal relay torque})",
+"n": ""
+},
+{
+"f": "\\text{Reset ratio}=\\dfrac{\\text{drop-out value}}{\\text{pick-up value}}<1",
+"n": "reset ratio 0.9 means drop-out at 90% of pick-up"
+},
+{
+"f": "\\text{Earth fault setting}=\\dfrac{I_{earth}}{I_{full\\ load}}\\times100\\ \\%\\ \\ (\\text{typically }10\\text{–}40\\%)",
+"n": ""
+}
+]
+},
+"circuit_breakers": {
+"title": "Circuit Breakers",
+"items": [
+{
+"h": "Ratings"
+},
+{
+"f": "\\text{Breaking MVA}=\\sqrt3\\,V_L(\\text{kV})\\,I_b(\\text{kA})\\quad(\\text{symmetrical rms at rated voltage})",
+"n": ""
+},
+{
+"f": "\\text{Making current}\\approx2.55\\times I_{b,sym}\\ (\\text{peak}),\\qquad I_{sc}=\\dfrac{MVA_{base}}{\\sqrt3\\,V\\,X_{pu}}",
+"n": ""
+},
+{
+"f": "\\text{Rated sequence: } O-0.3\\text{ s}-CO-3\\text{ min}-CO",
+"n": ""
+},
+{
+"h": "Transient recovery voltage (TRV)"
+},
+{
+"f": "\\omega_n=\\dfrac{1}{\\sqrt{LC}},\\quad f_n=\\dfrac{1}{2\\pi\\sqrt{LC}}",
+"n": ""
+},
+{
+"f": "v(t)=E_m\\,(1-\\cos\\omega_nt),\\qquad v_{peak}=2E_m",
+"n": "E_m = peak phase voltage (undamped)"
+},
+{
+"f": "RRRV_{max}=E_m\\,\\omega_n\\ \\ \\text{(at } \\omega_nt=\\tfrac{\\pi}{2}\\text{)}",
+"n": ""
+},
+{
+"f": "R_{critical}=\\dfrac12\\sqrt{\\dfrac LC}\\quad(\\text{resistance switching: no oscillation for } R\\le R_c)",
+"n": "parallel resistor across contacts"
+},
+{
+"h": "Overvoltages"
+},
+{
+"f": "\\tfrac12LI^2=\\tfrac12CV^2\\ \\Rightarrow\\ V=I\\sqrt{L/C}",
+"n": "current chopping (inductive switching)"
+},
+{
+"f": "\\text{Capacitive switching: restrike can give up to }3\\times\\text{ the peak voltage}",
+"n": ""
+},
+{
+"h": "Types"
+},
+{
+"f": "\\text{ACB, oil (bulk/minimum), air-blast, vacuum, SF}_6\\ \\ (\\text{best for EHV})",
+"n": ""
+},
+{
+"f": "\\text{Arc extinction at current zero: high-pressure cooling, high resistance, high-dielectric gas}",
+"n": ""
+}
+]
+},
+"hvdc_basics": {
+"title": "HVDC Basics",
+"items": [
+{
+"h": "Six-pulse converter"
+},
+{
+"f": "V_{d0}=\\dfrac{3\\sqrt2}{\\pi}V_{LL}\\approx1.35\\,V_{LL}",
+"n": ""
+},
+{
+"f": "V_d=V_{d0}\\cos\\alpha-\\dfrac{3}{\\pi}X_cI_d=V_{d0}\\dfrac{\\cos\\alpha+\\cos(\\alpha+\\mu)}{2}",
+"n": "rectifier"
+},
+{
+"f": "\\cos\\alpha-\\cos(\\alpha+\\mu)=\\dfrac{\\sqrt2\\,X_cI_d}{V_{LL}}",
+"n": "overlap angle μ"
+},
+{
+"f": "V_{di}=V_{d0}\\cos\\gamma-\\dfrac{3}{\\pi}X_cI_d,\\qquad \\gamma=\\beta-\\mu,\\ \\ \\beta=180^\\circ-\\alpha",
+"n": "inverter: α in 90°–180°"
+},
+{
+"h": "Link"
+},
+{
+"f": "I_d=\\dfrac{V_{dr}-V_{di}}{R_d},\\quad P_r=V_{dr}I_d,\\quad P_i=V_{di}I_d,\\quad P_{loss}=I_d^2R_d",
+"n": ""
+},
+{
+"f": "P_{bipolar}=2\\,V_dI_d",
+"n": ""
+},
+{
+"f": "\\text{12-pulse: two 6-pulse bridges in series, } V_d=2V_{d,6\\text{-pulse}}",
+"n": ""
+},
+{
+"h": "Reactive power and harmonics"
+},
+{
+"f": "Q=P\\tan\\phi,\\qquad \\cos\\phi\\approx\\dfrac{\\cos\\alpha+\\cos(\\alpha+\\mu)}{2}",
+"n": "converters always absorb Q (≈ 50–60% of P)"
+},
+{
+"f": "I_{ac,rms}=\\sqrt{\\tfrac23}\\,I_d=0.816I_d,\\quad I_1=\\dfrac{\\sqrt6}{\\pi}I_d=0.78I_d",
+"n": ""
+},
+{
+"f": "\\text{Harmonics: AC } pk\\pm1,\\ \\text{DC } pk\\ \\ (p=6:\\ 5,7,11,13;\\ 6,12;\\quad p=12:\\ 11,13;\\ 12)",
+"n": ""
+},
+{
+"h": "Control and economics"
+},
+{
+"f": "\\text{Rectifier: constant current;\\ inverter: constant extinction angle (γ ≈ 15°–18°)};\\ \\ \\text{current margin}\\approx0.1\\ \\text{pu}",
+"n": ""
+},
+{
+"f": "d_{break-even}=\\dfrac{\\text{extra terminal cost of HVDC}}{\\text{line cost saved per km}}\\ \\ (\\approx600\\text{–}800\\ \\text{km overhead})",
+"n": ""
+}
+]
+},
+"facts": {
+"title": "FACTS",
+"items": [
+{
+"h": "Series compensation"
+},
+{
+"f": "k=\\dfrac{X_c}{X_L},\\quad X_{eff}=X_L(1-k),\\quad P_{max}=\\dfrac{V_1V_2}{X_L(1-k)}",
+"n": ""
+},
+{
+"f": "f_{er}=f_0\\sqrt{\\dfrac{X_c}{X_L}},\\qquad f_{mech}=f_0-f_{er}\\ \\ (\\text{SSR})",
+"n": "sub-synchronous resonance"
+},
+{
+"f": "X_{TCSC}=-\\dfrac{X_cX_L(\\alpha)}{X_L(\\alpha)-X_c},\\qquad K_{boost}=\\dfrac{X_L(\\alpha)}{X_L(\\alpha)-X_c}",
+"n": ""
+},
+{
+"h": "Shunt compensation"
+},
+{
+"f": "Q_{SVC}=V^2B,\\qquad \\text{TCR: } B_{TCR}=\\dfrac{\\sigma-\\sin\\sigma}{\\pi X_L},\\ \\ \\sigma=2(\\pi-\\alpha)",
+"n": "firing angle α: 90° (full) to 180° (off)"
+},
+{
+"f": "\\text{SVC: } Q\\propto V^2;\\qquad \\text{STATCOM: } Q=V\\,I_{max}\\ (\\propto V)",
+"n": "STATCOM supports the voltage better during dips"
+},
+{
+"f": "P=\\dfrac{2V^2}{X}\\sin\\dfrac{\\delta}{2}\\ \\ (\\text{ideal mid-point shunt compensator})",
+"n": "P_max = 2V²/X"
+},
+{
+"f": "V=V_{ref}+X_{sl}\\,I_{SVC}",
+"n": "SVC voltage-current characteristic with slope X_sl"
+},
+{
+"h": "Phase shifter and UPFC"
+},
+{
+"f": "P=\\dfrac{V^2}{X}\\sin(\\delta\\pm\\varphi)",
+"n": "phase-angle regulator controls real power"
+},
+{
+"f": "\\text{UPFC}=\\text{STATCOM}+\\text{SSSC on a common DC link: controls } P,\\ Q\\ \\text{and } V",
+"n": ""
+},
+{
+"f": "\\text{SSSC: injects a series voltage in quadrature with the line current}",
+"n": ""
+},
+{
+"f": "\\text{Harmonics: delta-connected TCR removes triplen harmonics; 5th, 7th, 11th, 13th remain}",
+"n": ""
+}
+]
+}
+}

@@ -241,6 +241,43 @@ function renderVerifyTab(){
     classworkBox.appendChild(buildSubjectPdfRow('Part 2 - Solutions', 'classworkPart2Url', 'classworkPart2Visible'));
     subjBox.appendChild(classworkBox);
 
+    // V95 NEW: one-tap load of the ready-made EDITABLE concepts for every topic
+    const cptBox = document.createElement('div');
+    cptBox.className = 'settings-panel';
+    cptBox.style.background = '#F4F6FB';
+    const cptTitle = document.createElement('h3');
+    cptTitle.style.margin = '0 0 6px 0';
+    cptTitle.textContent = '✏ Editable Concepts & Formulas';
+    cptBox.appendChild(cptTitle);
+    const cptHint = document.createElement('div');
+    cptHint.style.cssText = 'font-size:12px;color:var(--muted);margin-bottom:8px;';
+    cptHint.textContent = 'Loads the ready-made formula pages into every topic of this subject that has none yet (existing PDFs stay). Then open a topic to edit, and Publish.';
+    cptBox.appendChild(cptHint);
+    const cptBtn = document.createElement('button');
+    cptBtn.className = 'btn btn-secondary';
+    cptBtn.style.fontSize = '12px';
+    cptBtn.textContent = 'Load editable concepts for all topics';
+    cptBtn.onclick = async () => {
+      try {
+        const seed = await loadConceptsSeed();
+        let n = 0;
+        subj.subtopics.forEach(st => {
+          if ((!st.conceptsItems || !st.conceptsItems.length) && seed[st.id]) {
+            st.conceptsItems = JSON.parse(JSON.stringify(seed[st.id].items));
+            st.conceptsTextVisible = !!st.conceptsPdfVisible;
+            n++;
+          }
+        });
+        pendingTopicChanges = true;
+        updateExportBarVisibility();
+        setStatus(n + ' topic(s) now have editable concepts. Open a topic to edit; Publish to make it live.', 'ok');
+      } catch (err) {
+        setStatus('Could not load data/concepts_seed.json - upload it into the data folder first.', 'error');
+      }
+    };
+    cptBox.appendChild(cptBtn);
+    subjBox.appendChild(cptBox);
+
     const table = document.createElement('div');
     table.style.fontSize = '13px';
 
@@ -712,6 +749,7 @@ function renderSubtopicDetailContents(subtopic, subjectName){
   }
   pdfBox.appendChild(pdfControlsRow);
   verifyDetail.appendChild(pdfBox);
+  verifyDetail.appendChild(buildConceptsTextBox(subtopic));
 
   // ---- Teacher-only exports for this topic ----
   const exportRow = document.createElement('div');
@@ -3189,3 +3227,133 @@ publishBtn.addEventListener('click', async () => {
     a.click();
   });
 })();
+
+
+// ---------- V95 NEW: editable Concepts & Formulas (per topic) ----------
+let conceptsSeedCache = null;
+async function loadConceptsSeed(){
+  if (conceptsSeedCache) return conceptsSeedCache;
+  const r = await fetch('data/concepts_seed.json', { cache: 'no-store' });
+  if (!r.ok) throw new Error('seed missing');
+  conceptsSeedCache = await r.json();
+  return conceptsSeedCache;
+}
+
+function buildConceptsTextBox(subtopic){
+  const box = document.createElement('div');
+  box.className = 'settings-panel';
+  box.style.background = '#FFF8EE';
+  const touch = () => { pendingTopicChanges = true; updateExportBarVisibility(); };
+  const head = document.createElement('h3');
+  head.style.margin = '0 0 6px 0';
+  head.textContent = '✏ Editable Concepts & Formulas (text)';
+  box.appendChild(head);
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size:12px;color:var(--muted);margin-bottom:8px;';
+  hint.textContent = 'Students see this as a page inside the app (the PDF above stays as a download). Formula = LaTeX, e.g. \\frac{a}{b}. Notes can use $ $ for maths.';
+  box.appendChild(hint);
+
+  const body = document.createElement('div');
+  box.appendChild(body);
+
+  function latexInto(el, latex){
+    el.textContent = '$$' + (latex || '') + '$$';
+    if (window.renderMathInElement) {
+      try { renderMathInElement(el, { delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError: false }); } catch (e) {}
+    }
+  }
+  function mini(label, fn){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.style.cssText = 'padding:4px 8px;border:1px solid #d6dbe8;border-radius:6px;background:#fff;cursor:pointer;font-size:12px;';
+    b.onclick = fn;
+    return b;
+  }
+  function render(){
+    body.innerHTML = '';
+    const items = subtopic.conceptsItems || [];
+    const status = document.createElement('div');
+    status.style.cssText = 'font-size:12px;font-weight:700;margin-bottom:8px;';
+    status.textContent = items.length ? (items.filter(i => i.h === undefined).length + ' formulas, ' + items.filter(i => i.h !== undefined).length + ' headings.') : 'No editable concepts for this topic yet.';
+    body.appendChild(status);
+
+    if (!items.length) {
+      body.appendChild(mini('Load ready-made concepts for this topic', async () => {
+        try {
+          const seed = await loadConceptsSeed();
+          if (!seed[subtopic.id]) { setStatus('No ready-made concepts for "' + subtopic.name + '" - use + Heading / + Formula to write your own.', 'error'); return; }
+          subtopic.conceptsItems = JSON.parse(JSON.stringify(seed[subtopic.id].items));
+          subtopic.conceptsTextVisible = !!subtopic.conceptsPdfVisible;
+          touch(); render();
+        } catch (err) { setStatus('Could not load data/concepts_seed.json - upload it into the data folder first.', 'error'); }
+      }));
+      body.appendChild(document.createTextNode(' '));
+    }
+
+    items.forEach((it, i) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'border:1px solid #e4e9f5;border-radius:8px;padding:8px;margin:6px 0;background:#fff;';
+      const top = document.createElement('div');
+      top.style.cssText = 'display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap;';
+      const tag = document.createElement('span');
+      tag.style.cssText = 'font-size:12px;font-weight:700;color:#e65100;';
+      tag.textContent = it.h !== undefined ? 'HEADING' : 'FORMULA';
+      top.appendChild(tag);
+      top.appendChild(mini('↑', () => { if (i > 0) { items.splice(i - 1, 0, items.splice(i, 1)[0]); touch(); render(); } }));
+      top.appendChild(mini('↓', () => { if (i < items.length - 1) { items.splice(i + 1, 0, items.splice(i, 1)[0]); touch(); render(); } }));
+      top.appendChild(mini('✕ Delete', () => { if (window.confirm('Delete this row?')) { items.splice(i, 1); touch(); render(); } }));
+      row.appendChild(top);
+      if (it.h !== undefined) {
+        const t = document.createElement('input');
+        t.type = 'text'; t.value = it.h;
+        t.style.cssText = 'width:100%;padding:8px;border:1px solid #d6dbe8;border-radius:6px;font-weight:700;';
+        t.oninput = () => { it.h = t.value; touch(); };
+        trackFocus(t);
+        row.appendChild(t);
+      } else {
+        const f = document.createElement('textarea');
+        f.value = it.f || '';
+        f.style.cssText = 'width:100%;min-height:56px;font-family:monospace;font-size:13px;resize:vertical;';
+        const pv = document.createElement('div');
+        pv.style.cssText = 'background:#f4f6fb;border-radius:6px;padding:4px 8px;margin:6px 0;overflow-x:auto;';
+        latexInto(pv, it.f);
+        f.oninput = () => { it.f = f.value; touch(); latexInto(pv, f.value); };
+        trackFocus(f);
+        const n = document.createElement('textarea');
+        n.value = it.n || '';
+        n.placeholder = 'Note: meaning of each symbol, units, when to use';
+        n.style.cssText = 'width:100%;min-height:48px;resize:vertical;';
+        n.oninput = () => { it.n = n.value; touch(); };
+        trackFocus(n);
+        row.appendChild(f); row.appendChild(pv); row.appendChild(n);
+      }
+      body.appendChild(row);
+    });
+
+    const addRow = document.createElement('div');
+    addRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;';
+    addRow.appendChild(mini('+ Heading', () => { (subtopic.conceptsItems = subtopic.conceptsItems || []).push({ h: 'New heading' }); touch(); render(); }));
+    addRow.appendChild(mini('+ Formula', () => { (subtopic.conceptsItems = subtopic.conceptsItems || []).push({ f: 'a=b+c', n: '' }); touch(); render(); }));
+    body.appendChild(addRow);
+
+    const sw = document.createElement('label');
+    sw.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;margin-top:10px;cursor:pointer;';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = !!subtopic.conceptsTextVisible;
+    cb.style.cssText = 'width:18px;height:18px;';
+    const tx = document.createElement('span');
+    tx.textContent = cb.checked ? 'ON - students see this page' : 'OFF - hidden (students see the PDF, if on)';
+    cb.onchange = () => {
+      subtopic.conceptsTextVisible = cb.checked;
+      tx.textContent = cb.checked ? 'ON - students see this page' : 'OFF - hidden (students see the PDF, if on)';
+      touch();
+      setStatus('Editable concepts for "' + subtopic.name + '" are now ' + (cb.checked ? 'ON' : 'OFF') + '. Publish to make this live.', 'ok');
+    };
+    sw.appendChild(cb); sw.appendChild(tx);
+    body.appendChild(sw);
+  }
+  render();
+  return box;
+}

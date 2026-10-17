@@ -427,6 +427,7 @@ function render(){
   else if (state.view === 'history') renderHistory();
   else if (state.view === 'doubt') renderDoubtComposer();
   else if (state.view === 'profile') renderProfile();
+  else if (state.view === 'conceptsText') renderConceptsText();
 }
 
 function renderProfile(){
@@ -558,7 +559,7 @@ function renderAllConcepts(parent){
   let available = 0, missing = 0;
   const sections = [];
   DATA.subjects.filter(sub => sub.visible !== false).forEach(sub => {
-    const withPdf = sub.subtopics.filter(st => st.conceptsPdfUrl && st.conceptsPdfVisible);
+    const withPdf = sub.subtopics.filter(st => hasConcepts(st));
     available += withPdf.length;
     missing += sub.subtopics.length - withPdf.length;
     if (withPdf.length) sections.push({ sub, withPdf });
@@ -586,7 +587,7 @@ function renderAllConcepts(parent){
       const card = document.createElement('div');
       card.className = 'list-card concept-row';
       card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>${st.name}</div><div class="meta">Quick Revision - Concepts &amp; Formulas</div></div></div><div>&#8250;</div>`;
-      card.onclick = () => downloadConceptsPdf(st);
+      card.onclick = () => openConcepts(st, sub);
       parent.appendChild(card);
     });
   });
@@ -615,12 +616,12 @@ function renderConceptSearchResults(parent, query){
     title.innerHTML = `${subjectIconFor(sub, 'sm')}<span>${sub.name}</span><span class="count">${hits.length} match${hits.length === 1 ? '' : 'es'}</span>`;
     parent.appendChild(title);
     hits.forEach(st => {
-      const hasPdf = !!(st.conceptsPdfUrl && st.conceptsPdfVisible);
+      const hasPdf = hasConcepts(st);
       const card = document.createElement('div');
       card.className = 'list-card concept-row';
       card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${st.name}</div><div class="meta">${hasPdf ? 'Quick Revision - Concepts &amp; Formulas' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
       card.onclick = () => {
-        if (hasPdf) downloadConceptsPdf(st);
+        if (hasPdf) openConcepts(st, sub);
         else showToast('Concepts & Formulas not yet uploaded for this topic');
       };
       parent.appendChild(card);
@@ -750,10 +751,10 @@ function renderSubtopics(){
       // Reached via the Concepts tab - tapping a topic opens its
       // Concepts & Formulas PDF directly, skipping Levels/Quiz entirely,
       // since the student's intent here is revision, not testing.
-      const hasPdf = st.conceptsPdfUrl && st.conceptsPdfVisible;
+      const hasPdf = hasConcepts(st);
       card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${st.name}</div><div class="meta">${hasPdf ? 'Concepts & Formulas available' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
       card.onclick = () => {
-        if (hasPdf) downloadConceptsPdf(st);
+        if (hasPdf) openConcepts(st, state.subject);
         else showToast('Concepts & Formulas not yet uploaded for this topic');
       };
     } else {
@@ -770,6 +771,70 @@ function renderSubtopics(){
 // the full question bank/answers stays teacher-only. A data: URI triggers
 // a real file download; a hosted link (Firebase/Cloudinary) opens in a new
 // tab, where the browser's own PDF viewer offers view/save.
+// V95 NEW: Concepts can now be an editable text page (formulas + notes,
+// stored in the topic data) instead of / as well as the PDF.
+function hasConceptsText(st){ return !!(st && st.conceptsTextVisible && st.conceptsItems && st.conceptsItems.length); }
+function hasConcepts(st){ return hasConceptsText(st) || !!(st && st.conceptsPdfUrl && st.conceptsPdfVisible); }
+function openConcepts(st, sub){
+  if (hasConceptsText(st)) {
+    if (sub) state.subject = sub;
+    state.subtopic = st;
+    state.view = 'conceptsText';
+    render();
+  } else {
+    downloadConceptsPdf(st);
+  }
+}
+function renderConceptsText(){
+  const st = state.subtopic;
+  headerTitle.textContent = st.name;
+  const wrap = document.createElement('div');
+  wrap.className = 'question-card';
+  const h1 = document.createElement('div');
+  h1.style.cssText = 'font-size:18px;font-weight:800;color:#b71c1c;border-bottom:3px solid #e65100;padding-bottom:6px;margin-bottom:10px;';
+  h1.textContent = st.name + ' - Important Formulae';
+  wrap.appendChild(h1);
+  let n = 0;
+  (st.conceptsItems || []).forEach(it => {
+    if (it.h !== undefined) {
+      const h = document.createElement('div');
+      h.style.cssText = 'background:#fff3e0;color:#d84315;font-weight:700;padding:5px 8px;margin:14px 0 6px;border-left:4px solid #e65100;border-radius:4px;';
+      h.textContent = it.h;
+      wrap.appendChild(h);
+    } else {
+      n++;
+      const row = document.createElement('div');
+      row.style.cssText = 'margin:8px 0 12px;padding-left:2px;';
+      const num = document.createElement('div');
+      num.style.cssText = 'color:#b71c1c;font-weight:700;font-size:13px;';
+      num.textContent = n + '.';
+      const m = document.createElement('div');
+      m.style.cssText = 'overflow-x:auto;overflow-y:hidden;font-size:14px;';
+      m.textContent = '$\\displaystyle ' + (it.f || '') + '$'; // inline so long lines wrap on phones
+      renderMathIn(m);
+      row.appendChild(num);
+      row.appendChild(m);
+      if (it.n) {
+        const t = document.createElement('div');
+        t.style.cssText = 'color:#555;font-size:13px;font-style:italic;white-space:pre-wrap;';
+        t.textContent = it.n;
+        renderMathIn(t);
+        row.appendChild(t);
+      }
+      wrap.appendChild(row);
+    }
+  });
+  app.appendChild(wrap);
+  if (st.conceptsPdfUrl && st.conceptsPdfVisible) {
+    const pdfCard = document.createElement('div');
+    pdfCard.className = 'list-card';
+    pdfCard.style.cssText = 'margin-top:14px;';
+    pdfCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>Download as PDF</div><div class="meta">Tap to download</div></div></div><div>&#8250;</div>`;
+    pdfCard.onclick = () => downloadConceptsPdf(st);
+    app.appendChild(pdfCard);
+  }
+}
+
 async function downloadConceptsPdf(subtopic){
   const url = subtopic.conceptsPdfUrl;
   if (!url) return;
@@ -871,12 +936,12 @@ function renderLevels(){
 
   // Concepts & Formulas PDF - only shown if the teacher has both attached
   // one AND explicitly switched it on for this specific topic.
-  if (state.subtopic.conceptsPdfUrl && state.subtopic.conceptsPdfVisible) {
+  if (hasConcepts(state.subtopic)) {
     const pdfCard = document.createElement('div');
     pdfCard.className = 'list-card';
     pdfCard.style.cssText = 'margin-top:14px;';
     pdfCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>Quick Revision - Concepts &amp; Formulas</div><div class="meta">Tap to view or download</div></div></div><div>&#8250;</div>`;
-    pdfCard.onclick = () => downloadConceptsPdf(state.subtopic);
+    pdfCard.onclick = () => openConcepts(state.subtopic, state.subject);
     app.appendChild(pdfCard);
   }
 }
