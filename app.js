@@ -113,6 +113,27 @@ fetch('data/config.json')
   .then(json => { CONFIG = json; })
   .catch(() => {});
 
+// V93 NEW: tell the teacher's Google Sheet that this student used the app
+// today (name, email, college + one count per day). Silent if not set up.
+let TRACK_URL = '';
+function trackVisit(){
+  try {
+    if (!TRACK_URL || !studentProfile) return;
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const stamp = today + '|' + JSON.stringify(studentProfile);
+    if (localStorage.getItem('eeeTrackLast') === stamp) return;
+    fetch(TRACK_URL, {
+      method: 'POST', mode: 'no-cors', keepalive: true,
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'visit', name: studentProfile.name, email: studentProfile.email, college: studentProfile.college })
+    }).then(() => { try { localStorage.setItem('eeeTrackLast', stamp); } catch {} }).catch(() => {});
+  } catch {}
+}
+fetch('data/tracking.json', { cache: 'no-store' })
+  .then(r => r.json())
+  .then(j => { TRACK_URL = (j && j.url) || ''; trackVisit(); })
+  .catch(() => {});
+
 // ---------- Student Profile ----------
 const PROFILE_KEY = 'eeeStudentProfile';
 function loadProfile(){
@@ -474,11 +495,16 @@ function renderProfile(){
     }
     studentProfile = { name, email, college };
     saveProfile(studentProfile);
+    trackVisit();
     const wasFirstRun = state.profileFirstRun;
     state.profileFirstRun = false;
     state.view = wasFirstRun ? 'subjects' : (state.profileReturnView || 'subjects');
     render();
   };
+  const consent = document.createElement('div');
+  consent.style.cssText = 'font-size:12px;color:var(--muted);margin:0 0 10px 0;';
+  consent.textContent = 'Your name, email and college are shared with your teacher so he knows who is using the app.';
+  card.appendChild(consent);
   card.appendChild(saveBtn);
 
   app.appendChild(card);

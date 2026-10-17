@@ -204,6 +204,7 @@ textarea.raw-text{
         <option value="verify">2. Verify Uploaded Data</option>
         <option value="marks">3. Student Marks</option>
         <option value="doubts">4. Student Doubts</option>
+        <option value="students">5. Students Using App</option>
       </select>
     </div>
   </div>
@@ -349,6 +350,45 @@ textarea.raw-text{
     </div>
   </div>
   <!-- ===== /TAB 4 ===== -->
+
+  <!-- ===== TAB 5: Students using the app (V93 NEW) ===== -->
+  <div id="tab5Panel" class="hidden">
+    <div class="settings-panel">
+      <h3>Students Using the App</h3>
+      <div class="hint">Needs the Google Sheet set up once (see README, apps_script/Code.gs). Web app URL and secret key are stored only on this device.</div>
+      <div class="field-row"><div class="field-col" style="flex-basis:100%;">
+        <label>Google Apps Script Web App URL</label>
+        <input type="text" id="stuUrl" placeholder="https://script.google.com/macros/s/.../exec">
+      </div></div>
+      <div class="field-row"><div class="field-col" style="flex-basis:100%;">
+        <label>Secret key (TEACHER_KEY in Code.gs)</label>
+        <input type="password" id="stuKey" placeholder="your secret word">
+      </div></div>
+      <button id="stuLoadBtn" class="btn btn-primary full-width">Load Students</button>
+      <div id="stuMsg" class="hint" style="margin-top:8px;"></div>
+    </div>
+    <div id="stuOut" class="hidden">
+      <div class="settings-panel">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;text-align:center;">
+          <div style="flex:1;min-width:90px;"><div id="stuTotal" style="font-size:26px;font-weight:800;color:var(--primary);">0</div><div class="hint" style="margin:0;">Registered</div></div>
+          <div style="flex:1;min-width:90px;"><div id="stuToday" style="font-size:26px;font-weight:800;color:var(--primary);">0</div><div class="hint" style="margin:0;">Today</div></div>
+          <div style="flex:1;min-width:90px;"><div id="stuPeak" style="font-size:26px;font-weight:800;color:var(--primary);">0</div><div class="hint" style="margin:0;">Max in a day<br><span id="stuPeakDate"></span></div></div>
+        </div>
+      </div>
+      <div class="settings-panel">
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <input type="text" id="stuSearch" placeholder="Search name / email / college" style="flex:1;padding:10px;border-radius:8px;border:1px solid #d6dbe8;">
+          <button id="stuCsvBtn" class="btn btn-secondary" style="font-size:12px;">Download CSV</button>
+        </div>
+        <div style="overflow-x:auto;"><table id="stuTable" style="width:100%;border-collapse:collapse;font-size:12px;"></table></div>
+      </div>
+      <div class="settings-panel">
+        <h3 style="margin-top:0;">Students per day (last 30 days)</h3>
+        <div style="overflow-x:auto;"><table id="stuDaily" style="width:100%;border-collapse:collapse;font-size:12px;"></table></div>
+      </div>
+    </div>
+  </div>
+  <!-- ===== /TAB 5 ===== -->
 
   </div><!-- /upload-wrap -->
 

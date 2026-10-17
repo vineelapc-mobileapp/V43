@@ -89,6 +89,7 @@ teacherTabSelect.addEventListener('change', () => {
   tab2Panel.classList.toggle('hidden', tab !== 'verify');
   tab3Panel.classList.toggle('hidden', tab !== 'marks');
   tab4Panel.classList.toggle('hidden', tab !== 'doubts');
+  document.getElementById('tab5Panel').classList.toggle('hidden', tab !== 'students');
 
   if (tab === 'verify') renderVerifyTab();
 });
@@ -3060,3 +3061,56 @@ publishBtn.addEventListener('click', async () => {
     publishBtn.disabled = false;
   }
 });
+
+// ---------- V93 NEW: Students Using the App (reads the teacher's Google Sheet) ----------
+(function(){
+  const KEY = 'eeeStudentsSheetSettings';
+  const $ = id => document.getElementById(id);
+  const url = $('stuUrl'), key = $('stuKey'), msg = $('stuMsg');
+  let rows = [];
+  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) { url.value = s.url || ''; key.value = s.key || ''; } } catch {}
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const td = 'padding:6px 8px;border-bottom:1px solid #e4e9f5;text-align:left;white-space:nowrap;';
+
+  function drawTable(){
+    const q = $('stuSearch').value.trim().toLowerCase();
+    const list = rows.filter(r => !q || (r.name + ' ' + r.email + ' ' + r.college).toLowerCase().includes(q));
+    $('stuTable').innerHTML = '<tr style="background:#fff3e0;"><th style="'+td+'">#</th><th style="'+td+'">Name</th><th style="'+td+'">Email</th><th style="'+td+'">College</th><th style="'+td+'">Last seen</th><th style="'+td+'">Days</th></tr>' +
+      list.map((r, i) => '<tr><td style="'+td+'">'+(i+1)+'</td><td style="'+td+'">'+esc(r.name)+'</td><td style="'+td+'">'+esc(r.email)+'</td><td style="'+td+'">'+esc(r.college)+'</td><td style="'+td+'">'+esc(r.last)+'</td><td style="'+td+'">'+esc(r.days)+'</td></tr>').join('');
+  }
+  $('stuSearch').addEventListener('input', drawTable);
+
+  $('stuLoadBtn').addEventListener('click', async () => {
+    const u = url.value.trim(), k = key.value.trim();
+    if (!u || !k) { msg.textContent = 'Enter the Web App URL and the secret key.'; return; }
+    msg.textContent = 'Loading...';
+    try {
+      const res = await fetch(u + (u.includes('?') ? '&' : '?') + 'action=list&key=' + encodeURIComponent(k));
+      const j = await res.json();
+      if (!j.ok) { msg.textContent = j.error === 'key' ? 'Wrong secret key.' : 'The sheet script did not accept the request.'; return; }
+      try { localStorage.setItem(KEY, JSON.stringify({ url: u, key: k })); } catch {}
+      rows = (j.students || []).slice().sort((a, b) => String(b.last).localeCompare(String(a.last)));
+      $('stuTotal').textContent = rows.length;
+      $('stuToday').textContent = j.todayCount || 0;
+      $('stuPeak').textContent = (j.peak && j.peak.count) || 0;
+      $('stuPeakDate').textContent = (j.peak && j.peak.date) || '';
+      const daily = (j.daily || []).slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 30);
+      $('stuDaily').innerHTML = '<tr style="background:#fff3e0;"><th style="'+td+'">Date</th><th style="'+td+'">Students</th></tr>' +
+        daily.map(d => '<tr><td style="'+td+'">'+esc(d.date)+'</td><td style="'+td+'">'+esc(d.count)+'</td></tr>').join('');
+      $('stuOut').classList.remove('hidden');
+      drawTable();
+      msg.textContent = 'Loaded ' + rows.length + ' students.';
+    } catch (err) {
+      msg.textContent = 'Could not reach the sheet. Check the URL, that the web app is deployed for "Anyone", and your internet.';
+    }
+  });
+
+  $('stuCsvBtn').addEventListener('click', () => {
+    const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    const csv = ['Name,Email,College,First seen,Last seen,Days used'].concat(rows.map(r => [r.name, r.email, r.college, r.first, r.last, r.days].map(q).join(','))).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = 'students.csv';
+    a.click();
+  });
+})();
