@@ -364,28 +364,20 @@ textarea.raw-text{
         <label>Secret key (TEACHER_KEY in Code.gs)</label>
         <input type="password" id="stuKey" placeholder="your secret word">
       </div></div>
-      <button id="stuLoadBtn" class="btn btn-primary full-width">Load Students</button>
+      <button id="stuLoadBtn" class="btn btn-primary full-width">Save &amp; Refresh Count</button>
       <div id="stuMsg" class="hint" style="margin-top:8px;"></div>
     </div>
-    <div id="stuOut" class="hidden">
-      <div class="settings-panel">
-        <div style="display:flex;gap:10px;flex-wrap:wrap;text-align:center;">
-          <div style="flex:1;min-width:90px;"><div id="stuTotal" style="font-size:26px;font-weight:800;color:var(--primary);">0</div><div class="hint" style="margin:0;">Registered</div></div>
-          <div style="flex:1;min-width:90px;"><div id="stuToday" style="font-size:26px;font-weight:800;color:var(--primary);">0</div><div class="hint" style="margin:0;">Today</div></div>
-          <div style="flex:1;min-width:90px;"><div id="stuPeak" style="font-size:26px;font-weight:800;color:var(--primary);">0</div><div class="hint" style="margin:0;">Max in a day<br><span id="stuPeakDate"></span></div></div>
-        </div>
+    <div class="settings-panel">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;text-align:center;">
+        <div style="flex:1;min-width:90px;"><div id="stuTotal" style="font-size:26px;font-weight:800;color:var(--primary);">-</div><div class="hint" style="margin:0;">Registered</div></div>
+        <div style="flex:1;min-width:90px;"><div id="stuToday" style="font-size:26px;font-weight:800;color:var(--primary);">-</div><div class="hint" style="margin:0;">Today</div></div>
+        <div style="flex:1;min-width:90px;"><div id="stuPeak" style="font-size:26px;font-weight:800;color:var(--primary);">-</div><div class="hint" style="margin:0;">Max in a day<br><span id="stuPeakDate"></span></div></div>
       </div>
-      <div class="settings-panel">
-        <div style="display:flex;gap:8px;margin-bottom:8px;">
-          <input type="text" id="stuSearch" placeholder="Search name / email / college" style="flex:1;padding:10px;border-radius:8px;border:1px solid #d6dbe8;">
-          <button id="stuCsvBtn" class="btn btn-secondary" style="font-size:12px;">Download CSV</button>
-        </div>
-        <div style="overflow-x:auto;"><table id="stuTable" style="width:100%;border-collapse:collapse;font-size:12px;"></table></div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button id="stuXlsBtn" class="btn btn-primary" style="flex:1;font-size:13px;">&#11015; Download Excel</button>
+        <button id="stuSheetBtn" class="btn btn-secondary" style="flex:1;font-size:13px;">Open Google Sheet</button>
       </div>
-      <div class="settings-panel">
-        <h3 style="margin-top:0;">Students per day (last 30 days)</h3>
-        <div style="overflow-x:auto;"><table id="stuDaily" style="width:100%;border-collapse:collapse;font-size:12px;"></table></div>
-      </div>
+      <div class="hint" style="margin-top:6px;">The full student list (name, email, college, days used) is in the Excel / Google Sheet.</div>
     </div>
   </div>
   <!-- ===== /TAB 5 ===== -->

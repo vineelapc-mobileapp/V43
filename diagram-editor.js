@@ -443,8 +443,7 @@
     if (!ref || document.getElementById('ddTileBtn')) return;
     const tile = document.createElement('div');
     tile.className = ref.className; tile.id = 'ddTileBtn';
-    tile.style.gridColumn = '1 / -1';
-    tile.innerHTML = '<span class="icon">\u270F\uFE0F</span>Draw Diagram<span class="sub">Draw a circuit with R, L, C, source and switch symbols - it becomes the question figure, add options after</span>';
+    tile.innerHTML = '<span class="icon">\u270F\uFE0F</span>Draw Diagram<span class="sub">Circuit symbols \u2192 question figure</span>';
     ref.after(tile);
     tile.onclick = () => window.openDiagramEditor({
       onSave: async blob => {

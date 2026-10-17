@@ -3175,57 +3175,63 @@ publishBtn.addEventListener('click', async () => {
   }
 });
 
-// ---------- V93 NEW: Students Using the App (reads the teacher's Google Sheet) ----------
+// ---------- V96 NEW: Students count (numbers only, auto-loaded) + Excel / Sheet download ----------
 (function(){
   const KEY = 'eeeStudentsSheetSettings';
   const $ = id => document.getElementById(id);
   const url = $('stuUrl'), key = $('stuKey'), msg = $('stuMsg');
-  let rows = [];
-  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) { url.value = s.url || ''; key.value = s.key || ''; } } catch {}
-  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const td = 'padding:6px 8px;border-bottom:1px solid #e4e9f5;text-align:left;white-space:nowrap;';
+  let info = { sheetId: '', sheetUrl: '' };
+  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) { url.value = s.url || ''; key.value = s.key || ''; info.sheetId = s.sheetId || ''; info.sheetUrl = s.sheetUrl || ''; } } catch {}
 
-  function drawTable(){
-    const q = $('stuSearch').value.trim().toLowerCase();
-    const list = rows.filter(r => !q || (r.name + ' ' + r.email + ' ' + r.college).toLowerCase().includes(q));
-    $('stuTable').innerHTML = '<tr style="background:#fff3e0;"><th style="'+td+'">#</th><th style="'+td+'">Name</th><th style="'+td+'">Email</th><th style="'+td+'">College</th><th style="'+td+'">Last seen</th><th style="'+td+'">Days</th></tr>' +
-      list.map((r, i) => '<tr><td style="'+td+'">'+(i+1)+'</td><td style="'+td+'">'+esc(r.name)+'</td><td style="'+td+'">'+esc(r.email)+'</td><td style="'+td+'">'+esc(r.college)+'</td><td style="'+td+'">'+esc(r.last)+'</td><td style="'+td+'">'+esc(r.days)+'</td></tr>').join('');
+  // count tile on the Upload Questions page (next to Draw Diagram)
+  const grid = document.querySelector('.source-grid');
+  const tile = document.createElement('div');
+  tile.className = 'source-btn'; tile.id = 'stuCountTile';
+  tile.innerHTML = '<span class="icon">&#128101;</span><span id="stuTileNum" style="font-size:24px;font-weight:800;color:var(--primary);display:block;line-height:1;">-</span>Students<span class="sub" id="stuTileSub">tap to refresh</span>';
+  if (grid) grid.appendChild(tile);
+
+  function show(total, today, peak, peakDate){
+    $('stuTotal').textContent = total; $('stuToday').textContent = today; $('stuPeak').textContent = peak; $('stuPeakDate').textContent = peakDate || '';
+    $('stuTileNum').textContent = total;
+    $('stuTileSub').textContent = 'Today ' + today + ' · Max/day ' + peak;
   }
-  $('stuSearch').addEventListener('input', drawTable);
-
-  $('stuLoadBtn').addEventListener('click', async () => {
+  async function load(showMsg){
     const u = url.value.trim(), k = key.value.trim();
-    if (!u || !k) { msg.textContent = 'Enter the Web App URL and the secret key.'; return; }
-    msg.textContent = 'Loading...';
+    if (!u || !k) { $('stuTileSub').textContent = 'set URL in Menu 5'; if (showMsg) msg.textContent = 'Enter the Web App URL and the secret key.'; return; }
+    $('stuTileSub').textContent = 'loading...';
+    if (showMsg) msg.textContent = 'Loading...';
     try {
-      const res = await fetch(u + (u.includes('?') ? '&' : '?') + 'action=list&key=' + encodeURIComponent(k));
-      const j = await res.json();
-      if (!j.ok) { msg.textContent = j.error === 'key' ? 'Wrong secret key.' : 'The sheet script did not accept the request.'; return; }
-      try { localStorage.setItem(KEY, JSON.stringify({ url: u, key: k })); } catch {}
-      rows = (j.students || []).slice().sort((a, b) => String(b.last).localeCompare(String(a.last)));
-      $('stuTotal').textContent = rows.length;
-      $('stuToday').textContent = j.todayCount || 0;
-      $('stuPeak').textContent = (j.peak && j.peak.count) || 0;
-      $('stuPeakDate').textContent = (j.peak && j.peak.date) || '';
-      const daily = (j.daily || []).slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 30);
-      $('stuDaily').innerHTML = '<tr style="background:#fff3e0;"><th style="'+td+'">Date</th><th style="'+td+'">Students</th></tr>' +
-        daily.map(d => '<tr><td style="'+td+'">'+esc(d.date)+'</td><td style="'+td+'">'+esc(d.count)+'</td></tr>').join('');
-      $('stuOut').classList.remove('hidden');
-      drawTable();
-      msg.textContent = 'Loaded ' + rows.length + ' students.';
+      const base = u + (u.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(k) + '&action=';
+      let j = await (await fetch(base + 'count')).json();
+      if (j && j.ok && j.total == null) j = null;            // old script: ignores 'count'
+      if (!j || (!j.ok && j.error !== 'key')) {              // fall back to the old 'list' action
+        const l = await (await fetch(base + 'list')).json();
+        if (!l.ok) throw new Error(l.error || 'x');
+        j = { ok: true, total: (l.students || []).length, todayCount: l.todayCount || 0, peak: l.peak || {} };
+      }
+      if (!j.ok) { $('stuTileSub').textContent = 'wrong key'; if (showMsg) msg.textContent = 'Wrong secret key.'; return; }
+      if (j.sheetId) { info.sheetId = j.sheetId; info.sheetUrl = j.sheetUrl || ''; }
+      try { localStorage.setItem(KEY, JSON.stringify({ url: u, key: k, sheetId: info.sheetId, sheetUrl: info.sheetUrl })); } catch {}
+      show(j.total, j.todayCount || 0, (j.peak && j.peak.count) || 0, j.peak && j.peak.date);
+      if (showMsg) msg.textContent = 'Updated.';
     } catch (err) {
-      msg.textContent = 'Could not reach the sheet. Check the URL, that the web app is deployed for "Anyone", and your internet.';
+      $('stuTileSub').textContent = 'offline / error';
+      if (showMsg) msg.textContent = 'Could not reach the sheet. Check the URL, that the web app is deployed for "Anyone", and your internet.';
     }
+  }
+  tile.addEventListener('click', () => load(false));
+  $('stuLoadBtn').addEventListener('click', () => load(true));
+  $('stuXlsBtn').addEventListener('click', () => {
+    if (!info.sheetId) { msg.textContent = 'Redeploy the updated Code.gs (README step 1), then tap Save & Refresh Count once.'; return; }
+    window.open('https://docs.google.com/spreadsheets/d/' + info.sheetId + '/export?format=xlsx', '_blank');
   });
-
-  $('stuCsvBtn').addEventListener('click', () => {
-    const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
-    const csv = ['Name,Email,College,First seen,Last seen,Days used'].concat(rows.map(r => [r.name, r.email, r.college, r.first, r.last, r.days].map(q).join(','))).join('\n');
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-    a.download = 'students.csv';
-    a.click();
+  $('stuSheetBtn').addEventListener('click', () => {
+    const t = info.sheetUrl || (info.sheetId ? 'https://docs.google.com/spreadsheets/d/' + info.sheetId + '/edit' : '');
+    if (!t) { msg.textContent = 'Redeploy the updated Code.gs (README step 1), then tap Save & Refresh Count once.'; return; }
+    window.open(t, '_blank');
   });
+  load(false);                               // automatic on page open
+  setInterval(() => { if (!document.hidden) load(false); }, 120000);   // and every 2 minutes
 })();
 
 
