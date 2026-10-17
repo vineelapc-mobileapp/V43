@@ -2959,6 +2959,106 @@
                 "audioFile": null,
                 "explanation": "P/Pmax = sin 30° = 0.5. Margin = (Pmax − P)/Pmax = 1 − 0.5 = 0.5 = 50%. The margin is the part of the maximum power that is still available before reaching δ = 90°.\n\nWhy the other options?\n(a) ✘ 60%: Right at δ = 24.1° (sin δ = 0.4).\n(b) ✘ 30%: Right at δ = 44.4° (sin δ = 0.7).\n(c) ✘ 70%: Right at δ = 17.5° (sin δ = 0.3).\n(d) ✔ 50%: correct answer.",
                 "explanationImage": null
+              },
+              {
+                "id": "power_flow_through_transmission_line_l2_pf1",
+                "type": "mcq",
+                "question": "A lossless line has Vs = Vr = 220 kV (line-to-line) and a total reactance X = 121 Ω. It transmits 200 MW at a power angle δ = 30°. If both end voltages are raised by 10% and the same 200 MW is to be transmitted, the new power angle is nearly:",
+                "questionImage": null,
+                "options": [
+                  "24.4°",
+                  "27.0°",
+                  "27.3°",
+                  "36.3°"
+                ],
+                "correctIndex": 0,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Lossless line: P = (Vs·Vr / X) sin δ. Base: 220² / 121 = 400 MW, so P = 400 sin 30° = 200 MW. After raising both voltages by 10% the coefficient becomes 1.1² × 400 = 484 MW. For 200 MW: sin δ′ = 200 / 484 = 0.4132, so δ′ = 24.4°. Because P ∝ Vs·Vr, a rise at both ends acts twice and the angle falls the most.\n\nWhy the other options?\n(a) ✔ 24.4°: correct answer.\n(b) ✘ 27.0°: This is what you get if only ONE end voltage is raised by 10% (sin δ′ = 200 / 440).\n(c) ✘ 27.3°: Wrongly divides the angle by 1.1 (30° / 1.1). The angle does not scale like this because P varies as sin δ.\n(d) ✘ 36.3°: Multiplies the angle by 1.21; the angle must fall, not rise, when the voltage is higher.",
+                "explanationImage": null
+              },
+              {
+                "id": "power_flow_through_transmission_line_l2_pf2",
+                "type": "mcq",
+                "question": "A short transmission line has series impedance Z = 0.05 + j0.20 pu. The sending-end voltage is 1.05∠10° pu and the receiving-end voltage is 1.0∠0° pu. The real power received at the receiving end is nearly:",
+                "questionImage": null,
+                "options": [
+                  "0.912 pu",
+                  "0.939 pu",
+                  "0.898 pu",
+                  "0.040 pu"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Complex-power method: I = (Vs − Vr) / Z and Sr = Vr·I*. Vs = 1.05∠10° = 1.0341 + j0.1823, so Vs − Vr = 0.0341 + j0.1823 and I = (0.0341 + j0.1823) / (0.05 + j0.20) = 0.898 + j0.054 pu. With Vr = 1∠0°: Sr = I* = 0.898 − j0.054 pu, so Pr = 0.898 pu. Check with the formula: |Z| = 0.2062, θ = 75.96°; Pr = (Vs·Vr / |Z|) cos(θ − δ) − (Vr² / |Z|) cos θ = 5.093 cos 65.96° − 4.851 cos 75.96° = 2.074 − 1.177 = 0.898 pu.\n\nWhy the other options?\n(a) ✘ 0.912 pu: This uses the lossless formula (Vs·Vr / X) sin δ and ignores the resistance.\n(b) ✘ 0.939 pu: This is the SENDING-end real power Ps; the receiving end gets less by the I²R loss.\n(c) ✔ 0.898 pu: correct answer.\n(d) ✘ 0.040 pu: This is the real-power loss Ps − Pr in the line, not the power received.",
+                "explanationImage": null
+              },
+              {
+                "id": "power_flow_through_transmission_line_l2_pf3",
+                "type": "mcq",
+                "question": "A 400 kV, 50 Hz lossless line is 300 km long. Its surge impedance is Zc = 400 Ω and its phase constant is 0.06° per km. With |Vs| = |Vr| = 400 kV, the maximum steady-state power that the line can transmit is nearly:",
+                "questionImage": null,
+                "options": [
+                  "400 MW",
+                  "647 MW",
+                  "1273 MW",
+                  "1294 MW"
+                ],
+                "correctIndex": 3,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "For a lossless line, P = (Vs·Vr / (Zc sin θ)) sin δ, where θ = βl = 0.06° × 300 = 18°. Maximum at δ = 90°: Pmax = 400² / (400 × sin 18°) = 400 / 0.3090 = 1294 MW. (Equivalent: Pmax = SIL / sin θ = 3.236 × 400 MW, with SIL = V² / Zc = 400 MW.)\n\nWhy the other options?\n(a) ✘ 400 MW: This is only the SIL, V² / Zc; the line can carry more than SIL because sin θ < 1.\n(b) ✘ 647 MW: This is the power at δ = 30° (1294 × 0.5), not the maximum.\n(c) ✘ 1273 MW: Uses sin θ ≈ θ in radians (0.314). It is close, but the exact sin 18° = 0.309 gives 1294 MW.\n(d) ✔ 1294 MW: correct answer.",
+                "explanationImage": null
+              },
+              {
+                "id": "power_flow_through_transmission_line_l2_pf4",
+                "type": "mcq",
+                "question": "A lossless line of reactance X = 0.25 pu connects a sending end 1.05∠15° pu to a receiving end 1.0∠0° pu. The total reactive power absorbed by the line itself (Qs − Qr) is nearly:",
+                "questionImage": null,
+                "options": [
+                  "0.353 pu",
+                  "0.296 pu",
+                  "0.057 pu",
+                  "0.409 pu"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Lossless line: Qs = (Vs² − Vs·Vr cos δ) / X and Qr = (Vs·Vr cos δ − Vr²) / X. Vs·Vr cos 15° = 1.05 × 0.96593 = 1.01422. Qs = (1.1025 − 1.01422) / 0.25 = 0.353 pu and Qr = (1.01422 − 1) / 0.25 = 0.057 pu. Reactive loss = Qs − Qr = 0.353 − 0.057 = 0.296 pu. Check: (Vs² + Vr² − 2·Vs·Vr cos δ) / X = (1.1025 + 1 − 2.02844) / 0.25 = 0.296 pu = I²X.\n\nWhy the other options?\n(a) ✘ 0.353 pu: This is only the sending-end reactive power Qs.\n(b) ✔ 0.296 pu: correct answer.\n(c) ✘ 0.057 pu: This is only the receiving-end reactive power Qr.\n(d) ✘ 0.409 pu: Adds Qs + Qr instead of subtracting them.",
+                "explanationImage": null
+              },
+              {
+                "id": "power_flow_through_transmission_line_l2_pf5",
+                "type": "mcq",
+                "question": "A lossless line with fixed, equal end voltages transmits 500 MW at a power angle of 30°. Series capacitors that compensate 40% of the line reactance (X′ = 0.6X) are now inserted. For the same 500 MW, the power angle becomes nearly:",
+                "questionImage": null,
+                "options": [
+                  "30.0°",
+                  "18.0°",
+                  "17.5°",
+                  "56.4°"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Same voltages, so P = (V² / X) sin δ. Before: P = Pmax sin 30° = 500 MW, so Pmax = 1000 MW. After compensation X′ = 0.6X, so P′max = 1000 / 0.6 = 1667 MW. For the same 500 MW: sin δ′ = 500 / 1667 = 0.3 = 0.6 × sin 30°, so δ′ = 17.5°. Compensation raises Pmax and increases the stability margin.\n\nWhy the other options?\n(a) ✘ 30.0°: Would mean that compensation changes nothing, but a smaller X needs a smaller angle for the same power.\n(b) ✘ 18.0°: This is 0.6 × 30°; the angle does not scale like X because P ∝ sin δ. The factor 0.6 applies to sin δ.\n(c) ✔ 17.5°: correct answer.\n(d) ✘ 56.4°: Divides by 0.6 instead of multiplying (sin δ′ = 0.5 / 0.6), which is what happens if the reactance is INCREASED, not decreased.",
+                "explanationImage": null
               }
             ]
           },
