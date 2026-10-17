@@ -8286,7 +8286,9 @@
           "conceptsPdfVisible": true
         }
       ],
-      "visible": true
+      "visible": true,
+      "classworkPart1Url": "https://res.cloudinary.com/fl9rh27m/image/upload/v1792214224/ph647fynvauocotai0s2.pdf",
+      "classworkPart1Visible": true
     },
     {
       "id": "eem",
