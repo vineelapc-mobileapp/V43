@@ -791,7 +791,7 @@
                 "videoFile": null,
                 "videoReady": false,
                 "audioFile": null,
-                "explanation": "All Base load  load plants has more  operating time from no load to full load. Hydro can be used as both BASE and PEAK LOAD \n\nWhy the other options?\n(a) ✘ 1 ,2 only: Right only if diesel and BESS were not peak plants; both start quickly and serve peaks.\n(b) ✘ 2, 3 only: Right only if pumped storage and BESS were excluded; they are used for peaks.\n(c) ✘ 1, 2, 3 only: Right only if BESS were not counted; batteries are fast-response peak units.\n(d) ✔ All: correct answer.",
+                "explanation": "All Base load  load plants has more  operating time from no load to full load. Hydro can be used as both BASE and PEAK LOAD \n\nWhy the other options?\n(a) ✘ 1 ,2 ,3,4 only: Right only for  peak plants; both start quickly and serve peaks.\n(b) ✘ 2, 3,4  only: Right only if pumped storage is excluded; they are used for peaks.\n(c) ✘ 1, 2, 3,5  only: Right only if both Peak and Base loads are counted .\n(d) ✔ All: correct answer.",
                 "explanationImage": null
               },
               {
