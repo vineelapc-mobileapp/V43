@@ -743,6 +743,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1792328759741_0",
+                "type": "mcq",
+                "question": "Which of the advantages of Bundled conductor (1) Self GMD is higher so corona is less (2) Electrical field stress is less (3) Volume of conductor is less for same power of Single conductor (4) Capacitance is less (5) SIL is lower",
+                "questionImage": null,
+                "options": [
+                  "All",
+                  "1,3,5",
+                  "1,2,3",
+                  "4,5"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "options 1,2,3 are correct ",
+                "explanationImage": null
               }
             ],
             "2": [
