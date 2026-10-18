@@ -1,0 +1,441 @@
+{
+ "mixedTest": {
+  "id": "mixed_test_1",
+  "title": "Mixed Topics Test 1 - Transmission Lines",
+  "description": "20 GATE-standard questions: Line Parameters, Performance, Power Flow, Voltage / Reactive Power Control (5 each)",
+  "durationMin": 40,
+  "visible": true,
+  "questionIds": [
+   "mixed1_tlp_1",
+   "mixed1_perf_1",
+   "mixed1_pf_1",
+   "mixed1_vq_1",
+   "mixed1_tlp_2",
+   "mixed1_perf_2",
+   "mixed1_pf_2",
+   "mixed1_vq_2",
+   "mixed1_tlp_3",
+   "mixed1_perf_3",
+   "mixed1_pf_3",
+   "mixed1_vq_3",
+   "mixed1_tlp_4",
+   "mixed1_perf_4",
+   "mixed1_pf_4",
+   "mixed1_vq_4",
+   "mixed1_tlp_5",
+   "mixed1_perf_5",
+   "mixed1_pf_5",
+   "mixed1_vq_5"
+  ]
+ },
+ "topics": {
+  "transmission_line_parameters": [
+   {
+    "id": "mixed1_tlp_1",
+    "type": "mcq",
+    "question": "A 3-phase, 50 Hz transposed line has conductors in a horizontal plane with spacings of 4 m, 4 m and 8 m between adjacent phases. Each conductor is solid with radius 1 cm. The inductance per phase is approximately",
+    "questionImage": null,
+    "options": [
+     "1.24 mH/km",
+     "1.29 mH/km",
+     "2.59 mH/km",
+     "1.39 mH/km"
+    ],
+    "correctIndex": 1,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "GMD = (4 × 4 × 8)^(1/3) = 5.040 m. r' = 0.7788 × 0.01 = 7.788 × 10⁻³ m.\nL = 2×10⁻⁷ ln(GMD/r') H/m = 2×10⁻⁷ ln(5.040/0.007788) = 2×10⁻⁷ × 6.4725 = 1.295e-03 H/m = 1.295 mH/km.\n\nWhy the other options?\n(a) ✘ 1.24 mH/km: Uses the conductor radius r instead of the self GMD r' = 0.7788 r.\n(b) ✔ 1.29 mH/km: correct answer.\n(c) ✘ 2.59 mH/km: Uses the loop (two-wire) formula 4×10⁻⁷ ln(D/r'), which is for a single-phase line.\n(d) ✘ 1.39 mH/km: Takes the largest spacing 8 m instead of the GMD.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_tlp_2",
+    "type": "mcq",
+    "question": "Each phase of a 3-phase line (GMD between phases = 8 m) uses a single conductor of radius 1.5 cm. It is replaced by a two-conductor bundle of the same sub-conductor, with 40 cm bundle spacing. The approximate percentage reduction in the inductance per phase is",
+    "questionImage": null,
+    "options": [
+     "73%",
+     "50%",
+     "13.5%",
+     "27%"
+    ],
+    "correctIndex": 3,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "Single conductor: r' = 0.7788 × 0.015 = 0.011682 m.  L₁ = 2×10⁻⁷ ln(8/0.011682) = 1.3058 mH/km.\nBundle: GMR = √(r' × d) = √(0.011682 × 0.4) = 0.0684 m.  L₂ = 2×10⁻⁷ ln(8/0.0684) = 0.9525 mH/km.\nReduction = (L₁ − L₂)/L₁ = (1.3058 − 0.9525)/1.3058 = 27.1%.\n\nWhy the other options?\n(a) ✘ 73%: This is the new inductance as a percentage of the old one, not the reduction.\n(b) ✘ 50%: Assumes two parallel conductors halve the inductance; the mutual flux linkage between sub-conductors prevents that.\n(c) ✘ 13.5%: Half of the correct reduction.\n(d) ✔ 27%: correct answer.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_tlp_3",
+    "type": "mcq",
+    "question": "A 220 kV (line-to-line), 50 Hz, 3-phase transposed line has conductors at the corners of an equilateral triangle of side 3 m. Each conductor has radius 1 cm. Neglecting the effect of earth, the charging current per phase per km is approximately",
+    "questionImage": null,
+    "options": [
+     "0.67 A",
+     "0.22 A",
+     "0.39 A",
+     "1.17 A"
+    ],
+    "correctIndex": 2,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "C (line to neutral) = 2πε₀/ln(D/r) = 2π × 8.854×10⁻¹² / ln(3/0.01) = 9.753 nF/km.\nV_phase = 220/√3 = 127.02 kV.\nI_c = ωC·V_ph = 2π × 50 × 9.753×10⁻⁹ × 127017 = 0.389 A per km.\n\nWhy the other options?\n(a) ✘ 0.67 A: Uses the line voltage 220 kV instead of the phase voltage.\n(b) ✘ 0.22 A: Divides by √3 once more.\n(c) ✔ 0.39 A: correct answer.\n(d) ✘ 1.17 A: Multiplies by 3 for the three phases, but the question asks per phase.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_tlp_4",
+    "type": "mcq",
+    "question": "A 7-strand conductor is made of identical strands, each of radius r, with six strands touching and surrounding one centre strand. The geometric mean radius (GMR) of the stranded conductor is approximately",
+    "questionImage": null,
+    "options": [
+     "2.177 r",
+     "2.336 r",
+     "3.000 r",
+     "0.779 r"
+    ],
+    "correctIndex": 0,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "GMR = (product of all 7 × 7 = 49 distances)^(1/49), where each self-distance is r' = 0.7788 r and each mutual distance is the distance between strand centres (2r to adjacent strands, 2√3 r and 4r across the hexagon).\nCarrying out the product for the 7-strand arrangement gives GMR = 2.177 r (the standard tabulated value).\n\nWhy the other options?\n(a) ✔ 2.177 r: correct answer.\n(b) ✘ 2.336 r: Treats the whole conductor as a solid wire of outer radius 3r and applies 0.7788 × 3r.\n(c) ✘ 3.000 r: This is the outer radius of the conductor, not the GMR.\n(d) ✘ 0.779 r: This is the GMR of one single strand.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_tlp_5",
+    "type": "mcq",
+    "question": "A 50 Hz overhead line has per-phase series inductance L = 1.3 mH/km and shunt capacitance C = 9.0 nF/km. Neglecting resistance and conductance, the velocity of wave propagation along the line is approximately",
+    "questionImage": null,
+    "options": [
+     "3.00 × 10⁵ km/s",
+     "2.92 × 10⁵ km/s",
+     "2.07 × 10⁵ km/s",
+     "5.85 × 10⁵ km/s"
+    ],
+    "correctIndex": 1,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "v = 1/√(LC) = 1/√(1.3×10⁻³ × 9.0×10⁻⁹) km/s = 1/√(1.17×10⁻¹¹) = 2.9235e+05 km/s = 2.92 × 10⁵ km/s (≈ 0.97 × speed of light).\n\nWhy the other options?\n(a) ✘ 3.00 × 10⁵ km/s: Assumes the wave always travels at exactly the speed of light; for a real line it is slightly less.\n(b) ✔ 2.92 × 10⁵ km/s: correct answer.\n(c) ✘ 2.07 × 10⁵ km/s: Divides by √2, which has no basis here.\n(d) ✘ 5.85 × 10⁵ km/s: Doubles the correct value.",
+    "explanationImage": null
+   }
+  ],
+  "transmission_line_performance": [
+   {
+    "id": "mixed1_perf_1",
+    "type": "mcq",
+    "question": "A 3-phase short transmission line has a total series impedance of (4 + j8) Ω per phase. It delivers 6 MW at 0.8 power factor lagging to a load at 33 kV (line-to-line). The voltage regulation of the line is approximately",
+    "questionImage": null,
+    "options": [
+     "-0.9%",
+     "2.2%",
+     "3.2%",
+     "5.5%"
+    ],
+    "correctIndex": 3,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "I = 6×10⁶/(√3 × 33×10³ × 0.8) = 131.2 A at −36.87°.  V_R(phase) = 33000/√3 = 19053 V.\nV_S = V_R + I Z = 19053 + (105.0 − j78.7)(4 + j8) = 20102 + j525 V, |V_S| = 20109 V.\nVR = (|V_S| − V_R)/V_R × 100 = (20109 − 19053)/19053 × 100 = 5.55%.\n\nWhy the other options?\n(a) ✘ -0.9%: Uses a leading power factor; for a lagging load the regulation is positive and larger.\n(b) ✘ 2.2%: Includes only the resistive drop I R cos φ and ignores the reactive drop.\n(c) ✘ 3.2%: Uses the line voltage (33 kV) as if it were the phase voltage.\n(d) ✔ 5.5%: correct answer.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_perf_2",
+    "type": "mcq",
+    "question": "A medium transmission line is represented by a nominal-π circuit with total series impedance Z = j100 Ω and total shunt admittance Y = j0.0012 S. With the sending-end voltage held constant, the no-load receiving-end voltage is what percentage of the sending-end voltage?",
+    "questionImage": null,
+    "options": [
+     "94.0%",
+     "113.2%",
+     "106.4%",
+     "103.1%"
+    ],
+    "correctIndex": 2,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "For the nominal π: A = 1 + YZ/2 = 1 + (j0.0012)(j100)/2 = 1 − 0.06 = 0.94.\nAt no load I_R = 0, so V_S = A V_R, i.e. V_R = V_S/A = V_S/0.94 = 1.0638 V_S → 106.4% of V_S (a voltage RISE: the Ferranti effect).\n\nWhy the other options?\n(a) ✘ 94.0%: This is the constant A itself; at no load V_R = V_S/A, so it is the reciprocal.\n(b) ✘ 113.2%: Squares A, which has no basis.\n(c) ✔ 106.4%: correct answer.\n(d) ✘ 103.1%: Uses A = 1 + YZ/4 (a misremembered form) instead of 1 + YZ/2.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_perf_3",
+    "type": "mcq",
+    "question": "A lossless 400 km, 50 Hz line has a wavelength of 6000 km. If the sending-end voltage is kept constant and the receiving end is open-circuited, the percentage rise of the receiving-end voltage above the sending-end voltage is approximately",
+    "questionImage": null,
+    "options": [
+     "9.46%",
+     "8.65%",
+     "49.4%",
+     "2.2%"
+    ],
+    "correctIndex": 0,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "βl = 2π l/λ = 2π × 400/6000 = 0.4189 rad = 24.0°.\nFor a lossless open-ended line V_S = V_R cos βl, so V_R/V_S = 1/cos 24° = 1.0946.\nRise = 9.46% (Ferranti effect).\n\nWhy the other options?\n(a) ✔ 9.46%: correct answer.\n(b) ✘ 8.65%: Uses 1 − cos βl, which is the fractional difference with respect to V_R,nl-type reasoning but not the rise referred to V_S.\n(c) ✘ 49.4%: Takes βl twice as large (wavelength taken as 3000 km).\n(d) ✘ 2.2%: Takes βl half as large.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_perf_4",
+    "type": "mcq",
+    "question": "A short 3-phase line has a resistance of 5 Ω per phase. It delivers 10 MW at 0.8 power factor lagging at a receiving-end voltage of 66 kV (line-to-line). The transmission efficiency of the line is approximately",
+    "questionImage": null,
+    "options": [
+     "98.2%",
+     "99.4%",
+     "94.9%",
+     "100.0%"
+    ],
+    "correctIndex": 0,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "I = 10×10⁶/(√3 × 66×10³ × 0.8) = 109.35 A.\nLine loss = 3 I² R = 3 × 109.35² × 5 = 179.4 kW.\nη = P_R/(P_R + loss) = 10/(10 + 0.1794) = 98.24%.\n\nWhy the other options?\n(a) ✔ 98.2%: correct answer.\n(b) ✘ 99.4%: Counts the loss of only one phase (I²R instead of 3I²R).\n(c) ✘ 94.9%: Counts the three-phase loss three times.\n(d) ✘ 100.0%: Ignores the resistive loss altogether.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_perf_5",
+    "type": "mcq",
+    "question": "A medium line is represented by a nominal-T circuit (half the series impedance on each side of the shunt branch) with total Z = (20 + j100) Ω and total Y = j0.001 S. The magnitude of the ABCD constant B is approximately",
+    "questionImage": null,
+    "options": [
+     "99.4 Ω",
+     "102.0 Ω",
+     "96.9 Ω",
+     "97.6 Ω"
+    ],
+    "correctIndex": 0,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "For the nominal-T circuit B = Z(1 + YZ/4).\nYZ = j0.001 × (20 + j100) = −0.1 + j0.02, so YZ/4 = −0.025 + j0.005.\nB = (20 + j100)(0.975 + j0.005) = 19.00 + j97.60 Ω, |B| = 99.4 Ω.\n\nWhy the other options?\n(a) ✔ 99.4 Ω: correct answer.\n(b) ✘ 102.0 Ω: This is B of the nominal-π circuit (B = Z), not of the nominal-T.\n(c) ✘ 96.9 Ω: Uses B = Z(1 + YZ/2), which is the A-constant factor.\n(d) ✘ 97.6 Ω: Takes only the imaginary part of B.",
+    "explanationImage": null
+   }
+  ],
+  "power_flow_through_transmission_line": [
+   {
+    "id": "mixed1_pf_1",
+    "type": "mcq",
+    "question": "A lossless 400 kV (line-to-line) line has a total series reactance of 80 Ω. The sending-end and receiving-end voltages are both held at 400 kV. A series capacitor providing 40% compensation is installed. The maximum steady-state power that can be transferred is approximately",
+    "questionImage": null,
+    "options": [
+     "2000 MW",
+     "5000 MW",
+     "2667 MW",
+     "3333 MW"
+    ],
+    "correctIndex": 3,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "40% compensation: X_c = 0.4 × 80 = 32 Ω, so X_eff = 80 − 32 = 48 Ω.\nP_max = V_S V_R / X_eff = 400 × 400/48 = 3333 MW (increase of 1/(1 − 0.4) = 1.667 times).\n\nWhy the other options?\n(a) ✘ 2000 MW: This is the uncompensated maximum, V²/X.\n(b) ✘ 5000 MW: Uses X_eff = 0.4 X, i.e. treats 40% as the remaining reactance instead of the compensation.\n(c) ✘ 2667 MW: Corresponds to only 25% compensation.\n(d) ✔ 3333 MW: correct answer.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_pf_2",
+    "type": "mcq",
+    "question": "A short 3-phase line has a series impedance of (10 + j50) Ω per phase. Both the sending-end and receiving-end voltages are held at 132 kV (line-to-line) and the power angle can be varied. The maximum real power that can be received at the receiving end is approximately",
+    "questionImage": null,
+    "options": [
+     "348 MW",
+     "342 MW",
+     "67 MW",
+     "275 MW"
+    ],
+    "correctIndex": 3,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "|Z| = √(10² + 50²) = 50.99 Ω, θ = tan⁻¹(50/10) = 78.69°, cos θ = 0.1961.\nP_R = (V_S V_R/|Z|) cos(θ − δ) − (V_R²/|Z|) cos θ.  It is maximum at δ = θ:\nP_R,max = (V²/|Z|)(1 − cos θ) = (132²/50.99)(1 − 0.1961) = 274.7 MW.\n\nWhy the other options?\n(a) ✘ 348 MW: Uses the lossless result V²/X, ignoring the resistance.\n(b) ✘ 342 MW: Uses V²/|Z| and forgets the subtraction of the loss term.\n(c) ✘ 67 MW: Uses only the loss term V² cos θ/|Z|.\n(d) ✔ 275 MW: correct answer.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_pf_3",
+    "type": "mcq",
+    "question": "A lossless line of reactance 0.4 pu connects two buses, both held at 1.0 pu voltage magnitude. The line carries 1.0 pu real power from the sending bus to the receiving bus. The reactive power absorbed by the line (I²X) is approximately",
+    "questionImage": null,
+    "options": [
+     "0.209 pu",
+     "0.417 pu",
+     "0.167 pu",
+     "1.000 pu"
+    ],
+    "correctIndex": 1,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "P = (V_S V_R/X) sin δ → sin δ = P X = 0.4 → δ = 23.58°, cos δ = 0.9165.\nQ_S = (V_S² − V_S V_R cos δ)/X = 0.2087 pu (delivered by the sending end); Q_R = (V_S V_R cos δ − V_R²)/X = −0.2087 pu (the receiving bus must also send this much into the line).\nReactive absorbed = Q_S − Q_R = 2(1 − cos δ)/X = 0.4174 pu (check: I²X = |V_S∠δ − V_R|²/X = 0.1670/0.4 = 0.4174).\n\nWhy the other options?\n(a) ✘ 0.209 pu: This is the reactive power at only one end; the line absorbs the sum of both ends.\n(b) ✔ 0.417 pu: correct answer.\n(c) ✘ 0.167 pu: Forgets to divide by the reactance.\n(d) ✘ 1.000 pu: Confuses the reactive loss with the real power transferred.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_pf_4",
+    "type": "mcq",
+    "question": "A lossless line delivers a constant real power while operating at a power angle of 30° with both end voltages at their rated values. If both end voltages are reduced to 90% of their rated values and the delivered power is kept unchanged, the new power angle is approximately",
+    "questionImage": null,
+    "options": [
+     "33.7°",
+     "38.1°",
+     "30.0°",
+     "23.9°"
+    ],
+    "correctIndex": 1,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "P = (V_S V_R/X) sin δ = (V²/X) sin δ. For constant P: V₁² sin δ₁ = V₂² sin δ₂.\nsin δ₂ = sin 30°/(0.9)² = 0.5/0.81 = 0.6173 → δ₂ = 38.1°.\n\nWhy the other options?\n(a) ✘ 33.7°: Assumes power varies linearly with voltage; it varies with V_S V_R = V².\n(b) ✔ 38.1°: correct answer.\n(c) ✘ 30.0°: Assumes the angle does not depend on the voltage level.\n(d) ✘ 23.9°: Multiplies by 0.81 instead of dividing; the angle must increase, not decrease.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_pf_5",
+    "type": "mcq",
+    "question": "Two buses are connected by a lossless line of reactance 0.5 pu. The sending-bus voltage is 1.1 pu and the receiving-bus voltage is 1.0 pu, with a power angle of 30°. Taking positive reactive power as flowing from the line into the receiving bus, Q_R is approximately",
+    "questionImage": null,
+    "options": [
+     "-0.095 pu",
+     "+0.095 pu",
+     "+0.515 pu",
+     "+1.100 pu"
+    ],
+    "correctIndex": 0,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "Q_R = (V_S V_R cos δ − V_R²)/X = (1.1 × 1.0 × cos 30° − 1.0²)/0.5 = (0.9526 − 1)/0.5 = -0.0947 pu.\nNegative: the receiving bus must supply 0.095 pu of reactive power into the line (because 1.1 cos 30° < 1.0).\n\nWhy the other options?\n(a) ✔ -0.095 pu: correct answer.\n(b) ✘ +0.095 pu: Has the wrong sign; here the receiving bus actually sends reactive power into the line.\n(c) ✘ +0.515 pu: This is the reactive power Q_S at the sending end.\n(d) ✘ +1.100 pu: This is the real power P, not the reactive power.",
+    "explanationImage": null
+   }
+  ],
+  "voltage_reactive_power_control": [
+   {
+    "id": "mixed1_vq_1",
+    "type": "mcq",
+    "question": "A substation load of 10 MW at 0.8 power factor lagging is to be improved to 0.95 lagging by installing a shunt capacitor bank. The required rating of the capacitor bank is approximately",
+    "questionImage": null,
+    "options": [
+     "7.50 MVAr",
+     "3.29 MVAr",
+     "4.21 MVAr",
+     "2.88 MVAr"
+    ],
+    "correctIndex": 2,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "Q₁ = P tan φ₁ = 10 × 0.75 = 7.5 MVAr (cos φ₁ = 0.8).\nQ₂ = P tan φ₂ = 10 × 0.3287 = 3.287 MVAr (cos φ₂ = 0.95).\nQ_c = Q₁ − Q₂ = 4.213 MVAr.\n\nWhy the other options?\n(a) ✘ 7.50 MVAr: Would cancel the entire reactive demand, which gives unity power factor, not 0.95.\n(b) ✘ 3.29 MVAr: This is the reactive power remaining after correction, not the amount supplied.\n(c) ✔ 4.21 MVAr: correct answer.\n(d) ✘ 2.88 MVAr: Subtracts sin φ values (10 × (0.6 − 0.312)) instead of tan φ values.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_vq_2",
+    "type": "mcq",
+    "question": "A 33/11 kV transformer has an off-nominal tap on the 33 kV side. The primary bus voltage falls to 31.5 kV, but the 11 kV secondary must be maintained at 11 kV with no load drop considered. The required tap position on the HV winding, as a fraction of the nominal 33 kV turns, is",
+    "questionImage": null,
+    "options": [
+     "1.048",
+     "1.000",
+     "0.909",
+     "0.955"
+    ],
+    "correctIndex": 3,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "Required turns ratio = 31.5/11 = 2.864, while the nominal ratio = 33/11 = 3.0.\nTap fraction = 2.864/3.0 = 31.5/33 = 0.955 (HV turns reduced by about 4.5%).\nCheck: secondary = 31.5/(33 × 0.955/11) = 11.0 kV.\n\nWhy the other options?\n(a) ✘ 1.048: This is the inverse; it would raise, not lower, the secondary voltage.\n(b) ✘ 1.000: At nominal tap the secondary would be 31.5/3 = 10.5 kV, not 11 kV.\n(c) ✘ 0.909: Corresponds to a 10% tap reduction and would overshoot to about 11.5 kV.\n(d) ✔ 0.955: correct answer.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_vq_3",
+    "type": "mcq",
+    "question": "For a 3-phase line, the approximate voltage drop is ΔV ≈ (P R + Q X)/V (P in MW, Q in MVAr, R and X in Ω, V = line-to-line voltage in kV, ΔV in kV). A line with R = 10 Ω and X = 40 Ω supplies 20 MW and 15 MVAr at 110 kV. After a series capacitor of reactance 20 Ω is inserted, the voltage drop becomes approximately",
+    "questionImage": null,
+    "options": [
+     "7.27 kV",
+     "4.55 kV",
+     "2.73 kV",
+     "1.82 kV"
+    ],
+    "correctIndex": 1,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "Net reactance X' = X − X_c = 40 − 20 = 20 Ω.\nΔV ≈ (P R + Q X')/V = (20 × 10 + 15 × 20)/110 = 500/110 = 4.55 kV.\nBefore compensation: (200 + 600)/110 = 7.27 kV, so the series capacitor reduces the drop by 37.5%.\n\nWhy the other options?\n(a) ✘ 7.27 kV: This is the drop before inserting the capacitor.\n(b) ✔ 4.55 kV: correct answer.\n(c) ✘ 2.73 kV: Includes only the reactive part and drops the resistive term.\n(d) ✘ 1.82 kV: Includes only the resistive term.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_vq_4",
+    "type": "mcq",
+    "question": "A 400 kV (line-to-line), 50 Hz, 300 km line has a positive-sequence shunt capacitance of 12.5 nF/km per phase. To compensate 80% of the line charging reactive power at nominal voltage, the required 3-phase shunt reactor rating is approximately",
+    "questionImage": null,
+    "options": [
+     "188.5 MVAr",
+     "50.3 MVAr",
+     "150.8 MVAr",
+     "120.6 MVAr"
+    ],
+    "correctIndex": 2,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "Total C per phase = 12.5 nF/km × 300 km = 3.75 μF; ωC = 2π × 50 × 3.75×10⁻⁶ = 1.1781 × 10⁻³ S.\nCharging power Q_c = V_LL² ωC = (400×10³)² × 1.1781e-03 = 188.5 MVAr.\nReactor rating for 80% compensation = 0.8 × 188.5 = 150.8 MVAr.\n\nWhy the other options?\n(a) ✘ 188.5 MVAr: This is the full (100%) charging power.\n(b) ✘ 50.3 MVAr: Uses the phase voltage in V²ωC; that gives the charging per phase only, not three-phase.\n(c) ✔ 150.8 MVAr: correct answer.\n(d) ✘ 120.6 MVAr: Applies the 80% factor twice.",
+    "explanationImage": null
+   },
+   {
+    "id": "mixed1_vq_5",
+    "type": "mcq",
+    "question": "A shunt capacitor bank rated 50 MVAr at 132 kV is connected to a bus whose voltage drops to 120 kV (line-to-line). The reactive power actually supplied by the bank is approximately",
+    "questionImage": null,
+    "options": [
+     "45.5 MVAr",
+     "50.0 MVAr",
+     "41.3 MVAr",
+     "37.6 MVAr"
+    ],
+    "correctIndex": 2,
+    "correctAnswer": "",
+    "videoUrl": "PASTE_VIDEO_LINK_HERE",
+    "videoFile": null,
+    "videoReady": false,
+    "audioFile": null,
+    "explanation": "A capacitor's reactive output is Q = V²/X_c, so Q ∝ V².\nQ = 50 × (120/132)² = 50 × 0.8264 = 41.3 MVAr.\n(This is why shunt capacitors help least when the voltage is already low.)\n\nWhy the other options?\n(a) ✘ 45.5 MVAr: Assumes the output falls in proportion to voltage; it falls with the square of the voltage.\n(b) ✘ 50.0 MVAr: Assumes the output stays at its rated value regardless of the bus voltage.\n(c) ✔ 41.3 MVAr: correct answer.\n(d) ✘ 37.6 MVAr: Assumes a cubic dependence on voltage.",
+    "explanationImage": null
+   }
+  ]
+ }
+}
