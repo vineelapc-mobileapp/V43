@@ -1740,6 +1740,58 @@ deleteTopicBtn.addEventListener('click', () => {
   deleteTopicStatus.className = 'status-line ok';
 });
 
+// ---------- V98 NEW: change order of subjects / chapters ----------
+(function(){
+  const $ = id => document.getElementById(id);
+  const body = $('orderBody'), subSel = $('orderSubjectSel'), st = $('orderStatus');
+  $('orderToggle').addEventListener('click', () => { body.classList.toggle('open'); if (body.classList.contains('open')) refresh(); });
+  subSel.addEventListener('change', drawTopics);
+  const rowCss = 'display:flex;align-items:center;gap:6px;padding:8px 4px;border-bottom:1px solid #e4e9f5;';
+  const btnCss = 'border:1px solid #d6dbe8;background:#fff;border-radius:8px;padding:6px 10px;font-size:14px;';
+
+  function move(arr, from, to){
+    if (to < 0 || to >= arr.length || to === from) return;
+    const [x] = arr.splice(from, 1);
+    arr.splice(to, 0, x);
+    // keep the main dropdowns on the same selection after the rebuild
+    const keepS = subjectSelect.value, keepT = subtopicSelect.value;
+    populateSubjects();
+    if ([...subjectSelect.options].some(o => o.value === keepS)) { subjectSelect.value = keepS; populateSubtopics(); }
+    if ([...subtopicSelect.options].some(o => o.value === keepT)) subtopicSelect.value = keepT;
+    pendingTopicChanges = true;
+    updateExportBarVisibility();
+    st.textContent = 'Order changed. Use Publish to GitHub (bottom) to show it to students.';
+    st.className = 'status-line ok';
+    refresh(true);
+  }
+  function drawList(el, arr, label){
+    el.innerHTML = '';
+    arr.forEach((it, i) => {
+      const r = document.createElement('div'); r.style.cssText = rowCss;
+      const n = document.createElement('span'); n.textContent = (i + 1) + '.'; n.style.cssText = 'width:26px;font-weight:700;color:var(--primary);';
+      const t = document.createElement('span'); t.textContent = it.name; t.style.cssText = 'flex:1;font-size:13px;';
+      const up = document.createElement('button'); up.textContent = '▲'; up.style.cssText = btnCss; up.disabled = i === 0; up.onclick = () => move(arr, i, i - 1);
+      const dn = document.createElement('button'); dn.textContent = '▼'; dn.style.cssText = btnCss; dn.disabled = i === arr.length - 1; dn.onclick = () => move(arr, i, i + 1);
+      const sel = document.createElement('select'); sel.style.cssText = 'width:64px;padding:6px;font-size:13px;';
+      sel.title = 'Move to position';
+      sel.innerHTML = '<option value="">to #</option>' + arr.map((_, k) => '<option value="' + k + '">' + (k + 1) + '</option>').join('');
+      sel.onchange = () => { if (sel.value !== '') move(arr, i, Number(sel.value)); };
+      r.append(n, t, up, dn, sel); el.appendChild(r);
+    });
+  }
+  function drawTopics(){
+    const subj = DATA.subjects.find(s => s.id === subSel.value);
+    drawList($('orderTopicList'), subj ? subj.subtopics : [], 'chapter');
+  }
+  function refresh(keep){
+    const cur = subSel.value;
+    subSel.innerHTML = DATA.subjects.map(s => '<option value="' + s.id + '">' + s.name.replace(/</g, '&lt;') + '</option>').join('');
+    subSel.value = keep && DATA.subjects.some(s => s.id === cur) ? cur : (DATA.subjects.some(s => s.id === subjectSelect.value) ? subjectSelect.value : DATA.subjects[0].id);
+    drawTopics();
+    drawList($('orderSubjectList'), DATA.subjects, 'subject');
+  }
+})();
+
 // ---------- Source buttons ----------
 // If the Level is changed after questions were already split (e.g. switching
 // to Conventional), re-render the existing cards so they immediately reflect

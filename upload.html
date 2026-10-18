@@ -269,6 +269,22 @@ textarea.raw-text{
     </div>
   </div>
 
+  <!-- V98 NEW: change the order of subjects / chapters -->
+  <button id="orderToggle" class="settings-toggle" style="margin-bottom:12px;">&#8645; Change Order (Subjects / Chapters)</button>
+  <div id="orderBody" class="settings-body">
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Chapter order</h3>
+      <div class="hint">Pick a subject, then move chapters with &#9650; &#9660; or choose a position number. Students see the same order after you Publish to GitHub.</div>
+      <div class="field-row" style="margin-top:8px;"><div class="field-col" style="flex-basis:100%;"><label>Subject</label><select id="orderSubjectSel"></select></div></div>
+      <div id="orderTopicList"></div>
+    </div>
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Subject order</h3>
+      <div id="orderSubjectList"></div>
+    </div>
+    <div id="orderStatus" class="status-line"></div>
+  </div>
+
   <div class="source-grid">
     <div class="source-btn" id="cameraBtn">
       <span class="icon">&#128247;</span>
