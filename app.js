@@ -460,6 +460,32 @@ function renderProfile(){
     intro.style.fontSize = '15px';
     intro.textContent = 'Before you start, tell us a bit about yourself. This helps your teacher know who\'s asking when you send a doubt.';
     card.appendChild(intro);
+    // V106 NEW: already registered on another phone / PC? restore with email only - no new registration
+    const rb = document.createElement('div');
+    rb.style.cssText = 'background:#EAF1FB;border:1px solid #BFD3F2;border-radius:12px;padding:12px;margin-bottom:16px;';
+    rb.innerHTML = '<div style="font-weight:700;font-size:14px;margin-bottom:6px;">Already registered before?</div><div style="font-size:12px;color:#4C5C8C;margin-bottom:8px;">Type the same email you used earlier. No need to register again.</div>';
+    const rIn = document.createElement('input'); rIn.type = 'email'; rIn.placeholder = 'Your registered email';
+    rIn.style.cssText = 'width:100%;padding:11px;border-radius:8px;border:1px solid #d6dbe8;font-size:15px;margin-bottom:8px;';
+    const rBtn = document.createElement('button'); rBtn.className = 'btn btn-secondary full-width'; rBtn.textContent = 'Find my profile';
+    const rMsg = document.createElement('div'); rMsg.style.cssText = 'font-size:12px;margin-top:6px;min-height:14px;';
+    rBtn.onclick = async () => {
+      const em = rIn.value.trim().toLowerCase();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { rMsg.style.color = 'var(--wrong)'; rMsg.textContent = 'Enter a valid email.'; return; }
+      rBtn.disabled = true; rMsg.style.color = '#4C5C8C'; rMsg.textContent = 'Checking...';
+      try {
+        if (!TRACK_URL) { const t = await (await fetch('data/tracking.json', { cache: 'no-store' })).json(); TRACK_URL = (t && t.url) || ''; }
+        if (!TRACK_URL) throw new Error('offline');
+        const r = await (await fetch(TRACK_URL + (TRACK_URL.includes('?') ? '&' : '?') + 'action=lookup&email=' + encodeURIComponent(em))).json();
+        if (r && r.found) {
+          studentProfile = { name: r.name, email: em, college: r.college };
+          saveProfile(studentProfile);
+          state.profileFirstRun = false; state.view = 'subjects'; render(); return;
+        }
+        rMsg.style.color = 'var(--wrong)'; rMsg.textContent = 'This email is not registered yet. Please fill the form below.';
+      } catch (e) { rMsg.style.color = 'var(--wrong)'; rMsg.textContent = 'Could not check now (no internet?). Fill the form below, or try again.'; }
+      rBtn.disabled = false;
+    };
+    rb.append(rIn, rBtn, rMsg); card.appendChild(rb);
   }
 
   const existing = studentProfile || { name: '', email: '', college: '' };
