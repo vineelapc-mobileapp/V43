@@ -7067,6 +7067,21 @@
                 "audioFile": null,
                 "explanation": "BURDEN of CT is measured in VA =\n VsIs = 20*5*0.01*20*5 \n      = 100 VA ",
                 "explanationImage": null
+              },
+              {
+                "id": "protection_basics_l1_new1792295220111_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1792293556/gvzbhu81mpzydh0qpajc.jpg",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "Suitable bcoz  as total burden is 18 VA is less than CT Burden of 20 VA .",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1792295208/pjs2usvzwmkfzepv0r4m.jpg"
               }
             ],
             "2": [
