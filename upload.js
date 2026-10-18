@@ -825,6 +825,52 @@ function renderSubtopicDetailContents(subtopic, subjectName){
         card.appendChild(moveBtn);
       }
 
+      // V101 NEW: change this question's position (it moves together with its answer / explanation),
+      // or move it to another chapter (same level).
+      const posRow = document.createElement('div');
+      posRow.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px dashed #d6dbe8;';
+      const arr = subtopic.levels[level];
+      const reload = () => {
+        pendingTopicChanges = true; updateExportBarVisibility();
+        renderVerifyTab(); verifyDetail.dataset.openFor = subtopic.id;
+        renderSubtopicDetailContents(subtopic, subjectName);
+      };
+      const moveWithin = to => {
+        const from = arr.indexOf(q);
+        if (from < 0 || to < 0 || to >= arr.length || to === from) return;
+        arr.splice(from, 1); arr.splice(to, 0, q);
+        setStatus('Question moved to position ' + (to + 1) + '. Publish to GitHub to make it live.', 'ok');
+        reload();
+      };
+      const pcss = 'border:1px solid #d6dbe8;background:#fff;border-radius:8px;padding:6px 10px;font-size:14px;';
+      const lbl = document.createElement('span'); lbl.textContent = 'Position ' + (i + 1) + ' of ' + qs.length; lbl.style.cssText = 'font-size:12px;font-weight:700;flex:1;min-width:110px;';
+      const upB = document.createElement('button'); upB.textContent = '▲'; upB.style.cssText = pcss; upB.disabled = i === 0; upB.onclick = () => moveWithin(i - 1);
+      const dnB = document.createElement('button'); dnB.textContent = '▼'; dnB.style.cssText = pcss; dnB.disabled = i === qs.length - 1; dnB.onclick = () => moveWithin(i + 1);
+      const toSel = document.createElement('select'); toSel.style.cssText = 'width:70px;padding:6px;font-size:13px;';
+      toSel.innerHTML = '<option value="">to #</option>' + qs.map((_, k) => '<option value="' + k + '">' + (k + 1) + '</option>').join('');
+      toSel.onchange = () => { if (toSel.value !== '') moveWithin(Number(toSel.value)); };
+      posRow.append(lbl, upB, dnB, toSel);
+      const chRow = document.createElement('div');
+      chRow.style.cssText = 'display:flex;gap:6px;margin-top:6px;';
+      const chSel = document.createElement('select'); chSel.style.cssText = 'flex:1;min-width:0;padding:6px;font-size:13px;';
+      chSel.innerHTML = '<option value="">Move to another chapter...</option>' + DATA.subjects.map(sj => sj.subtopics.filter(t => t !== subtopic).map(t => '<option value="' + sj.id + '|' + t.id + '">' + (sj.name + ' › ' + t.name).replace(/</g, '&lt;') + '</option>').join('')).join('');
+      const chBtn = document.createElement('button'); chBtn.textContent = 'Move'; chBtn.style.cssText = pcss;
+      chBtn.onclick = () => {
+        if (!chSel.value) return;
+        const [sid, tid] = chSel.value.split('|');
+        const tgt = DATA.subjects.find(s => s.id === sid).subtopics.find(t => t.id === tid);
+        const from = arr.indexOf(q); if (from < 0) return;
+        if (!window.confirm('Move this question (with its answer) to "' + tgt.name + '" (' + levelLabel + ')?')) return;
+        arr.splice(from, 1);
+        if (!tgt.levels) tgt.levels = {};
+        if (!tgt.levels[level]) tgt.levels[level] = [];
+        tgt.levels[level].push(q);
+        setStatus('Moved to "' + tgt.name + '". Publish to GitHub to make it live.', 'ok');
+        reload();
+      };
+      chRow.append(chSel, chBtn);
+      card.appendChild(posRow); card.appendChild(chRow);
+
       verifyDetail.appendChild(card);
     });
   });
@@ -1776,7 +1822,23 @@ deleteTopicBtn.addEventListener('click', () => {
       sel.title = 'Move to position';
       sel.innerHTML = '<option value="">to #</option>' + arr.map((_, k) => '<option value="' + k + '">' + (k + 1) + '</option>').join('');
       sel.onchange = () => { if (sel.value !== '') move(arr, i, Number(sel.value)); };
-      r.append(n, t, up, dn, sel); el.appendChild(r);
+      r.append(n, t, up, dn, sel);
+      if (label === 'chapter') {   // V100 NEW: Show/Hide switch for students
+        const lab = document.createElement('label'); lab.style.cssText = 'display:flex;align-items:center;gap:3px;font-size:12px;white-space:nowrap;';
+        const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = it.visible !== false;
+        const tx = document.createElement('span'); tx.textContent = cb.checked ? 'ON' : 'OFF'; tx.style.cssText = 'font-weight:700;color:' + (cb.checked ? '#1b8a3a' : '#c0392b') + ';';
+        cb.onchange = () => {
+          it.visible = cb.checked;
+          tx.textContent = cb.checked ? 'ON' : 'OFF'; tx.style.color = cb.checked ? '#1b8a3a' : '#c0392b';
+          t.style.opacity = cb.checked ? '1' : '.45';
+          pendingTopicChanges = true; updateExportBarVisibility();
+          st.textContent = '"' + it.name + '" is now ' + (cb.checked ? 'ON - visible to' : 'OFF - hidden from') + ' students. Publish to GitHub to make it live.';
+          st.className = 'status-line ok';
+        };
+        t.style.opacity = cb.checked ? '1' : '.45';
+        lab.append(cb, tx); r.appendChild(lab);
+      }
+      el.appendChild(r);
     });
   }
   function drawTopics(){

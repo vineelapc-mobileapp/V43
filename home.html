@@ -266,7 +266,7 @@ fetch('data/questions.json')
   .then(data => {
     (data.subjects || []).filter(s => s.visible !== false).forEach(subj => {
       searchIndex.push({ type: 'subject', subjectId: subj.id, subjectName: subj.name, name: subj.name });
-      (subj.subtopics || []).forEach(st => {
+      (subj.subtopics || []).filter(st => st.visible !== false).forEach(st => {   // V100 NEW: hidden chapters not searchable
         searchIndex.push({ type: 'subtopic', subjectId: subj.id, subjectName: subj.name, subtopicId: st.id, name: st.name });
       });
     });

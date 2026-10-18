@@ -92,6 +92,8 @@ fetch('data/questions.json')
   .then(r => r.json())
   .then(json => {
     DATA = json;
+    // V100 NEW: chapters switched OFF by the teacher (visible === false) are not shown to students
+    try { DATA.subjects.forEach(s => { s.subtopics = (s.subtopics || []).filter(st => st.visible !== false); }); } catch (e) {}
     // Defensive: if anything here ever throws (a malformed URL, an
     // older/unusual browser, anything), the app must still open normally
     // rather than getting stuck on the static placeholder - a failure in
