@@ -196,7 +196,7 @@ setTimeout(function () {
   var t = document.getElementById('headerTitle'); if (t) t.textContent = 'Could not start';
   var a = document.getElementById('app');
   if (a) a.innerHTML = '<div class="question-card"><div class="question-text">The app could not start.</div><p style="margin-top:10px;color:var(--muted);font-size:14px;line-height:1.5;">Please close and reopen it in a minute. If this keeps happening, tell your teacher - one of the app files (app.js) may not have uploaded correctly.</p></div>';
-}, 7000);
+}, 30000);   // V108 NEW: was 7000 - slow phones get 30 seconds before this message appears
 </script>
 </body>
 </html>

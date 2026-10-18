@@ -1896,16 +1896,51 @@ deleteTopicBtn.addEventListener('click', () => {
         const di = document.createElement('input'); di.type = 'number'; di.min = 1; di.value = t.durationMin || ''; di.style.cssText = 'width:70px;padding:5px;border:1px solid #d6dbe8;border-radius:6px;';
         di.onchange = () => { t.durationMin = Number(di.value) || 0; touch(); msg('Duration saved. Publish to GitHub to make it live.'); };
         dur.appendChild(di); edBox.appendChild(dur);
+        // V107 NEW: every question shown in FULL, with Edit (question, options, correct answer, solution), move up/down, remove
+        const inp = (el, extra) => { el.style.cssText = 'width:100%;padding:8px;border:1px solid #d6dbe8;border-radius:8px;font-size:13px;margin:3px 0;box-sizing:border-box;' + (extra || ''); return el; };
         (t.questionIds || []).forEach((id, k) => {
           const f = qText(id);
-          const line = document.createElement('div'); line.style.cssText = 'display:flex;gap:6px;align-items:flex-start;padding:4px 0;border-bottom:1px dashed #e4e9f5;font-size:12px;';
-          const tx2 = document.createElement('div'); tx2.style.flex = '1';
-          tx2.textContent = (k + 1) + '. ' + (f ? '[' + f.tp.name + '] ' + (f.q.question || '').slice(0, 90) : id + ' (question not found)');
-          if (!f) tx2.style.color = '#c0392b';
-          const x = document.createElement('button'); x.textContent = '\u2715'; x.className = 'btn btn-secondary'; x.style.cssText = 'padding:2px 8px;color:var(--wrong);';
-          x.onclick = () => { t.questionIds.splice(k, 1); touch(); drawEd(); info.textContent = t.questionIds.length + ' questions'; msg('Removed from this test only (the question stays in its chapter). Publish to GitHub.'); };
-          line.append(tx2, x); edBox.appendChild(line);
+          const card = document.createElement('div'); card.style.cssText = 'border:1px solid #d6dbe8;border-radius:10px;padding:8px;margin:8px 0;background:#fff;';
+          const head = document.createElement('div'); head.style.cssText = 'display:flex;gap:6px;align-items:center;margin-bottom:4px;flex-wrap:wrap;';
+          const num = document.createElement('b'); num.style.cssText = 'color:#E8710A;font-size:13px;'; num.textContent = 'Q' + (k + 1) + (f ? '  [' + f.tp.name + ']' : '');
+          const sp = document.createElement('span'); sp.style.flex = '1';
+          const mkb = (txt, fn, col) => { const b2 = document.createElement('button'); b2.textContent = txt; b2.className = 'btn btn-secondary'; b2.style.cssText = 'padding:3px 9px;font-size:12px;' + (col ? 'color:' + col + ';' : ''); b2.onclick = fn; return b2; };
+          const move = d => () => { const a = t.questionIds, n = k + d; if (n < 0 || n >= a.length) return; [a[k], a[n]] = [a[n], a[k]]; touch(); drawEd(); };
+          head.append(num, sp, mkb('▲', move(-1)), mkb('▼', move(1)), mkb('✕', () => { if (!confirm('Remove Q' + (k + 1) + ' from this test? (It stays in its chapter.)')) return; t.questionIds.splice(k, 1); touch(); drawEd(); info.textContent = t.questionIds.length + ' questions'; msg('Removed from this test only. Publish to GitHub.'); }, 'var(--wrong)'));
+          card.appendChild(head);
+          if (!f) { const nf = document.createElement('div'); nf.style.color = '#c0392b'; nf.textContent = id + ' - question not found'; card.appendChild(nf); edBox.appendChild(card); return; }
+          const q = f.q;
+          const changed = () => { touch(); msg('Question edited. Publish to GitHub to make it live.'); };
+          const qt = inp(document.createElement('textarea'), 'min-height:90px;'); qt.value = q.question || ''; qt.oninput = () => { q.question = qt.value; changed(); };
+          card.appendChild(qt); setTimeout(() => { qt.style.height = Math.max(90, qt.scrollHeight + 4) + 'px'; }, 0); qt.addEventListener('input', () => { qt.style.height = 'auto'; qt.style.height = (qt.scrollHeight + 4) + 'px'; });
+          if (q.type !== 'fill' && q.type !== 'conventional') {
+            const letters = 'abcdefgh';
+            (q.options || []).forEach((o, n) => {
+              const r = document.createElement('label'); r.style.cssText = 'display:flex;gap:6px;align-items:center;font-size:12px;';
+              const rd = document.createElement('input'); rd.type = 'radio'; rd.name = 'ans_' + id; rd.checked = q.correctIndex === n;
+              rd.onchange = () => { q.correctIndex = n; changed(); };
+              const oi = inp(document.createElement('input'), 'flex:1;width:auto;'); oi.type = 'text'; oi.value = o; oi.oninput = () => { q.options[n] = oi.value; changed(); };
+              r.append(letters[n] + ')', rd, oi); card.appendChild(r);
+            });
+            const hint = document.createElement('div'); hint.className = 'hint'; hint.textContent = 'Round button = correct answer.'; card.appendChild(hint);
+          }
+          const el = document.createElement('div'); el.className = 'hint'; el.style.fontWeight = '700'; el.textContent = 'Solution / explanation'; card.appendChild(el);
+          const ex = inp(document.createElement('textarea'), 'min-height:120px;'); ex.value = q.explanation || ''; ex.oninput = () => { q.explanation = ex.value; changed(); };
+          card.appendChild(ex); setTimeout(() => { ex.style.height = Math.max(120, ex.scrollHeight + 4) + 'px'; }, 0); ex.addEventListener('input', () => { ex.style.height = 'auto'; ex.style.height = (ex.scrollHeight + 4) + 'px'; });
+          edBox.appendChild(card);
         });
+        // V107 NEW: write a brand-new question straight into this test
+        const nb = document.createElement('button'); nb.className = 'btn btn-secondary'; nb.style.cssText = 'font-size:12px;margin:6px 0;'; nb.textContent = '+ Write a NEW question for this test';
+        nb.onclick = () => {
+          const tp0 = (() => { let r = null; DATA.subjects.forEach(sj => sj.subtopics.forEach(tp => { if (!r) r = tp; })); const cur = (t.questionIds || []).map(qText).filter(Boolean)[0]; return cur ? cur.tp : r; })();
+          if (!tp0) return;
+          if (!tp0.levels) tp0.levels = {}; if (!tp0.levels['2']) tp0.levels['2'] = [];
+          const nid = 'mixed_new_' + Date.now();
+          tp0.levels['2'].push({ id: nid, type: 'mcq', question: 'Type the question here', questionImage: null, options: ['Option A', 'Option B', 'Option C', 'Option D'], correctIndex: 0, correctAnswer: '', videoUrl: '', videoFile: null, videoReady: false, audioFile: null, explanation: '' });
+          (t.questionIds = t.questionIds || []).push(nid); touch(); drawEd(); info.textContent = t.questionIds.length + ' questions';
+          msg('New question added at the end (saved in chapter "' + tp0.name + '", Level 2). Edit it below, then Publish to GitHub.');
+        };
+        edBox.appendChild(nb);
         const add = document.createElement('div'); add.style.cssText = 'margin-top:8px;display:grid;gap:6px;';
         const sTp = document.createElement('select'), sQ = document.createElement('select');
         [sTp, sQ].forEach(s => s.style.cssText = 'padding:7px;border:1px solid #d6dbe8;border-radius:8px;font-size:12px;width:100%;');
