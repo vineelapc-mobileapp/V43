@@ -367,7 +367,9 @@ function render(){
   }
 
   // First-ever launch: nothing is usable until Name/Email/College is filled in.
-  if (!studentProfile && state.view !== 'profile') {
+  // V97 NEW: also when arriving via the Profile icon (?tab=profile-direct) with no profile yet -
+  // the tab bar / back button stay hidden until Continue is pressed.
+  if (!studentProfile) {
     state.view = 'profile';
     state.profileFirstRun = true;
   }

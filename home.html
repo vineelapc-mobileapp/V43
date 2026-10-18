@@ -348,5 +348,34 @@ document.getElementById('titleTap').addEventListener('click', () => {
   }
 });
 </script>
+
+<!-- V97 NEW: profile gate - a student with no saved profile must create one first -->
+<div id="profileGate" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(22,39,74,.72);align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#fff;border-radius:22px;padding:26px 22px;max-width:340px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.35);">
+    <div style="font-size:40px;">&#128075;</div>
+    <h2 id="gateTitle" style="margin:8px 0 6px;color:#16274A;font-size:22px;">Welcome to Power Pulse</h2>
+    <p style="color:#5b6785;font-size:14px;line-height:1.45;margin:0 0 18px;">Please create your profile (name, email, college) first. Then you can use the app.</p>
+    <button id="gateBtn" style="width:100%;padding:14px;border:0;border-radius:14px;background:#E8710A;color:#fff;font-size:16px;font-weight:700;">Create My Profile</button>
+  </div>
+</div>
+<script>
+(function(){
+  var has = false;
+  try { var p = JSON.parse(localStorage.getItem('eeeStudentProfile')); has = !!(p && p.name && p.email); } catch (e) {}
+  if (has) return;
+  var g = document.getElementById('profileGate');
+  g.style.display = 'flex';
+  document.getElementById('gateBtn').onclick = function(){
+    sessionStorage.setItem('cameFromLauncher','1');
+    window.location.href = 'index.html?tab=profile-direct';
+  };
+  // teacher access still works: tap the Welcome title 5 times
+  var n = 0, t;
+  document.getElementById('gateTitle').onclick = function(){
+    n++; clearTimeout(t); t = setTimeout(function(){ n = 0; }, 3000);
+    if (n >= 5) window.location.href = 'upload.html';
+  };
+})();
+</script>
 </body>
 </html>
