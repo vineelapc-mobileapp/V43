@@ -7052,6 +7052,21 @@
                 "audioFile": null,
                 "explanation": "A Buchholz relay is installed in the pipe between the transformer tank and the conservator. Slow gas accumulation from minor faults (e.g., insulation breakdown) gives an alarm; a violent oil surge from a serious internal fault operates the trip contacts. It only works with oil-filled transformers with a conservator, and it is a very sensitive protection for internal faults that other protections (such as differential) may not see at the initial stage.\n\nWhy the other options?\n(a) ✘ Overhead transmission lines against lightning surges: Lightning surges on lines are handled by surge arresters.\n(b) ✘ Busbars against external short circuits on feeders: Busbars are protected by bus differential protection.\n(c) ✔ Oil-immersed transformers with a conservator, for internal…: correct answer.\n(d) ✘ Induction motors against sustained overload conditions: Motor overload is handled by thermal overload relays.",
                 "explanationImage": null
+              },
+              {
+                "id": "protection_basics_l1_new1792293103365_0",
+                "type": "fill",
+                "question": "Q) The total impedance of the secondary windings,leads and burden of a.5 A CT is 0.01 ohms . If the fault current is 20 times the rated primary current of the CT , the VA output of the CT is",
+                "questionImage": null,
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "100 VA ",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "BURDEN of CT is measured in VA =\n VsIs = 20*5*0.01*20*5 \n      = 100 VA ",
+                "explanationImage": null
               }
             ],
             "2": [
