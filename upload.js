@@ -1854,6 +1854,95 @@ deleteTopicBtn.addEventListener('click', () => {
   }
 })();
 
+// ---------- V102 NEW: Mixed Topics Tests (Teacher) ----------
+(function(){
+  const $ = id => document.getElementById(id);
+  const st = $('mixedStatus');
+  $('mixedToggle').addEventListener('click', () => { $('mixedBody').classList.toggle('open'); draw(); });
+  const allIds = () => { const s = new Set(); DATA.subjects.forEach(sj => sj.subtopics.forEach(t => Object.values(t.levels || {}).forEach(a => (a || []).forEach(q => s.add(q.id))))); return s; };
+  const msg = (t, k) => { st.textContent = t; st.className = 'status-line ' + (k || 'ok'); };
+  const touch = () => { pendingTopicChanges = true; updateExportBarVisibility(); };
+  function draw(){
+    const box = $('mixedList'); box.innerHTML = '';
+    const tests = DATA.mixedTests || [];
+    if (!tests.length) { box.innerHTML = '<div class="hint">No mixed test yet. Use "Import" below.</div>'; return; }
+    const ids = allIds();
+    tests.forEach((t, i) => {
+      const live = (t.questionIds || []).filter(id => ids.has(id)).length;
+      const row = document.createElement('div');
+      row.style.cssText = 'padding:8px 4px;border-bottom:1px solid #e4e9f5;';
+      const title = document.createElement('input'); title.type = 'text'; title.value = t.title; title.style.cssText = 'width:100%;padding:8px;border:1px solid #d6dbe8;border-radius:8px;font-size:13px;font-weight:700;';
+      title.onchange = () => { t.title = title.value.trim() || t.title; touch(); msg('Test name changed. Publish to GitHub to make it live.'); };
+      const info = document.createElement('div'); info.className = 'hint'; info.style.margin = '4px 0'; info.textContent = live + ' of ' + (t.questionIds || []).length + ' questions found' + (t.durationMin ? ' · suggested ' + t.durationMin + ' min' : '');
+      const ctl = document.createElement('div'); ctl.style.cssText = 'display:flex;align-items:center;gap:10px;';
+      const lab = document.createElement('label'); lab.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:12px;flex:1;';
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = t.visible === true;
+      const tx = document.createElement('span'); tx.style.fontWeight = '700';
+      const paint = () => { tx.textContent = cb.checked ? 'ON - visible to students' : 'OFF - hidden from students'; tx.style.color = cb.checked ? '#1b8a3a' : '#c0392b'; };
+      paint(); cb.onchange = () => { t.visible = cb.checked; paint(); touch(); msg('"' + t.title + '" is now ' + (cb.checked ? 'ON' : 'OFF') + '. Publish to GitHub to make it live.'); };
+      lab.append(cb, tx);
+      const del = document.createElement('button'); del.textContent = 'Remove test'; del.className = 'btn btn-secondary'; del.style.cssText = 'font-size:12px;color:var(--wrong);';
+      del.onclick = () => { if (!window.confirm('Remove the test card "' + t.title + '"? Its questions stay in their chapters.')) return; DATA.mixedTests.splice(i, 1); touch(); draw(); msg('Test removed. Publish to GitHub to make it live.'); };
+      ctl.append(lab, del);
+      // V104 NEW: edit the questions inside this test
+      const ed = document.createElement('button'); ed.textContent = 'Edit questions'; ed.className = 'btn btn-secondary'; ed.style.cssText = 'font-size:12px;margin-top:6px;';
+      const edBox = document.createElement('div'); edBox.style.cssText = 'display:none;margin-top:6px;';
+      ed.onclick = () => { edBox.style.display = edBox.style.display === 'none' ? 'block' : 'none'; if (edBox.style.display === 'block') drawEd(); };
+      const qText = id => { let r = null; DATA.subjects.forEach(sj => sj.subtopics.forEach(tp => Object.values(tp.levels || {}).forEach(a => (a || []).forEach(q => { if (q.id === id) r = { q, tp }; })))); return r; };
+      function drawEd(){
+        edBox.innerHTML = '';
+        const dur = document.createElement('div'); dur.style.cssText = 'margin-bottom:6px;font-size:12px;';
+        dur.innerHTML = 'Suggested minutes: ';
+        const di = document.createElement('input'); di.type = 'number'; di.min = 1; di.value = t.durationMin || ''; di.style.cssText = 'width:70px;padding:5px;border:1px solid #d6dbe8;border-radius:6px;';
+        di.onchange = () => { t.durationMin = Number(di.value) || 0; touch(); msg('Duration saved. Publish to GitHub to make it live.'); };
+        dur.appendChild(di); edBox.appendChild(dur);
+        (t.questionIds || []).forEach((id, k) => {
+          const f = qText(id);
+          const line = document.createElement('div'); line.style.cssText = 'display:flex;gap:6px;align-items:flex-start;padding:4px 0;border-bottom:1px dashed #e4e9f5;font-size:12px;';
+          const tx2 = document.createElement('div'); tx2.style.flex = '1';
+          tx2.textContent = (k + 1) + '. ' + (f ? '[' + f.tp.name + '] ' + (f.q.question || '').slice(0, 90) : id + ' (question not found)');
+          if (!f) tx2.style.color = '#c0392b';
+          const x = document.createElement('button'); x.textContent = '\u2715'; x.className = 'btn btn-secondary'; x.style.cssText = 'padding:2px 8px;color:var(--wrong);';
+          x.onclick = () => { t.questionIds.splice(k, 1); touch(); drawEd(); info.textContent = t.questionIds.length + ' questions'; msg('Removed from this test only (the question stays in its chapter). Publish to GitHub.'); };
+          line.append(tx2, x); edBox.appendChild(line);
+        });
+        const add = document.createElement('div'); add.style.cssText = 'margin-top:8px;display:grid;gap:6px;';
+        const sTp = document.createElement('select'), sQ = document.createElement('select');
+        [sTp, sQ].forEach(s => s.style.cssText = 'padding:7px;border:1px solid #d6dbe8;border-radius:8px;font-size:12px;width:100%;');
+        const topics = []; DATA.subjects.forEach(sj => sj.subtopics.forEach(tp => topics.push({ sj, tp })));
+        sTp.innerHTML = topics.map((o, n) => '<option value="' + n + '">' + (o.sj.name + ' - ' + o.tp.name).replace(/</g, '&lt;') + '</option>').join('');
+        const fill = () => { const o = topics[sTp.value]; const opts = []; ['1', '2'].forEach(l => ((o && o.tp.levels && o.tp.levels[l]) || []).forEach((q, n) => { if (q.type !== 'conventional' && !(t.questionIds || []).includes(q.id)) opts.push('<option value="' + q.id + '">L' + l + ' Q' + (n + 1) + ': ' + (q.question || '').slice(0, 70).replace(/</g, '&lt;') + '</option>'); })); sQ.innerHTML = opts.join('') || '<option value="">(none left)</option>'; };
+        sTp.onchange = fill; fill();
+        const ab = document.createElement('button'); ab.textContent = '+ Add this question to the test'; ab.className = 'btn btn-primary';
+        ab.onclick = () => { if (!sQ.value) return; (t.questionIds = t.questionIds || []).push(sQ.value); touch(); drawEd(); info.textContent = t.questionIds.length + ' questions'; msg('Question added. Publish to GitHub to make it live.'); };
+        add.append(sTp, sQ, ab); edBox.appendChild(add);
+      }
+      row.append(title, info, ctl, ed, edBox); box.appendChild(row);
+    });
+  }
+  $('mixedImportBtn').addEventListener('click', async () => {
+    try {
+      const r = await fetch('data/mixed_test_1_seed.json', { cache: 'no-store' });
+      if (!r.ok) throw new Error('seed file missing - upload data/mixed_test_1_seed.json to GitHub first');
+      const seed = await r.json();
+      const ids = allIds(); let added = 0, skipped = 0;
+      Object.keys(seed.topics).forEach(tid => {
+        let topic = null;
+        DATA.subjects.forEach(sj => sj.subtopics.forEach(t => { if (t.id === tid) topic = t; }));
+        if (!topic) { skipped += seed.topics[tid].length; return; }
+        if (!topic.levels) topic.levels = {};
+        if (!topic.levels['2']) topic.levels['2'] = [];
+        seed.topics[tid].forEach(q => { if (ids.has(q.id)) return; topic.levels['2'].push(q); ids.add(q.id); added++; });
+      });
+      if (!DATA.mixedTests) DATA.mixedTests = [];
+      const mt = seed.mixedTest, ex = DATA.mixedTests.find(t => t.id === mt.id);
+      if (!ex) { mt.visible = false; DATA.mixedTests.push(mt); }
+      touch(); populateSubtopics(); draw();
+      msg('Imported ' + added + ' new question(s)' + (skipped ? ' (' + skipped + ' skipped: topic not found)' : '') + (ex ? '; test card already existed.' : ' and created the test (it is OFF - switch it ON when ready).') + ' Now tap Publish to GitHub.', skipped ? 'error' : 'ok');
+    } catch (err) { msg('Import failed: ' + err.message, 'error'); }
+  });
+})();
+
 // ---------- Source buttons ----------
 // If the Level is changed after questions were already split (e.g. switching
 // to Conventional), re-render the existing cards so they immediately reflect
@@ -3477,3 +3566,48 @@ function buildConceptsTextBox(subtopic){
   render();
   return box;
 }
+
+
+// ---------- V104 NEW: Full Subject Tests (Teacher) ----------
+(function(){
+  const $ = id => document.getElementById(id);
+  const st = $('fullStatus');
+  $('fullToggle').addEventListener('click', () => { $('fullBody').classList.toggle('open'); draw(); });
+  const msg = (t, k) => { st.textContent = t; st.className = 'status-line ' + (k || 'ok'); };
+  const touch = () => { pendingTopicChanges = true; updateExportBarVisibility(); };
+  function cfgFor(sub){
+    if (!DATA.fullTests) DATA.fullTests = [];
+    let c = DATA.fullTests.find(x => x.subjectId === sub.id);
+    if (!c) { c = { subjectId: sub.id, title: 'Full Subject Test - ' + sub.name, count: 30, durationMin: 60, levels: { '1': true, '2': true }, visible: false }; DATA.fullTests.push(c); }
+    if (!c.levels) c.levels = { '1': true, '2': true };
+    return c;
+  }
+  function draw(){
+    const box = $('fullList'); box.innerHTML = '';
+    DATA.subjects.forEach(sub => {
+      const c = (DATA.fullTests || []).find(x => x.subjectId === sub.id) || { title: 'Full Subject Test - ' + sub.name, count: 30, durationMin: 60, levels: { '1': true, '2': true }, visible: false };
+      let avail = 0; sub.subtopics.forEach(tp => ['1', '2'].forEach(l => { if (c.levels[l]) avail += ((tp.levels || {})[l] || []).filter(q => q.type !== 'conventional').length; }));
+      const row = document.createElement('div'); row.style.cssText = 'padding:8px 4px;border-bottom:1px solid #e4e9f5;font-size:12px;';
+      const mk = (label, el) => { const w = document.createElement('label'); w.style.cssText = 'display:inline-flex;align-items:center;gap:4px;margin:3px 10px 3px 0;'; w.append(label + ' ', el); return w; };
+      const title = document.createElement('input'); title.type = 'text'; title.value = c.title; title.style.cssText = 'width:100%;padding:8px;border:1px solid #d6dbe8;border-radius:8px;font-size:13px;font-weight:700;';
+      title.onchange = () => { const k = cfgFor(sub); k.title = title.value.trim() || k.title; touch(); msg('Saved. Publish to GitHub to make it live.'); };
+      const num = (v, fn) => { const i = document.createElement('input'); i.type = 'number'; i.min = 1; i.value = v; i.style.cssText = 'width:64px;padding:5px;border:1px solid #d6dbe8;border-radius:6px;'; i.onchange = () => { fn(Number(i.value) || 1); touch(); draw(); msg('Saved. Publish to GitHub to make it live.'); }; return i; };
+      const chk = (v, fn) => { const i = document.createElement('input'); i.type = 'checkbox'; i.checked = v; i.onchange = () => { fn(i.checked); touch(); draw(); msg('Saved. Publish to GitHub to make it live.'); }; return i; };
+      const on = document.createElement('div'); on.style.cssText = 'font-weight:700;margin:4px 0;color:' + (c.visible === true ? '#1b8a3a' : '#c0392b');
+      on.textContent = c.visible === true ? 'ON - visible to students' : 'OFF - hidden from students';
+      const info = document.createElement('div'); info.className = 'hint'; info.textContent = avail + ' questions available · students get ' + Math.min(c.count, avail) + ' (balanced across topics, new mix each attempt)';
+      const ctl = document.createElement('div');
+      ctl.append(
+        mk('ON', chk(c.visible === true, v => { cfgFor(sub).visible = v; })),
+        mk('Questions', num(c.count, v => { cfgFor(sub).count = v; })),
+        mk('Minutes', num(c.durationMin, v => { cfgFor(sub).durationMin = v; })),
+        mk('Level 1', chk(!!c.levels['1'], v => { cfgFor(sub).levels['1'] = v; })),
+        mk('Level 2', chk(!!c.levels['2'], v => { cfgFor(sub).levels['2'] = v; }))
+      );
+      const rs = document.createElement('button'); rs.textContent = 'Reset to automatic defaults'; rs.className = 'btn btn-secondary'; rs.style.cssText = 'font-size:12px;margin-top:4px;';
+      rs.onclick = () => { DATA.fullTests = (DATA.fullTests || []).filter(x => x.subjectId !== sub.id); touch(); draw(); msg('Reset. Publish to GitHub to make it live.'); };
+      const head = document.createElement('div'); head.style.cssText = 'font-weight:700;color:#2E6FE0;margin-bottom:3px;'; head.textContent = sub.name;
+      row.append(head, title, on, info, ctl, rs); box.appendChild(row);
+    });
+  }
+})();

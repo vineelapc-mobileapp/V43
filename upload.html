@@ -285,6 +285,33 @@ textarea.raw-text{
     <div id="orderStatus" class="status-line"></div>
   </div>
 
+  <!-- V104 NEW: Full Subject Tests -->
+  <button id="fullToggle" class="settings-toggle" style="margin-bottom:12px;">&#127919; Full Subject Tests</button>
+  <div id="fullBody" class="settings-body">
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Full Subject Test (automatic)</h3>
+      <div class="hint">The app builds this test by itself from each subject's questions, balanced across topics, a fresh mix every attempt. Every subject starts OFF; switch it ON to show it to students. Change the name, number of questions, minutes, levels, or switch it OFF. Reset returns to defaults. Then tap Publish to GitHub.</div>
+      <div id="fullList" style="margin-top:8px;"></div>
+      <div id="fullStatus" class="status-line"></div>
+    </div>
+  </div>
+
+  <!-- V102 NEW: Mixed Topics Tests (student Tests tab) -->
+  <button id="mixedToggle" class="settings-toggle" style="margin-bottom:12px;">&#128221; Mixed Topics Tests</button>
+  <div id="mixedBody" class="settings-body">
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Tests shown to students (Tests tab)</h3>
+      <div class="hint">One card per test appears at the top of the student Tests tab. Every test starts OFF. Students see it only after you switch it ON and publish. Removing a test only removes the card; its questions stay in their chapters.</div>
+      <div id="mixedList" style="margin-top:8px;"></div>
+    </div>
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Import ready-made test</h3>
+      <div class="hint">Adds the 20 questions (5 each to Line Parameters, Performance, Power Flow, Voltage / Reactive Power Control &mdash; Level 2) and creates the test. Safe to tap twice: nothing is duplicated. Then tap Publish to GitHub.</div>
+      <button id="mixedImportBtn" class="btn btn-primary full-width" style="margin-top:8px;">&#11015; Import "Mixed Topics Test 1" (20 Qs)</button>
+    </div>
+    <div id="mixedStatus" class="status-line"></div>
+  </div>
+
   <div class="source-grid">
     <div class="source-btn" id="cameraBtn">
       <span class="icon">&#128247;</span>

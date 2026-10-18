@@ -1,5 +1,8 @@
 // ---------- State ----------
 let DATA = null;
+const QMAP = {}; // V102 NEW
+const QTOPIC = {}; // V103 NEW: question id -> topic name
+let testsMode = 'topic'; // V104 NEW: Tests tab selector: 'topic' | 'mixed' | 'full'
 let CONFIG = { teacherWhatsapp: '', teacherEmail: '' };
 let state = {
   view: 'subjects',
@@ -62,7 +65,12 @@ function applyLaunchTabParam(){
   const subtopicId = params.get('subtopic');
 
   if (tab) {
-    if (tab === 'profile-direct') { state.profileReturnView = 'subjects'; state.view = 'profile'; }
+    if (tab === 'mixed') {   // V103 NEW: from the Page-1 card -> Tests list (or straight into the only mixed test)
+      state.activeTab = 'tests'; state.conceptsMode = false; state.view = 'subjects';
+      const vis = (DATA.mixedTests || []).filter(t => t.visible === true && mixedTestQuestions(t).length);
+      if (vis.length === 1) { try { startMixedTest(vis[0]); } catch (e) { console.error(e); } }
+    }
+    else if (tab === 'profile-direct') { state.profileReturnView = 'subjects'; state.view = 'profile'; }
     else if (tab === 'subjects') { state.activeTab = 'subjects'; state.conceptsMode = false; state.view = 'subjects'; }
     else if (tab === 'tests') { state.activeTab = 'tests'; state.conceptsMode = false; state.view = 'subjects'; }
     else if (tab === 'concepts') { state.activeTab = 'concepts'; state.conceptsMode = true; state.conceptsView = 'all'; state.conceptsQuery = ''; state.view = 'subjects'; }
@@ -92,6 +100,8 @@ fetch('data/questions.json')
   .then(r => r.json())
   .then(json => {
     DATA = json;
+    // V102 NEW: id -> question map (built before hidden chapters are removed) for Mixed Topics Tests
+    try { DATA.subjects.forEach(s => (s.subtopics || []).forEach(st => Object.keys(st.levels || {}).forEach(l => (st.levels[l] || []).forEach(q => { QMAP[q.id] = q; QTOPIC[q.id] = st.name; })))); } catch (e) {}
     // V100 NEW: chapters switched OFF by the teacher (visible === false) are not shown to students
     try { DATA.subjects.forEach(s => { s.subtopics = (s.subtopics || []).filter(st => st.visible !== false); }); } catch (e) {}
     // Defensive: if anything here ever throws (a malformed URL, an
@@ -240,6 +250,10 @@ fwdBtn.addEventListener('click', () => {
 // student is currently in - lets them pick a different topic to continue
 // with, without backing out of the current one step by step first.
 topicsBtn.addEventListener('click', () => {
+  if (state.subject && state.subject.id === 'mixed') {   // V102 NEW: Mixed test -> back to the Tests list
+    state.subject = null; state.subtopic = null; state.level = null; state.activeTab = 'tests'; state.view = 'subjects'; render();
+    return;
+  }
   if (state.subject) {
     state.view = 'subtopics';
     render();
@@ -680,8 +694,111 @@ function renderSubjectCards(parent){
 
 // ---------- Tests tab: every topic on one page, grouped by subject ----------
 // Tap a topic to go straight to its Levels - no need to pick a subject first.
+// V102 NEW: Mixed Topics Test - questions from several topics in one timed-style test
+function mixedTestQuestions(t){
+  return (t.questionIds || []).map(id => QMAP[id]).filter(Boolean);
+}
+function startMixedTest(t){
+  const qs = mixedTestQuestions(t);
+  if (!qs.length) { showToast('This test has no questions yet'); return; }
+  state.subject = { id: 'mixed', name: 'Mixed Topics Test', subtopics: [] };
+  state.subtopic = { id: t.id, name: t.title, levels: {} };
+  startQuiz('Mixed', qs);
+}
+// V104 NEW: Full Subject Test - built automatically from the subject's own questions
+function fullCfg(sub){
+  const c = (DATA.fullTests || []).find(x => x.subjectId === sub.id) || {};
+  return {
+    title: c.title || ('Full Subject Test - ' + sub.name),
+    count: Math.max(1, Number(c.count) || 30),
+    durationMin: Number(c.durationMin) || 60,
+    levels: c.levels || { '1': true, '2': true },
+    visible: c.visible === true
+  };
+}
+function fullPoolByChapter(sub, cfg){
+  return sub.subtopics.map(st => {
+    let qs = [];
+    ['1', '2'].forEach(l => { if (cfg.levels[l]) qs = qs.concat((st.levels[l] || []).filter(q => q.type !== 'conventional')); });
+    return qs;
+  }).filter(a => a.length);
+}
+function shuffleArr(a){
+  a = a.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function buildFullTest(sub, cfg){
+  const pools = shuffleArr(fullPoolByChapter(sub, cfg)).map(shuffleArr);
+  const out = [];
+  let i = 0;
+  while (out.length < cfg.count && pools.some(p => p.length)) {   // balanced: one from each chapter in turn
+    const p = pools[i % pools.length]; i++;
+    if (p.length) out.push(p.shift());
+  }
+  return shuffleArr(out);
+}
+function startFullTest(sub){
+  const cfg = fullCfg(sub);
+  const qs = buildFullTest(sub, cfg);
+  if (!qs.length) { showToast('No questions available for this test yet'); return; }
+  state.subject = { id: 'mixed', name: 'Full Subject Test', subtopics: [] };
+  state.subtopic = { id: 'full_' + sub.id, name: cfg.title, levels: {} };
+  startQuiz('Mixed', qs);
+}
+function renderTestsModeBar(){
+  const bar = document.createElement('div');
+  bar.style.cssText = 'display:flex;gap:6px;background:#E9EDF7;border-radius:14px;padding:5px;margin:2px 0 14px;';
+  [['topic', 'Topic-wise'], ['mixed', 'Mixed Topics'], ['full', 'Full Subject']].forEach(([key, label]) => {
+    const b = document.createElement('button');
+    b.textContent = label;
+    const on = testsMode === key;
+    b.style.cssText = 'flex:1;border:0;border-radius:10px;padding:10px 4px;font-size:13px;font-weight:700;cursor:pointer;' + (on ? 'background:#fff;color:#E8710A;box-shadow:0 2px 6px rgba(22,39,74,.18);' : 'background:transparent;color:#4C5C8C;');
+    b.onclick = () => { testsMode = key; render(); };
+    bar.appendChild(b);
+  });
+  app.appendChild(bar);
+}
+function emptyNote(text){
+  const e = document.createElement('div');
+  e.className = 'question-card';
+  e.innerHTML = '<div class="question-text">' + text + '</div>';
+  app.appendChild(e);
+}
+function renderMixedTestsSection(){
+  const list = (DATA.mixedTests || []).filter(t => t.visible === true && mixedTestQuestions(t).length);
+  if (!list.length) { emptyNote('No mixed topic tests yet. Check back soon.'); return; }
+  list.forEach(t => {
+    const n = mixedTestQuestions(t).length;
+    const card = document.createElement('div');
+    card.className = 'list-card';
+    card.style.cssText = 'border:2px solid #E8710A;background:linear-gradient(135deg,#FFF4E5,#FFFFFF);';
+    const topicNames = [...new Set(mixedTestQuestions(t).map(q => QTOPIC[q.id]).filter(Boolean))];
+    card.innerHTML = `<div class="list-card-main">${iconBadge('stack', '#FCEEDD', '#B9661C')}<div><div>${t.title} <span style="font-size:10px;background:#E8710A;color:#fff;border-radius:6px;padding:2px 6px;vertical-align:middle;">MIXED</span></div><div class="meta">${n} questions from ${topicNames.length} topics${t.durationMin ? ' &nbsp;|&nbsp; suggested ' + t.durationMin + ' min' : ''}</div><div class="meta" style="font-size:11px;">${topicNames.join(' &middot; ')}</div></div></div><div>&#8250;</div>`;
+    card.onclick = () => startMixedTest(t);
+    app.appendChild(card);
+  });
+}
+function renderFullTestsSection(){
+  const items = DATA.subjects.filter(s => s.visible !== false && s.subtopics.length).map(s => ({ s, cfg: fullCfg(s) }))
+    .filter(x => x.cfg.visible).map(x => ({ ...x, avail: fullPoolByChapter(x.s, x.cfg).reduce((n, p) => n + p.length, 0), chapters: fullPoolByChapter(x.s, x.cfg).length }))
+    .filter(x => x.avail > 0);
+  if (!items.length) { emptyNote('No full subject tests yet. Check back soon.'); return; }
+  items.forEach(({ s, cfg, avail, chapters }) => {
+    const n = Math.min(cfg.count, avail);
+    const card = document.createElement('div');
+    card.className = 'list-card';
+    card.style.cssText = 'border:2px solid #2E6FE0;background:linear-gradient(135deg,#EAF1FB,#FFFFFF);';
+    card.innerHTML = `<div class="list-card-main">${subjectIconFor(s)}<div><div>${cfg.title} <span style="font-size:10px;background:#2E6FE0;color:#fff;border-radius:6px;padding:2px 6px;vertical-align:middle;">FULL</span></div><div class="meta">${n} questions from ${chapters} topics &nbsp;|&nbsp; suggested ${cfg.durationMin} min</div><div class="meta" style="font-size:11px;">A fresh mix every attempt</div></div></div><div>&#8250;</div>`;
+    card.onclick = () => startFullTest(s);
+    app.appendChild(card);
+  });
+}
 function renderTestsTopics(){
-  headerTitle.textContent = 'Choose Topic';
+  headerTitle.textContent = 'Tests';
+  renderTestsModeBar();
+  if (testsMode === 'mixed') { renderMixedTestsSection(); return; }
+  if (testsMode === 'full') { renderFullTestsSection(); return; }
   const subjects = DATA.subjects.filter(sub => sub.visible !== false && sub.subtopics.length);
   if (!subjects.length) {
     const empty = document.createElement('div');
@@ -1167,7 +1284,7 @@ if (stopwatchDisplay) {
 // ---------- Quiz (exam-hall view) ----------
 function renderQuiz(){
   const q = state.questions[state.qIndex];
-  headerTitle.textContent = `${state.subtopic.name} - L${state.level}`;
+  headerTitle.textContent = state.level === 'Mixed' ? state.subtopic.name : `${state.subtopic.name} - L${state.level}`;
   examProgressText.textContent = `Question ${state.qIndex + 1} of ${state.questions.length}`;
   resetSaveBtn();
 
@@ -1674,12 +1791,12 @@ function renderDoubtComposer(){
   if (q) {
     contextBox.innerHTML = `
       <strong>Question:</strong> ${q.question}<br>
-      <span style="color:var(--muted);">${state.subject.name} &middot; ${state.subtopic.name} &middot; Level ${state.level}</span>
+      <span style="color:var(--muted);">${state.subject.name} &middot; ${state.subtopic.name}${state.level === 'Mixed' ? '' : ' &middot; Level ' + state.level}</span>
     `;
   } else if (state.subject && state.subtopic) {
     contextBox.innerHTML = `
       <strong>Topic:</strong> ${state.subtopic.name}<br>
-      <span style="color:var(--muted);">${state.subject.name}${state.level ? ' &middot; Level ' + state.level : ''}</span>
+      <span style="color:var(--muted);">${state.subject.name}${state.level ? (state.level === 'Mixed' ? '' : ' &middot; Level ' + state.level) : ''}</span>
     `;
   } else {
     contextBox.innerHTML = `<span style="color:var(--muted);">General doubt - not tied to a specific topic. Please mention the subject/topic in your message.</span>`;
@@ -1773,7 +1890,7 @@ function renderDoubtComposer(){
       ? `From: ${studentProfile.name} (${studentProfile.email}) - ${studentProfile.college}`
       : 'From: (profile not set)';
     let ctx = q
-      ? `Doubt about a question:\n"${q.question}"\n(${state.subject.name} - ${state.subtopic.name} - Level ${state.level})`
+      ? `Doubt about a question:\n"${q.question}"\n(${state.subject.name} - ${state.subtopic.name}${state.level === 'Mixed' ? '' : ' - Level ' + state.level})`
       : (state.subject && state.subtopic
           ? `Doubt about topic: ${state.subtopic.name} (${state.subject.name})`
           : 'General doubt');
@@ -1861,7 +1978,7 @@ function renderHistory(){
       ? `<div class="ans-line" style="color:var(--muted);font-family:var(--mono);">&#9201; Total time ${formatStopwatch(h.elapsedMs)}</div>`
       : '';
     row.innerHTML = `
-      <div class="q">${h.subtopic} - Level ${h.level}</div>
+      <div class="q">${h.level === 'Mixed' ? h.subtopic : h.subtopic + ' - Level ' + h.level}</div>
       <div class="ans-line">${h.subject}</div>
       <div class="ans-line correct-ans">Score: ${h.correct} / ${h.total} (${pct}%)</div>
       <div class="ans-line" style="color:var(--muted);">Completed: ${formatDate(h.dateISO)}</div>
@@ -1940,7 +2057,7 @@ function renderResults(){
     : '';
   const timeLine = `<div style="font-size:15px;font-weight:700;margin-top:6px;font-family:var(--mono);">&#9201; Total time: ${formatStopwatch(state.finalElapsedMs || 0)}</div>`
     + (state.finalTimerPaused ? '<div style="font-size:11px;opacity:0.8;margin-top:2px;">(time while paused is not counted)</div>' : '');
-  summary.innerHTML = `<div class="big">${correct} / ${state.questions.length}</div><div>${state.subtopic.name} - Level ${state.level} &nbsp;(${attempted} attempted)</div>${timeLine}${dateLine}`;
+  summary.innerHTML = `<div class="big">${correct} / ${state.questions.length}</div><div>${state.level === 'Mixed' ? state.subtopic.name : state.subtopic.name + ' - Level ' + state.level} &nbsp;(${attempted} attempted)</div>${timeLine}${dateLine}`;
   app.appendChild(summary);
 
   state.questions.forEach((q, i) => {
@@ -1968,7 +2085,12 @@ function renderResults(){
 
   const retryBtn = document.createElement('button');
   retryBtn.className = 'btn btn-primary full-width';
-  retryBtn.textContent = 'Back to Levels';
-  retryBtn.onclick = () => { state.view = 'levels'; render(); };
+  if (state.level === 'Mixed') {   // V102 NEW: back to the Tests list
+    retryBtn.textContent = 'Back to Tests';
+    retryBtn.onclick = () => { state.subject = null; state.subtopic = null; state.level = null; state.activeTab = 'tests'; state.view = 'subjects'; render(); };
+  } else {
+    retryBtn.textContent = 'Back to Levels';
+    retryBtn.onclick = () => { state.view = 'levels'; render(); };
+  }
   app.appendChild(retryBtn);
 }
