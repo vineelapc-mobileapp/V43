@@ -763,6 +763,26 @@
                 "audioFile": null,
                 "explanation": "options 1,2,3 are correct ",
                 "explanationImage": null
+              },
+              {
+                "id": "transmission_line_parameters_l1_new1792416400577_0",
+                "type": "mcq",
+                "question": "A lossless transmission line of length 300 km operates at 50 Hz. If the velocity of signal propagation is equal to the velocity of light, the value of A = D of the line is nearly:",
+                "questionImage": null,
+                "options": [
+                  "0.309",
+                  "0.988",
+                  "0.951",
+                  "1.000"
+                ],
+                "correctIndex": 2,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Each wrong option has a reason in the explanation:\n(a) is sin 18°, which belongs to the B and C constants.\n(b) is cos 9°, from taking the angle as half the correct value.\n(d) treats the angle as 0.314° instead of 0.314 rad.",
+                "explanationImage": null
               }
             ],
             "2": [
