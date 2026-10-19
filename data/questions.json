@@ -4835,6 +4835,26 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1792295208/pjs2usvzwmkfzepv0r4m.jpg"
+              },
+              {
+                "id": "protection_basics_l1_new1792382724065_0",
+                "type": "mcq",
+                "question": "The normal range of TMS of practical relay",
+                "questionImage": null,
+                "options": [
+                  "0 to 10",
+                  "0.001 to 10",
+                  "0.01 to 1",
+                  "0.01 to 2.5"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Practical IED relays have higher sensitivity so the range of TMS is 0.01 to 1 , in steps of 0.01 \nIn Electro mechanical relays it is 0.1 to 1 in steps of 0.1 ",
+                "explanationImage": null
               }
             ],
             "2": [
