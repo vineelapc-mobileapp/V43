@@ -610,26 +610,6 @@
                 "explanationImage": null
               },
               {
-                "id": "transmission_line_parameters_l1_new1790531312933_0",
-                "type": "mcq",
-                "question": "Condition for Distortion Less Line",
-                "questionImage": null,
-                "options": [
-                  "L/R = CG",
-                  "L/R = C/G",
-                  "LR = CG",
-                  "L/C = G/R"
-                ],
-                "correctIndex": 1,
-                "correctAnswer": "",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "L/R = C/G for Distortion less line to make it independent of frequency\n\nWhy the other options?\n(a) ✘ L/R = CG: Not the Heaviside condition.\n(b) ✔ L/R = C/G: correct answer.\n(c) ✘ LR = CG: Not the Heaviside condition.\n(d) ✘ L/C = G/R: Equivalent to option (c); not the condition.",
-                "explanationImage": null
-              },
-              {
                 "id": "transmission_line_parameters_l1_mu1",
                 "type": "mcq",
                 "question": "A stranded conductor is made of three identical strands, each of radius r, touching one another (centres at the corners of an equilateral triangle of side 2r). Taking the GMR of each strand as 0.7788 r, the GMR of the whole conductor is approximately:",
@@ -781,7 +761,7 @@
                 "videoFile": null,
                 "videoReady": false,
                 "audioFile": null,
-                "explanation": "Each wrong option has a reason in the explanation:\n(a) is sin 18°, which belongs to the B and C constants.\n(b) is cos 9°, from taking the angle as half the correct value.\n(d) treats the angle as 0.314° instead of 0.314 rad.",
+                "explanation": "Solution:\n for a lossless line, A = D = cos(βl).\nβ = ω/v = 2π × 50 / (3 × 10⁸) = 1.0472 × 10⁻⁶ rad/m\nβl = 1.0472 × 10⁻⁶ × 300 × 10³ = 0.314 rad = 18°\nA = D = cos 18° = 0.951\n\n\n(a) is sin 18°, which belongs to the B and C constants.\n(b) is cos 9°, from taking the angle as half the correct value.\n(d) treats the angle as 0.314° instead of 0.314 rad.",
                 "explanationImage": null
               }
             ],
