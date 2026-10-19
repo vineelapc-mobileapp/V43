@@ -8964,7 +8964,7 @@
       "visible": false
     }
   ],
-  "studentAccessEnabled": false,
+  "studentAccessEnabled": true,
   "mixedTests": [
     {
       "id": "mixed_test_1",
