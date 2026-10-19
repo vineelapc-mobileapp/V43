@@ -5064,56 +5064,6 @@
                 "explanationImage": null
               },
               {
-                "id": "protective_relays_l1_new1791627257285_0",
-                "type": "fill",
-                "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791627217/fzwz3ba1cnjtcxeossz0.png",
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "0.227 sec",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791627253/do8kue2gyh4buwdok1nx.png"
-              },
-              {
-                "id": "protective_relays_l1_new1791632323100_0",
-                "type": "mcq",
-                "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791632170/o1cwhmvcmlxreyu9yrmq.png",
-                "options": [
-                  "P",
-                  "Q",
-                  "R",
-                  "S"
-                ],
-                "correctIndex": 1,
-                "correctAnswer": "",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "I1 lags V1 ith large magnitude , so fault at Q",
-                "explanationImage": null
-              },
-              {
-                "id": "protective_relays_l1_new1791632590855_0",
-                "type": "fill",
-                "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791632355/ur4pmybxg8vwg9bsqb9a.png",
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "Answer is B",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "Vf1 leads If1 and Vf2 leads IF2",
-                "explanationImage": null
-              },
-              {
                 "id": "protective_relays_l1_new1791632828543_0",
                 "type": "mcq",
                 "question": "For a Ring main Protrction with one source with n Substations , how many lines , OC and DOC relays are required for Protection ?",
@@ -5249,6 +5199,41 @@
                 "audioFile": null,
                 "explanation": "",
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791626981/xnjwpuoybszvri8nbywp.png"
+              },
+              {
+                "id": "protective_relays_l1_new1791627257285_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791627217/fzwz3ba1cnjtcxeossz0.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "0.227 sec",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791627253/do8kue2gyh4buwdok1nx.png"
+              },
+              {
+                "id": "protective_relays_l1_new1791632323100_0",
+                "type": "mcq",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791632170/o1cwhmvcmlxreyu9yrmq.png",
+                "options": [
+                  "P",
+                  "Q",
+                  "R",
+                  "S"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "I1 lags V1 ith large magnitude , so fault at Q",
+                "explanationImage": null
               },
               {
                 "id": "protective_relays_l2_new1791627372971_0",
@@ -5404,6 +5389,21 @@
                 "audioFile": null,
                 "explanation": "The grading margin = breaker time + overshoot time + safety margin = 0.2 + 0.1 + 0.1 = 0.4 s. The upstream relay time = 0.4 + 0.4 = 0.8 s.\n\nWhy the other options?\n(a) ✘ 0.6 s: Right if the grading margin were 0.2 s.\n(b) ✘ 0.5 s: Right if the grading margin were 0.1 s.\n(c) ✔ 0.8 s: correct answer.\n(d) ✘ 1.0 s: Right if the grading margin were 0.6 s.",
                 "explanationImage": null
+              },
+              {
+                "id": "protective_relays_l1_new1791632590855_0",
+                "type": "fill",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791632355/ur4pmybxg8vwg9bsqb9a.png",
+                "options": [],
+                "correctIndex": null,
+                "correctAnswer": "Answer is B",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Vf1 leads If1 and Vf2 leads IF2",
+                "explanationImage": null
               }
             ],
             "conventional": [
@@ -5438,7 +5438,7 @@
                 "explanationImage": null
               },
               {
-                "id": "protective_relays_lconventional_new1791638608500_0",
+                "id": "protective_relays_lconventional_new1791638866812_0",
                 "type": "conventional",
                 "question": "",
                 "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791638583/gystrgfy8uea4xcuvg6k.png",
@@ -5453,7 +5453,7 @@
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791638604/vvflmoymuhaafxvnpgb0.png"
               },
               {
-                "id": "protective_relays_lconventional_new1791638866812_0",
+                "id": "protective_relays_lconventional_new1791638608500_0",
                 "type": "conventional",
                 "question": "",
                 "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1791638583/gystrgfy8uea4xcuvg6k.png",
@@ -8944,7 +8944,7 @@
       "visible": false
     }
   ],
-  "studentAccessEnabled": true,
+  "studentAccessEnabled": false,
   "mixedTests": [
     {
       "id": "mixed_test_1",
