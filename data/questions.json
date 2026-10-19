@@ -1076,26 +1076,6 @@
                 "explanationImage": null
               },
               {
-                "id": "transmission_line_performance_l1_new1789901703157_0",
-                "type": "mcq",
-                "question": "A transmission line has impedance of 700 ohms with receiving end shorted and 300 ohms with receiving end opened .then it's characteristic Impedance is",
-                "questionImage": null,
-                "options": [
-                  "210",
-                  "700",
-                  "458",
-                  "1000"
-                ],
-                "correctIndex": 2,
-                "correctAnswer": "",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "Zc= √(ZssX Zso)\n = √(700*300) = 458.2 ohms\n\nWhy the other options?\n(a) ✘ 210: Is 300 × 700/1000, not a mean of the two.\n(b) ✘ 700: Is the short-circuit impedance alone.\n(c) ✔ 458: correct answer.\n(d) ✘ 1000: Is the sum of the two impedances.",
-                "explanationImage": null
-              },
-              {
                 "id": "transmission_line_performance_l1_new1789901740076_0",
                 "type": "mcq",
                 "question": "A transmission line has impedance of 700 ohms with receiving end shorted and 300 ohms with receiving end opened .then it's characteristic Impedance is",
@@ -1138,7 +1118,7 @@
               {
                 "id": "transmission_line_performance_l1_new1789992932917_0",
                 "type": "mcq",
-                "question": "Q.28 Inwhich one of the following models of transmission lines, is the full charging current assumed to flow over half the length of the line only?[IAS-1998]",
+                "question": "Q.28 In which one of the following models of transmission lines, is the full charging current assumed to flow over half the length of the line only?[IAS-1998]",
                 "questionImage": null,
                 "options": [
                   "Equivalent-Pie",
