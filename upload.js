@@ -333,6 +333,11 @@ function renderVerifyTab(){
   killCheckbox.checked = DATA.studentAccessEnabled === false;
   killCheckbox.style.cssText = 'width:20px;height:20px;cursor:pointer;';
   killCheckbox.onchange = () => {
+    // V109 NEW: ask before blocking every student
+    if (killCheckbox.checked && !window.confirm('Students will NOT be able to access the app.\n\nAre you sure you want to proceed?')) {
+      killCheckbox.checked = false;
+      return;
+    }
     DATA.studentAccessEnabled = killCheckbox.checked ? false : true;
     pendingTopicChanges = true;
     updateExportBarVisibility();
