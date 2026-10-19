@@ -3651,3 +3651,11 @@ function buildConceptsTextBox(subtopic){
     });
   }
 })();
+
+
+// ---------- V110 NEW: drop-down that holds Manage Subjects / Manage Topics / Change Order / Full Subject Tests / Mixed Topics Tests ----------
+(function(){
+  const t = document.getElementById('manageGroupToggle'), b = document.getElementById('manageGroupBody'), c = document.getElementById('manageGroupChev');
+  if (!t || !b) return;
+  t.addEventListener('click', () => { const o = b.classList.toggle('open'); if (c) c.innerHTML = o ? '&#9652;' : '&#9662;'; });
+})();
