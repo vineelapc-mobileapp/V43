@@ -1747,8 +1747,26 @@ function jumpTo(index){
 }
 
 // ---------- Palette ----------
+function isMarkedStatus(st){ return st === 'marked' || st === 'answered-marked'; }
+// V120 NEW: Mark for Review inside the palette (legend, counts, toggle for the current question)
 function openPalette(){
   paletteGrid.innerHTML = '';
+  const legend = document.querySelector('.palette-legend');
+  if (legend && !legend.querySelector('.dot-marked')) {
+    legend.insertAdjacentHTML('beforeend',
+      '<span><i class="dot dot-marked"></i>Marked for Review</span>' +
+      '<span><i class="dot" style="background:linear-gradient(135deg,var(--correct) 50%,var(--marked) 50%);"></i>Answered &amp; Marked</span>');
+  }
+  const cur = state.questions[state.qIndex];
+  let markBar = document.getElementById('paletteMarkBar');
+  if (!markBar) {
+    markBar = document.createElement('div');
+    markBar.id = 'paletteMarkBar';
+    markBar.style.cssText = 'margin:0 0 12px 0;';
+    paletteGrid.parentNode.insertBefore(markBar, paletteGrid);
+  }
+  markBar.innerHTML = '';
+  let counts = { answered: 0, notAnswered: 0, notVisited: 0, marked: 0 };
   state.questions.forEach((q, i) => {
     const btn = document.createElement('button');
     const st = state.status[q.id] || 'not-visited';
@@ -1756,21 +1774,46 @@ function openPalette(){
     btn.textContent = i + 1;
     btn.onclick = () => jumpTo(i);
     paletteGrid.appendChild(btn);
+    if (st === 'answered' || st === 'answered-marked') counts.answered++;
+    else if (st === 'not-visited') counts.notVisited++;
+    else counts.notAnswered++;
+    if (isMarkedStatus(st)) counts.marked++;
   });
+  const info = document.createElement('div');
+  info.style.cssText = 'font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:600;';
+  info.textContent = 'Answered ' + counts.answered + '  |  Not answered ' + counts.notAnswered + '  |  Not visited ' + counts.notVisited + '  |  Marked for review ' + counts.marked;
+  markBar.appendChild(info);
+  if (cur && !state.testFinished) {
+    const marked = isMarkedStatus(state.status[cur.id]);
+    const mb = document.createElement('button');
+    mb.type = 'button';
+    mb.className = 'btn btn-secondary full-width';
+    mb.style.cssText = 'font-size:13px;';
+    mb.textContent = marked ? '\u2691 Unmark Q' + (state.qIndex + 1) + ' (remove Marked for Review)' : '\u2690 Mark Q' + (state.qIndex + 1) + ' for Review';
+    mb.onclick = () => {
+      const answered = !!state.answers[cur.id];
+      const nowMarked = isMarkedStatus(state.status[cur.id]);
+      state.status[cur.id] = nowMarked ? (answered ? 'answered' : 'not-answered') : (answered ? 'answered-marked' : 'marked');
+      openPalette();
+    };
+    markBar.appendChild(mb);
+  }
   paletteOverlay.classList.remove('hidden');
 }
 
 // ---------- Submit ----------
 function openSubmitConfirm(){
-  let answered = 0, notAnswered = 0;
+  let answered = 0, notAnswered = 0, markedCount = 0;
   state.questions.forEach(q => {
     const st = state.status[q.id];
     if (st === 'answered' || st === 'answered-marked') answered++;
     else notAnswered++;
+    if (st === 'marked' || st === 'answered-marked') markedCount++;
   });
   submitSummary.innerHTML = `
     <div><span class="num">${answered}</span>Answered</div>
     <div><span class="num">${notAnswered}</span>Not Answered</div>
+    <div><span class="num">${markedCount}</span>Marked for Review</div>
     <div><span class="num">${state.questions.length}</span>Total</div>
   `;
   paletteOverlay.classList.add('hidden');
@@ -2157,3 +2200,26 @@ function renderResults(){
 
 // V115 NEW: Share-app button beside the Profile icon (see share-app.js)
 (function(){ const s = document.createElement('script'); s.src = 'share-app.js'; document.head.appendChild(s); })();
+
+// V119 NEW: "Self-paced" tag replaced by a "Questions" palette button (opens the question palette)
+(function(){
+  const tag = document.querySelector('.self-paced-tag');
+  if (!tag) return;
+  const b = document.createElement('button');
+  b.id = 'examPaletteBtn'; b.type = 'button';
+  b.className = 'self-paced-tag';
+  b.setAttribute('aria-label', 'Question palette');
+  b.style.cssText = 'border:none;cursor:pointer;font-size:13px;padding:6px 12px;border-radius:12px;display:inline-flex;align-items:center;gap:6px;';
+  b.innerHTML = '<span style="font-size:15px;line-height:1;">&#9638;</span> Questions';
+  b.addEventListener('click', openPalette);
+  tag.replaceWith(b);
+})();
+
+// V120 NEW: bottom bar label "Forward" -> "Next"
+(function(){
+  const f = document.getElementById('fwdBtn');
+  if (!f) return;
+  const s = f.querySelector('span');
+  if (s) s.textContent = 'Next';
+  f.setAttribute('aria-label', 'Next');
+})();
