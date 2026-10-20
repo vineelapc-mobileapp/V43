@@ -1,0 +1,190 @@
+{
+ "title": "Concepts & Formulas",
+ "topics": {
+  "power_generation_methods": {
+   "file": "concepts/power_generation_methods.pdf",
+   "sizeMB": 0.39,
+   "visible": true
+  },
+  "economic_factors": {
+   "file": "concepts/economic_factors.pdf",
+   "sizeMB": 0.33,
+   "visible": true
+  },
+  "economic_load_dispatch": {
+   "file": "concepts/economic_load_dispatch.pdf",
+   "sizeMB": 0.35,
+   "visible": true
+  },
+  "load_frequency_control": {
+   "file": "concepts/load_frequency_control.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "transmission_line_parameters": {
+   "file": "concepts/transmission_line_parameters.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "transmission_line_performance": {
+   "file": "concepts/transmission_line_performance.pdf",
+   "sizeMB": 0.35,
+   "visible": true
+  },
+  "power_flow_through_transmission_line": {
+   "file": "concepts/power_flow_through_transmission_line.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "voltage_reactive_power_control": {
+   "file": "concepts/voltage_reactive_power_control.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "surge_impedance_loading_sil": {
+   "file": "concepts/surge_impedance_loading_sil.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "power_factor_control": {
+   "file": "concepts/power_factor_control.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "corona": {
+   "file": "concepts/corona.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "overhead_line_insulators": {
+   "file": "concepts/overhead_line_insulators.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "distribution": {
+   "file": "concepts/distribution.pdf",
+   "sizeMB": 0.35,
+   "visible": true
+  },
+  "power_cables": {
+   "file": "concepts/power_cables.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "load_flow_studies": {
+   "file": "concepts/load_flow_studies.pdf",
+   "sizeMB": 0.35,
+   "visible": true
+  },
+  "per_unit_system": {
+   "file": "concepts/per_unit_system.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "symmetrical_faults": {
+   "file": "concepts/symmetrical_faults.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "symmetrical_components": {
+   "file": "concepts/symmetrical_components.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "unsymmetrical_faults": {
+   "file": "concepts/unsymmetrical_faults.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "zbus_algorithm_and_applications": {
+   "file": "concepts/zbus_algorithm_and_applications.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "stability_basics": {
+   "file": "concepts/stability_basics.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "equal_area_criteria_cases": {
+   "file": "concepts/equal_area_criteria_cases.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "protection_basics": {
+   "file": "concepts/protection_basics.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "protective_relays": {
+   "file": "concepts/protective_relays.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "circuit_breakers": {
+   "file": "concepts/circuit_breakers.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "hvdc_basics": {
+   "file": "concepts/hvdc_basics.pdf",
+   "sizeMB": 0.35,
+   "visible": true
+  },
+  "facts": {
+   "file": "concepts/facts.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "error_analysis": {
+   "file": "concepts/error_analysis.pdf",
+   "sizeMB": 0.35,
+   "visible": true
+  },
+  "analog_meters_basics": {
+   "file": "concepts/analog_meters_basics.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "measurement_of_current": {
+   "file": "concepts/measurement_of_current.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "measurement_of_voltage": {
+   "file": "concepts/measurement_of_voltage.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "measurement_of_power": {
+   "file": "concepts/measurement_of_power.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "measurement_of_energy": {
+   "file": "concepts/measurement_of_energy.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "ac_and_dc_bridges": {
+   "file": "concepts/ac_and_dc_bridges.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "instrument_transformers": {
+   "file": "concepts/instrument_transformers.pdf",
+   "sizeMB": 0.33,
+   "visible": true
+  },
+  "digital_meters": {
+   "file": "concepts/digital_meters.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  },
+  "cro": {
+   "file": "concepts/cro.pdf",
+   "sizeMB": 0.34,
+   "visible": true
+  }
+ }
+}
