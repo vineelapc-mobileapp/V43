@@ -931,7 +931,20 @@ function renderSubtopics(){
 // V95 NEW: Concepts can now be an editable text page (formulas + notes,
 // stored in the topic data) instead of / as well as the PDF.
 function hasConceptsText(st){ return !!(st && st.conceptsTextVisible && st.conceptsItems && st.conceptsItems.length); }
-function hasConcepts(st){ return hasConceptsText(st) || !!(st && st.conceptsPdfUrl && st.conceptsPdfVisible); }
+// V117 NEW: Concepts PDFs can come from data/concepts.json (like notes.json). If a topic is listed there,
+// that file is used; otherwise the old teacher-panel (Cloudinary) link is used as before.
+let CONCEPTS = {};
+fetch('data/concepts.json', { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : null)
+  .then(j => { CONCEPTS = (j && j.topics) || {}; })
+  .catch(() => {});
+function conceptsFileUrl(st){
+  if (!st) return null;
+  const c = CONCEPTS[st.id];
+  if (c && c.file && c.visible !== false) return c.file;
+  return (st.conceptsPdfUrl && st.conceptsPdfVisible) ? st.conceptsPdfUrl : null;
+}
+function hasConcepts(st){ return hasConceptsText(st) || !!conceptsFileUrl(st); }
 function openConcepts(st, sub){
   if (hasConceptsText(st)) {
     if (sub) state.subject = sub;
@@ -982,7 +995,7 @@ function renderConceptsText(){
     }
   });
   app.appendChild(wrap);
-  if (st.conceptsPdfUrl && st.conceptsPdfVisible) {
+  if (conceptsFileUrl(st)) {
     const pdfCard = document.createElement('div');
     pdfCard.className = 'list-card';
     pdfCard.style.cssText = 'margin-top:14px;';
@@ -993,7 +1006,7 @@ function renderConceptsText(){
 }
 
 async function downloadConceptsPdf(subtopic){
-  const url = subtopic.conceptsPdfUrl;
+  const url = conceptsFileUrl(subtopic);
   if (!url) return;
   const filename = subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_Concepts_Formulas.pdf';
   await downloadPdfSafely(url, filename);
