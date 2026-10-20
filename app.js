@@ -2141,3 +2141,6 @@ function renderResults(){
   }
   app.appendChild(retryBtn);
 }
+
+// V115 NEW: Share-app button beside the Profile icon (see share-app.js)
+(function(){ const s = document.createElement('script'); s.src = 'share-app.js'; document.head.appendChild(s); })();
