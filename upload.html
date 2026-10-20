@@ -315,6 +315,17 @@ textarea.raw-text{
     <div id="mixedStatus" class="status-line"></div>
   </div>
 
+  <!-- V113 NEW: Class Notes show / hide -->
+  <button id="notesToggle" class="settings-toggle" style="margin-bottom:12px;">&#128210; Class Notes (show / hide)</button>
+  <div id="notesBody" class="settings-body">
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Class Notes for students</h3>
+      <div class="hint">The blue Class Notes card appears on a topic page only when the master switch and that topic's switch are both ON. Then tap Publish to GitHub.</div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin:8px 0;"><input type="checkbox" id="notesMaster"> <b id="notesMasterTxt"></b></label>
+      <div id="notesList"></div>
+      <div id="notesStatus" class="status-line"></div>
+    </div>
+  </div>
   </div>
 
   <div class="source-grid">

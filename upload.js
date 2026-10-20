@@ -3659,3 +3659,42 @@ function buildConceptsTextBox(subtopic){
   if (!t || !b) return;
   t.addEventListener('click', () => { const o = b.classList.toggle('open'); if (c) c.innerHTML = o ? '&#9652;' : '&#9662;'; });
 })();
+
+
+// ---------- V113 NEW: Class Notes show / hide (Teacher) ----------
+(function(){
+  const $ = id => document.getElementById(id);
+  const st = $('notesStatus');
+  const msg = (t, k) => { st.textContent = t; st.className = 'status-line ' + (k || 'ok'); };
+  const touch = () => { pendingTopicChanges = true; updateExportBarVisibility(); };
+  let NOTEMAP = null;
+  async function load(){
+    if (NOTEMAP) return NOTEMAP;
+    try { const r = await fetch('data/notes.json', { cache: 'no-store' }); const j = await r.json(); NOTEMAP = j.topics || {}; }
+    catch (e) { NOTEMAP = {}; }
+    return NOTEMAP;
+  }
+  async function draw(){
+    const map = await load();
+    const master = $('notesMaster');
+    master.checked = DATA.classNotesEnabled !== false;
+    const paintMaster = () => { $('notesMasterTxt').textContent = master.checked ? 'ALL Class Notes: ON (visible to students)' : 'ALL Class Notes: OFF (hidden from students)'; $('notesMasterTxt').style.color = master.checked ? '#1b8a3a' : '#c0392b'; };
+    paintMaster();
+    master.onchange = () => { DATA.classNotesEnabled = master.checked; paintMaster(); touch(); msg('Saved. Tap Publish to GitHub to make it live.'); };
+    const box = $('notesList'); box.innerHTML = '';
+    let any = false;
+    DATA.subjects.forEach(sj => sj.subtopics.forEach((tp, i) => {
+      const nt = map[tp.id]; if (!nt) return; any = true;
+      const row = document.createElement('label'); row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:7px 2px;border-bottom:1px solid #e4e9f5;font-size:13px;';
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = tp.notesVisible !== false;
+      const tx = document.createElement('span'); tx.style.flex = '1'; tx.textContent = (i + 1) + '. ' + tp.name + '  (' + nt.pages + ' pages)';
+      const state = document.createElement('b'); state.style.fontSize = '12px';
+      const paint = () => { state.textContent = cb.checked ? 'ON' : 'OFF'; state.style.color = cb.checked ? '#1b8a3a' : '#c0392b'; };
+      paint();
+      cb.onchange = () => { tp.notesVisible = cb.checked; paint(); touch(); msg('"' + tp.name + '" notes ' + (cb.checked ? 'ON' : 'OFF') + '. Tap Publish to GitHub.'); };
+      row.append(cb, tx, state); box.appendChild(row);
+    }));
+    if (!any) box.innerHTML = '<div class="hint">No notes files found yet (data/notes.json). Upload the notes pack first.</div>';
+  }
+  $('notesToggle').addEventListener('click', () => { $('notesBody').classList.toggle('open'); draw(); });
+})();

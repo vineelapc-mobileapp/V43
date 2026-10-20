@@ -120,6 +120,13 @@ fetch('data/questions.json')
     app.innerHTML = '<div class="question-card"><div class="question-text">Could not load the question data. Please check your connection and reopen the app.</div></div>';
   });
 
+// V112 NEW: Class Notes (handwritten notes split topic-wise) - data/notes.json maps topic id -> PDF
+let NOTES = {};
+fetch('data/notes.json', { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : null)
+  .then(j => { NOTES = (j && j.topics) || {}; })
+  .catch(() => {});
+
 fetch('data/config.json')
   .then(r => r.json())
   .then(json => { CONFIG = json; })
@@ -663,7 +670,7 @@ function renderConceptSearchResults(parent, query){
       const hasPdf = hasConcepts(st);
       const card = document.createElement('div');
       card.className = 'list-card concept-row';
-      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${st.name}</div><div class="meta">${hasPdf ? 'Quick Revision - Concepts &amp; Formulas' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
+      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${topicNoHtml(sub, st)}${st.name}</div><div class="meta">${hasPdf ? 'Quick Revision - Concepts &amp; Formulas' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
       card.onclick = () => {
         if (hasPdf) openConcepts(st, sub);
         else showToast('Concepts & Formulas not yet uploaded for this topic');
@@ -820,6 +827,9 @@ function renderFullTestsSection(){
     app.appendChild(card);
   });
 }
+// V111 NEW: topic number (position of the chapter inside its subject) shown everywhere a chapter is listed
+function topicNo(sub, st){ const i = (sub && sub.subtopics) ? sub.subtopics.indexOf(st) : -1; return i >= 0 ? i + 1 : ''; }
+function topicNoHtml(sub, st){ const n = topicNo(sub, st); return n === '' ? '' : `<b style="color:#E8710A;">${n}.</b> `; }
 function renderTestsTopics(){
   headerTitle.textContent = 'Tests';
   renderTestsModeBar();
@@ -843,7 +853,7 @@ function renderTestsTopics(){
       const l2 = (st.levels['2'] || []).length;
       const card = document.createElement('div');
       card.className = 'list-card';
-      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#EEF1FB', '#4C5C8C', 'sm')}<div><div>${st.name}</div><div class="meta">Level-1: ${l1} &nbsp;|&nbsp; Level-2: ${l2}</div></div></div><div>&#8250;</div>`;
+      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#EEF1FB', '#4C5C8C', 'sm')}<div><div>${topicNoHtml(sub, st)}${st.name}</div><div class="meta">Level-1: ${l1} &nbsp;|&nbsp; Level-2: ${l2}</div></div></div><div>&#8250;</div>`;
       card.onclick = () => { state.subject = sub; state.subtopic = st; state.view = 'levels'; render(); };
       app.appendChild(card);
     });
@@ -899,7 +909,7 @@ function renderSubtopics(){
       // Concepts & Formulas PDF directly, skipping Levels/Quiz entirely,
       // since the student's intent here is revision, not testing.
       const hasPdf = hasConcepts(st);
-      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${st.name}</div><div class="meta">${hasPdf ? 'Concepts & Formulas available' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
+      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${topicNoHtml(state.subject, st)}${st.name}</div><div class="meta">${hasPdf ? 'Concepts & Formulas available' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
       card.onclick = () => {
         if (hasPdf) openConcepts(st, state.subject);
         else showToast('Concepts & Formulas not yet uploaded for this topic');
@@ -907,7 +917,7 @@ function renderSubtopics(){
     } else {
       const l1 = (st.levels['1'] || []).length;
       const l2 = (st.levels['2'] || []).length;
-      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#EEF1FB', '#4C5C8C', 'sm')}<div><div>${st.name}</div><div class="meta">Level-1: ${l1} &nbsp;|&nbsp; Level-2: ${l2}</div></div></div><div>&#8250;</div>`;
+      card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#EEF1FB', '#4C5C8C', 'sm')}<div><div>${topicNoHtml(state.subject, st)}${st.name}</div><div class="meta">Level-1: ${l1} &nbsp;|&nbsp; Level-2: ${l2}</div></div></div><div>&#8250;</div>`;
       card.onclick = () => { state.subtopic = st; state.view = 'levels'; render(); };
     }
     app.appendChild(card);
@@ -1061,7 +1071,7 @@ function hidePdfMessage(){
 }
 
 function renderLevels(){
-  headerTitle.textContent = state.subtopic.name;
+  headerTitle.textContent = (topicNo(state.subject, state.subtopic) ? topicNo(state.subject, state.subtopic) + '. ' : '') + state.subtopic.name;
   const wrap = document.createElement('div');
   wrap.className = 'question-card';
   wrap.innerHTML = `<div class="question-text">Select difficulty level</div>`;
@@ -1090,6 +1100,17 @@ function renderLevels(){
     pdfCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>Quick Revision - Concepts &amp; Formulas</div><div class="meta">Tap to view or download</div></div></div><div>&#8250;</div>`;
     pdfCard.onclick = () => openConcepts(state.subtopic, state.subject);
     app.appendChild(pdfCard);
+  }
+
+  // V112 NEW: Class Notes for this topic (shown only if a notes PDF exists and is switched on)
+  const nt = NOTES[state.subtopic.id];
+  if (nt && nt.file && nt.visible !== false && DATA.classNotesEnabled !== false && state.subtopic.notesVisible !== false) {   // V113 NEW: Teacher show/hide switches
+    const noteCard = document.createElement('div');
+    noteCard.className = 'list-card';
+    noteCard.style.cssText = 'margin-top:14px;border:2px solid #2E6FE0;background:linear-gradient(135deg,#EAF1FB,#FFFFFF);';
+    noteCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#DCE8FB', '#2E6FE0', 'sm')}<div><div>Class Notes - BALAJI sir</div><div class="meta">${nt.pages} pages &nbsp;|&nbsp; PDF${nt.sizeMB ? ' &nbsp;|&nbsp; ' + nt.sizeMB + ' MB' : ''}</div></div></div><div>&#8250;</div>`;
+    noteCard.onclick = () => downloadPdfSafely(nt.file, state.subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_Class_Notes.pdf');
+    app.appendChild(noteCard);
   }
 }
 
