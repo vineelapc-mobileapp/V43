@@ -1,0 +1,124 @@
+{
+ "title": "Class Notes",
+ "topics": {
+  "power_generation_methods": {
+   "file": "notes/Power_Generation_Methods.pdf",
+   "pages": 4,
+   "range": "3-5",
+   "sizeMB": 0.3,
+   "visible": true
+  },
+  "economic_factors": {
+   "file": "notes/Economic_Factors.pdf",
+   "pages": 5,
+   "range": "6-9",
+   "sizeMB": 0.1,
+   "visible": true
+  },
+  "economic_load_dispatch": {
+   "file": "notes/Economic_Load_Dispatch.pdf",
+   "pages": 6,
+   "range": "146-151",
+   "sizeMB": 0.4,
+   "visible": true
+  },
+  "load_frequency_control": {
+   "file": "notes/Load_Frequency_Control.pdf",
+   "pages": 13,
+   "range": "140-156",
+   "sizeMB": 0.6,
+   "visible": true
+  },
+  "transmission_line_parameters": {
+   "file": "notes/Transmission_Line_Parameters.pdf",
+   "pages": 26,
+   "range": "10-31",
+   "sizeMB": 1.0,
+   "visible": true
+  },
+  "transmission_line_performance": {
+   "file": "notes/Transmission_Line_Performance.pdf",
+   "pages": 31,
+   "range": "32-43 + 53-71",
+   "sizeMB": 1.3,
+   "visible": true
+  },
+  "power_flow_through_transmission_line": {
+   "file": "notes/Power_Flow_Through_Transmission_Line.pdf",
+   "pages": 9,
+   "range": "44-52",
+   "sizeMB": 0.4,
+   "visible": true
+  },
+  "voltage_reactive_power_control": {
+   "file": "notes/Voltage_Reactive_Power_Control.pdf",
+   "pages": 16,
+   "range": "72-88 + 97",
+   "sizeMB": 0.8,
+   "visible": true
+  },
+  "surge_impedance_loading_sil": {
+   "file": "notes/Surge_Impedance_Loading_SIL.pdf",
+   "pages": 10,
+   "range": "41-43 + 83-88",
+   "sizeMB": 0.4,
+   "visible": true
+  },
+  "power_factor_control": {
+   "file": "notes/Power_Factor_Control.pdf",
+   "pages": 10,
+   "range": "89-96",
+   "sizeMB": 0.5,
+   "visible": true
+  },
+  "corona": {
+   "file": "notes/Corona.pdf",
+   "pages": 3,
+   "range": "98-101",
+   "sizeMB": 0.1,
+   "visible": true
+  },
+  "overhead_line_insulators": {
+   "file": "notes/Overhead_Line_Insulators.pdf",
+   "pages": 11,
+   "range": "104-114",
+   "sizeMB": 0.4,
+   "visible": true
+  },
+  "distribution": {
+   "file": "notes/Distribution.pdf",
+   "pages": 11,
+   "range": "115-125",
+   "sizeMB": 0.6,
+   "visible": true
+  },
+  "power_cables": {
+   "file": "notes/Power_Cables.pdf",
+   "pages": 14,
+   "range": "126-139",
+   "sizeMB": 0.7,
+   "visible": true
+  },
+  "protection_basics": {
+   "file": "notes/Protection_Basics.pdf",
+   "pages": 6,
+   "range": "167-171",
+   "sizeMB": 0.3,
+   "visible": true
+  },
+  "circuit_breakers": {
+   "file": "notes/Circuit_Breakers.pdf",
+   "pages": 11,
+   "range": "172-181",
+   "sizeMB": 0.6,
+   "visible": true
+  },
+  "protective_relays": {
+   "file": "notes/Protective_Relays.pdf",
+   "pages": 34,
+   "range": "182-213",
+   "sizeMB": 1.8,
+   "visible": true
+  }
+ }
+}
