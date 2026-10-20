@@ -210,6 +210,15 @@ textarea.raw-text{
   </div>
 
   <!-- ===== TAB 1: Upload Questions ===== -->
+  <!-- V115 NEW: bulk replace Concepts PDFs -->
+  <div id="bulkConceptsBox" class="settings-panel" style="background:#FFF3E0;margin-bottom:12px;">
+    <h3 style="margin:0 0 6px 0;">&#128196; Bulk replace Concepts PDFs</h3>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:8px;">Select many PDFs at once. Each file is matched to its topic by file name (e.g. per_unit_system.pdf). Check the list, then upload, then Publish as usual.</div>
+    <button id="bulkConceptsPick" class="btn btn-secondary" style="font-size:12px;">Choose PDFs...</button>
+    <input type="file" id="bulkConceptsInput" accept=".pdf" multiple style="display:none;">
+    <div id="bulkConceptsList" style="font-size:12px;margin-top:8px;"></div>
+    <button id="bulkConceptsGo" class="btn btn-primary" style="display:none;margin-top:8px;">Upload matched PDFs</button>
+  </div>
   <div id="tab1Panel">
   <div class="field-row">
     <div class="field-col">

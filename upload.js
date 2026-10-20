@@ -3698,3 +3698,45 @@ function buildConceptsTextBox(subtopic){
   }
   $('notesToggle').addEventListener('click', () => { $('notesBody').classList.toggle('open'); draw(); });
 })();
+
+
+// ---------- V115 NEW: bulk replace Concepts PDFs ----------
+(function(){
+  const pick=document.getElementById('bulkConceptsPick'), inp=document.getElementById('bulkConceptsInput'),
+        list=document.getElementById('bulkConceptsList'), go=document.getElementById('bulkConceptsGo');
+  if(!pick) return;
+  let matches=[];
+  const norm=s=>String(s).toLowerCase().replace(/\.pdf$/,'').replace(/_?concepts_?formulas(_?\d+)?$/,'').replace(/[^a-z0-9]+/g,'');
+  function allSubtopics(){
+    const out=[]; (DATA&&DATA.subjects||[]).forEach(s=>(s.subtopics||s.topics||[]).forEach(t=>out.push(t))); return out;
+  }
+  pick.onclick=()=>inp.click();
+  inp.onchange=()=>{
+    if(!DATA){ setStatus('Question bank not loaded yet - try again in a moment.','error'); return; }
+    const subs=allSubtopics(); matches=[]; list.innerHTML='';
+    Array.from(inp.files).forEach(f=>{
+      const n=norm(f.name);
+      const t=subs.find(x=>norm(x.id)===n)||subs.find(x=>norm(x.name)===n);
+      const row=document.createElement('div');
+      row.textContent=(t?'\u2705 ':'\u274C ')+f.name+(t?'  \u2192  '+t.name:'  (no matching topic - skipped)');
+      list.appendChild(row);
+      if(t) matches.push({f,t});
+    });
+    go.style.display=matches.length?'inline-block':'none';
+    go.textContent='Upload '+matches.length+' matched PDF'+(matches.length===1?'':'s');
+  };
+  go.onclick=async()=>{
+    go.disabled=true; let ok=0, fail=0;
+    for(let i=0;i<matches.length;i++){
+      const {f,t}=matches[i];
+      try{
+        setStatus('Uploading '+(i+1)+' of '+matches.length+': '+f.name+' ...');
+        t.conceptsPdfUrl=(cloudinaryConfigured||firebaseSignedIn)?await uploadMedia(f,'concepts-pdfs',f.name):await fileToDataUrl(f);
+        t.conceptsPdfVisible=true; ok++;
+      }catch(e){ fail++; setStatus('Failed '+f.name+': '+e.message,'error'); }
+    }
+    pendingTopicChanges=true; updateExportBarVisibility();
+    setStatus('Bulk upload done: '+ok+' attached'+(fail?', '+fail+' failed':'')+'. Now Publish to make them live.', fail?'error':'ok');
+    go.disabled=false; go.style.display='none'; inp.value=''; matches=[];
+  };
+})();
