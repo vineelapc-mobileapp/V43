@@ -61,14 +61,14 @@
    "file": "notes/Surge_Impedance_Loading_SIL.pdf",
    "pages": 10,
    "range": "41-43 + 83-88",
-   "sizeMB": 0.4,
+   "sizeMB": 0.5,
    "visible": true
   },
   "power_factor_control": {
    "file": "notes/Power_Factor_Control.pdf",
    "pages": 10,
    "range": "89-96",
-   "sizeMB": 0.5,
+   "sizeMB": 0.6,
    "visible": true
   },
   "corona": {
@@ -110,7 +110,7 @@
    "file": "notes/Circuit_Breakers.pdf",
    "pages": 11,
    "range": "172-181",
-   "sizeMB": 0.6,
+   "sizeMB": 0.7,
    "visible": true
   },
   "protective_relays": {
