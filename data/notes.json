@@ -12,7 +12,7 @@
    "file": "notes/Economic_Factors.pdf",
    "pages": 5,
    "range": "6-9",
-   "sizeMB": 0.1,
+   "sizeMB": 0.2,
    "visible": true
   },
   "economic_load_dispatch": {
@@ -82,12 +82,12 @@
    "file": "notes/Overhead_Line_Insulators.pdf",
    "pages": 11,
    "range": "104-114",
-   "sizeMB": 0.4,
+   "sizeMB": 0.5,
    "visible": true
   },
   "distribution": {
    "file": "notes/Distribution.pdf",
-   "pages": 11,
+   "pages": 12,
    "range": "115-125",
    "sizeMB": 0.6,
    "visible": true
