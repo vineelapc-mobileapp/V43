@@ -2223,3 +2223,6 @@ function renderResults(){
   if (s) s.textContent = 'Next';
   f.setAttribute('aria-label', 'Next');
 })();
+
+// V123 NEW: remove the small header palette icon next to Share (the "Questions" button in the strip replaces it)
+(function(){ const b = document.getElementById('paletteToggleBtn'); if (b) b.remove(); })();
