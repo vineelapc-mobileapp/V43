@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eee-practice-v123';
+const CACHE_NAME = 'eee-practice-v121';
 const ASSETS = [
   './',
   './home.html',
