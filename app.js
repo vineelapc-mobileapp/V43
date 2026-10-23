@@ -120,6 +120,13 @@ fetch('data/questions.json')
     app.innerHTML = '<div class="question-card"><div class="question-text">Could not load the question data. Please check your connection and reopen the app.</div></div>';
   });
 
+// V124 NEW: Competitive Exam Previous Year Questions (GATE / ESE ...) - data/pyq.json maps topic id -> list of PDFs
+let PYQ = {};
+fetch('data/pyq.json', { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : null)
+  .then(j => { PYQ = (j && j.topics) || {}; })
+  .catch(() => {});
+
 // V112 NEW: Class Notes (handwritten notes split topic-wise) - data/notes.json maps topic id -> PDF
 let NOTES = {};
 fetch('data/notes.json', { cache: 'no-store' })
@@ -1124,6 +1131,32 @@ function renderLevels(){
     noteCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#DCE8FB', '#2E6FE0', 'sm')}<div><div>Class Notes - BALAJI sir</div><div class="meta">${nt.pages} pages &nbsp;|&nbsp; PDF${nt.sizeMB ? ' &nbsp;|&nbsp; ' + nt.sizeMB + ' MB' : ''}</div></div></div><div>&#8250;</div>`;
     noteCard.onclick = () => downloadPdfSafely(nt.file, state.subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_Class_Notes.pdf');
     app.appendChild(noteCard);
+  }
+
+  // V124 NEW: Competitive Exam Previous Year Questions (chapter-wise PDFs with solutions)
+  const pq = PYQ[state.subtopic.id];
+  const pqItems = (pq && pq.visible !== false && DATA.pyqEnabled !== false && state.subtopic.pyqVisible !== false && Array.isArray(pq.items)) ? pq.items.filter(it => it && it.file) : [];
+  if (pqItems.length) {
+    const pqCard = document.createElement('div');
+    pqCard.className = 'list-card';
+    pqCard.style.cssText = 'margin-top:14px;border:2px solid #E8741A;background:linear-gradient(135deg,#FFF1E4,#FFFFFF);';
+    pqCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#FFE1C4', '#E8741A', 'sm')}<div><div>Competitive Exam Previous Year Questions</div><div class="meta">${pqItems.map(it => it.label || 'PDF').join(' &nbsp;|&nbsp; ')} &nbsp;|&nbsp; with solutions</div></div></div><div>&#8250;</div>`;
+    const pqList = document.createElement('div');
+    pqList.style.cssText = 'display:none;margin-top:8px;';
+    pqItems.forEach(it => {
+      const b = document.createElement('button');
+      b.className = 'level-btn';
+      b.style.marginTop = '6px';
+      b.textContent = (it.label || 'Questions') + (it.pages ? ' - ' + it.pages + ' pages' : '') + (it.sizeMB ? ' (' + it.sizeMB + ' MB)' : '');
+      b.onclick = (e) => { e.stopPropagation(); downloadPdfSafely(it.file, state.subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_' + (it.label || 'PYQ').replace(/[^a-z0-9]/gi, '_') + '_Previous_Year_Questions.pdf'); };
+      pqList.appendChild(b);
+    });
+    pqCard.onclick = () => {
+      if (pqItems.length === 1) { pqList.firstChild.click(); return; }
+      pqList.style.display = pqList.style.display === 'none' ? 'block' : 'none';
+    };
+    app.appendChild(pqCard);
+    app.appendChild(pqList);
   }
 }
 

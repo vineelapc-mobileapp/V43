@@ -1,0 +1,153 @@
+{
+ "title": "Competitive Exam Previous Year Questions",
+ "topics": {
+  "power_generation_methods": {
+   "visible": true,
+   "items": []
+  },
+  "economic_factors": {
+   "visible": true,
+   "items": []
+  },
+  "economic_load_dispatch": {
+   "visible": true,
+   "items": []
+  },
+  "load_frequency_control": {
+   "visible": true,
+   "items": []
+  },
+  "transmission_line_parameters": {
+   "visible": true,
+   "items": []
+  },
+  "transmission_line_performance": {
+   "visible": true,
+   "items": []
+  },
+  "power_flow_through_transmission_line": {
+   "visible": true,
+   "items": []
+  },
+  "voltage_reactive_power_control": {
+   "visible": true,
+   "items": []
+  },
+  "surge_impedance_loading_sil": {
+   "visible": true,
+   "items": []
+  },
+  "power_factor_control": {
+   "visible": true,
+   "items": []
+  },
+  "corona": {
+   "visible": true,
+   "items": []
+  },
+  "overhead_line_insulators": {
+   "visible": true,
+   "items": []
+  },
+  "distribution": {
+   "visible": true,
+   "items": []
+  },
+  "power_cables": {
+   "visible": true,
+   "items": []
+  },
+  "protection_basics": {
+   "visible": true,
+   "items": []
+  },
+  "circuit_breakers": {
+   "visible": true,
+   "items": []
+  },
+  "protective_relays": {
+   "visible": true,
+   "items": []
+  },
+  "load_flow_studies": {
+   "visible": true,
+   "items": []
+  },
+  "per_unit_system": {
+   "visible": true,
+   "items": []
+  },
+  "symmetrical_faults": {
+   "visible": true,
+   "items": []
+  },
+  "symmetrical_components": {
+   "visible": true,
+   "items": []
+  },
+  "unsymmetrical_faults": {
+   "visible": true,
+   "items": []
+  },
+  "zbus_algorithm_and_applications": {
+   "visible": true,
+   "items": []
+  },
+  "stability_basics": {
+   "visible": true,
+   "items": []
+  },
+  "equal_area_criteria_cases": {
+   "visible": true,
+   "items": []
+  },
+  "hvdc_basics": {
+   "visible": true,
+   "items": []
+  },
+  "facts": {
+   "visible": true,
+   "items": []
+  },
+  "error_analysis": {
+   "visible": true,
+   "items": []
+  },
+  "analog_meters_basics": {
+   "visible": true,
+   "items": []
+  },
+  "measurement_of_current": {
+   "visible": true,
+   "items": []
+  },
+  "measurement_of_voltage": {
+   "visible": true,
+   "items": []
+  },
+  "measurement_of_power": {
+   "visible": true,
+   "items": []
+  },
+  "measurement_of_energy": {
+   "visible": true,
+   "items": []
+  },
+  "ac_and_dc_bridges": {
+   "visible": true,
+   "items": []
+  },
+  "instrument_transformers": {
+   "visible": true,
+   "items": []
+  },
+  "digital_meters": {
+   "visible": true,
+   "items": []
+  },
+  "cro": {
+   "visible": true,
+   "items": []
+  }
+ }
+}

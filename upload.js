@@ -3740,3 +3740,42 @@ function buildConceptsTextBox(subtopic){
     go.disabled=false; go.style.display='none'; inp.value=''; matches=[];
   };
 })();
+
+// ---------- V125 NEW: Competitive Exam Previous Year Questions show / hide (Teacher) ----------
+(function(){
+  const $ = id => document.getElementById(id);
+  if (!$('pyqToggle')) return;
+  const st = $('pyqStatus');
+  const msg = (t, k) => { st.textContent = t; st.className = 'status-line ' + (k || 'ok'); };
+  const touch = () => { pendingTopicChanges = true; updateExportBarVisibility(); };
+  let MAP = null;
+  async function load(){
+    if (MAP) return MAP;
+    try { const r = await fetch('data/pyq.json', { cache: 'no-store' }); const j = await r.json(); MAP = j.topics || {}; }
+    catch (e) { MAP = {}; }
+    return MAP;
+  }
+  async function draw(){
+    const map = await load();
+    const master = $('pyqMaster');
+    master.checked = DATA.pyqEnabled !== false;
+    const paintMaster = () => { $('pyqMasterTxt').textContent = master.checked ? 'ALL Competitive Exam PYQ: ON (visible to students)' : 'ALL Competitive Exam PYQ: OFF (hidden from students)'; $('pyqMasterTxt').style.color = master.checked ? '#1b8a3a' : '#c0392b'; };
+    paintMaster();
+    master.onchange = () => { DATA.pyqEnabled = master.checked; paintMaster(); touch(); msg('Saved. Tap Publish to GitHub to make it live.'); };
+    const box = $('pyqList'); box.innerHTML = '';
+    let any = false;
+    DATA.subjects.forEach(sj => sj.subtopics.forEach((tp, i) => {
+      const p = map[tp.id]; if (!p || !Array.isArray(p.items) || !p.items.length) return; any = true;
+      const row = document.createElement('label'); row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:7px 2px;border-bottom:1px solid #e4e9f5;font-size:13px;';
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = tp.pyqVisible !== false;
+      const tx = document.createElement('span'); tx.style.flex = '1'; tx.textContent = (i + 1) + '. ' + tp.name + '  (' + p.items.map(x => x.label || 'PDF').join(' + ') + ')';
+      const state = document.createElement('b'); state.style.fontSize = '12px';
+      const paint = () => { state.textContent = cb.checked ? 'ON' : 'OFF'; state.style.color = cb.checked ? '#1b8a3a' : '#c0392b'; };
+      paint();
+      cb.onchange = () => { tp.pyqVisible = cb.checked; paint(); touch(); msg('"' + tp.name + '" PYQ ' + (cb.checked ? 'ON' : 'OFF') + '. Tap Publish to GitHub.'); };
+      row.append(cb, tx, state); box.appendChild(row);
+    }));
+    if (!any) box.innerHTML = '<div class="hint">No chapters have PYQ PDFs listed yet (data/pyq.json). The master switch above still works.</div>';
+  }
+  $('pyqToggle').addEventListener('click', () => { $('pyqBody').classList.toggle('open'); draw(); });
+})();

@@ -335,6 +335,18 @@ textarea.raw-text{
       <div id="notesStatus" class="status-line"></div>
     </div>
   </div>
+
+  <!-- V125 NEW: Competitive Exam Previous Year Questions show / hide -->
+  <button id="pyqToggle" class="settings-toggle" style="margin-bottom:12px;">&#127942; Competitive Exam PYQ (show / hide)</button>
+  <div id="pyqBody" class="settings-body">
+    <div class="settings-panel">
+      <h3 style="font-size:14px;margin-bottom:6px;">Competitive Exam Previous Year Questions</h3>
+      <div class="hint">The orange card appears on a topic page only when the master switch and that topic's switch are both ON (and PDFs are listed in data/pyq.json). Then tap Publish to GitHub.</div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin:8px 0;"><input type="checkbox" id="pyqMaster"> <b id="pyqMasterTxt"></b></label>
+      <div id="pyqList"></div>
+      <div id="pyqStatus" class="status-line"></div>
+    </div>
+  </div>
   </div>
 
   <div class="source-grid">
