@@ -10,16 +10,9 @@
   },
   "economic_factors": {
    "file": "notes/Economic_Factors.pdf",
-   "pages": 5,
-   "range": "6-9",
-   "sizeMB": 0.2,
-   "visible": true
-  },
-  "economic_load_dispatch": {
-   "file": "notes/Economic_Load_Dispatch.pdf",
    "pages": 6,
-   "range": "146-151",
-   "sizeMB": 0.4,
+   "range": "6-9",
+   "sizeMB": 0.17,
    "visible": true
   },
   "load_frequency_control": {
