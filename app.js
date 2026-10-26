@@ -157,7 +157,7 @@ function trackVisit(){
 }
 fetch('data/tracking.json', { cache: 'no-store' })
   .then(r => r.json())
-  .then(j => { TRACK_URL = (j && j.url) || ''; trackVisit(); })
+  .then(j => { TRACK_URL = (j && j.url) || ''; trackVisit(); syncDoubts().then(() => { const n = loadDoubts().filter(d => d.status === 'Answered' && !d.seen).length; if (n) showToast('Your teacher replied to ' + n + ' doubt' + (n > 1 ? 's' : '') + ' - open My Doubts'); }); })  // V130 NEW: pop-up
   .catch(() => {});
 
 // ---------- Student Profile ----------
@@ -457,7 +457,9 @@ function render(){
   else if (state.view === 'conventional') renderConventional();
   else if (state.view === 'results') renderResults();
   else if (state.view === 'history') renderHistory();
+  else if ((state.view === 'doubt' || state.view === 'mydoubts') && DATA && DATA.doubtsEnabled !== true) { state.view = 'subjects'; renderSubjects(); }   // V132 NEW: doubts switched OFF by teacher
   else if (state.view === 'doubt') renderDoubtComposer();
+  else if (state.view === 'mydoubts') renderMyDoubts();   // V128 NEW
   else if (state.view === 'profile') renderProfile();
   else if (state.view === 'conceptsText') renderConceptsText();
 }
@@ -883,6 +885,7 @@ function renderSubjects(){
   // "Ask a Doubt" entry point intentionally hidden for now (see note near
   // openDoubtComposer below) - re-enable once students are onboarded.
   headerTitle.textContent = 'Choose Subject';
+  if (studentProfile && TRACK_URL && DATA.doubtsEnabled === true) appendDoubtsCard(app);   // V128 NEW
   renderSubjectCards(app);
 }
 
@@ -1157,6 +1160,16 @@ function renderLevels(){
     };
     app.appendChild(pqCard);
     app.appendChild(pqList);
+  }
+
+  // V128 NEW: ask the teacher a doubt on this topic (in-app)
+  if (studentProfile && TRACK_URL && DATA.doubtsEnabled === true) {   // V132 NEW: teacher switch
+    const dCard = document.createElement('div');
+    dCard.className = 'list-card';
+    dCard.style.cssText = 'margin-top:14px;';
+    dCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#EAF1FB', '#2E6FE0', 'sm')}<div><div>Ask the teacher a doubt on this topic</div><div class="meta">Replies appear in My Doubts</div></div></div><div>&#8250;</div>`;
+    dCard.onclick = () => openDoubtComposer(null);
+    app.appendChild(dCard);
   }
 }
 
@@ -1482,6 +1495,15 @@ function renderQuiz(){
     card.appendChild(toResultsBtn);
   }
 
+  // V128 NEW: after the solution is shown (or the test is finished) a student can ask the teacher about this question
+  if (studentProfile && TRACK_URL && DATA.doubtsEnabled === true && (state.testFinished || (existing && existing.solutionShown))) {
+    const dl = document.createElement('button');
+    dl.className = 'btn btn-secondary full-width';
+    dl.style.marginTop = '10px';
+    dl.textContent = 'Ask the teacher a doubt about this question';
+    dl.onclick = () => openDoubtComposer(q);
+    app.appendChild(dl);
+  }
   // "Ask a doubt about this question" link intentionally hidden for now -
   // re-enable once students are onboarded (see openDoubtComposer below,
   // which is kept fully intact and ready to reconnect).
@@ -1897,6 +1919,141 @@ function formatDate(iso){
   return d.toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }) +
     ', ' + d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' });
 }
+
+// ---------- V128 NEW: In-app doubts (student -> teacher via the Google Sheet; replies come back to that student only) ----------
+const DOUBTS_KEY = 'eeeDoubts', DSECRET_KEY = 'eeeDoubtSecret';
+function dbEsc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function doubtSecret(){
+  try {
+    let s = localStorage.getItem(DSECRET_KEY);
+    if (!s) { s = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b => b.toString(16).padStart(2, '0')).join(''); localStorage.setItem(DSECRET_KEY, s); }
+    return s;
+  } catch { return ''; }
+}
+function loadDoubts(){ try { return JSON.parse(localStorage.getItem(DOUBTS_KEY)) || []; } catch { return []; } }
+function saveDoubts(a){ try { localStorage.setItem(DOUBTS_KEY, JSON.stringify(a.slice(0, 200))); } catch {} }
+function newReplyCount(){ return loadDoubts().filter(d => d.status === 'Answered' && !d.seen).length; }
+function stripHtml(t){ const d = document.createElement('div'); d.innerHTML = String(t || ''); return (d.textContent || '').replace(/\s+/g, ' ').trim(); }
+async function postDoubt(d){
+  if (!TRACK_URL || !studentProfile) return false;
+  try {
+    await fetch(TRACK_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'doubt', id: d.id, email: studentProfile.email, name: studentProfile.name, secret: doubtSecret(), subject: d.subject, topic: d.topic, level: d.level, question: d.question, message: d.msg }) });
+    return true;
+  } catch { return false; }
+}
+async function syncDoubts(){
+  if (!TRACK_URL || !studentProfile) return;
+  const local = loadDoubts(); if (!local.length) return;
+  try {
+    const u = TRACK_URL + (TRACK_URL.includes('?') ? '&' : '?') + 'action=mydoubts&email=' + encodeURIComponent(studentProfile.email) + '&secret=' + encodeURIComponent(doubtSecret());
+    const j = await (await fetch(u, { cache: 'no-store' })).json();
+    if (!j || !j.ok) return;
+    const byId = {}; (j.doubts || []).forEach(x => { byId[x.id] = x; });
+    local.forEach(d => {
+      const sv = byId[d.id];
+      if (sv) {
+        if (d.status === 'Sending') d.status = 'Open';
+        if (sv.status === 'Answered' && (d.reply !== sv.reply || JSON.stringify(d.media || []) !== JSON.stringify(sv.media || []))) { d.status = 'Answered'; d.reply = sv.reply; d.media = sv.media || []; d.repliedAt = sv.repliedAt; d.seen = false; }  // V129 NEW: media
+      } else if (d.status === 'Sending' && Date.now() - d.ts > 60000) { postDoubt(d); }
+    });
+    saveDoubts(local);
+  } catch {}
+}
+async function sendDoubtInApp(msgBox, statusEl){
+  const msg = msgBox.value.trim();
+  if (!msg) { statusEl.textContent = 'Please type your doubt first.'; return; }
+  if (!studentProfile) { statusEl.textContent = 'Please complete your profile first.'; return; }
+  if (!TRACK_URL) { statusEl.textContent = 'In-app doubts are not set up yet. Please use WhatsApp or Email below.'; return; }
+  const q = state.doubtContext;
+  const d = {
+    id: 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8), ts: Date.now(),
+    subject: state.subject ? state.subject.name : '', topic: state.subtopic ? state.subtopic.name : '',
+    level: (state.level && state.level !== 'Mixed') ? String(state.level) : '',
+    question: q ? stripHtml(q.question).slice(0, 300) : '', msg: msg.slice(0, 1500), status: 'Sending', reply: '', seen: true
+  };
+  const arr = loadDoubts(); arr.unshift(d); saveDoubts(arr);
+  statusEl.textContent = 'Sending...';
+  await postDoubt(d);
+  showToast('Doubt sent to your teacher');
+  state.view = 'mydoubts'; render();
+  setTimeout(() => { syncDoubts().then(() => { if (state.view === 'mydoubts') render(); }); }, 4000);
+}
+function appendDoubtsCard(parent){
+  const n = newReplyCount();
+  const card = document.createElement('div');
+  card.className = 'list-card';
+  card.style.cssText = 'border:2px solid #2E6FE0;background:linear-gradient(135deg,#EAF1FB,#FFFFFF);';
+  card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#DCE8FB', '#2E6FE0', 'sm')}<div><div>My Doubts &amp; Teacher Replies${n ? ' <span style="background:#d93025;color:#fff;border-radius:10px;padding:1px 8px;font-size:12px;margin-left:6px;">' + n + ' new</span>' : ''}</div><div class="meta">Ask the teacher a doubt, see the answers</div></div></div><div>&#8250;</div>`;
+  card.onclick = () => { state.view = 'mydoubts'; render(); };
+  parent.appendChild(card);
+}
+// V129 NEW: show one teacher attachment (tap to load -> audio / video player / photo)
+const doubtMediaCache = {};
+function makeMediaItem(d, m){
+  const kind = m.mime.startsWith('audio') ? 'voice reply' : (m.mime.startsWith('video') ? 'video reply' : 'photo');
+  const icon = m.mime.startsWith('audio') ? '\u{1F50A}' : (m.mime.startsWith('video') ? '\u{1F3AC}' : '\u{1F5BC}');
+  const wrap = document.createElement('div');
+  const show = (url) => {
+    wrap.innerHTML = '';
+    const el = document.createElement(m.mime.startsWith('audio') ? 'audio' : (m.mime.startsWith('video') ? 'video' : 'img'));
+    el.src = url; el.style.cssText = 'width:100%;border-radius:10px;';
+    if (el.tagName !== 'IMG') { el.controls = true; if (el.tagName === 'VIDEO') el.playsInline = true; }
+    wrap.appendChild(el);
+  };
+  if (doubtMediaCache[m.id]) { show(doubtMediaCache[m.id]); return wrap; }
+  const b = document.createElement('button'); b.className = 'btn btn-secondary'; b.style.width = '100%';
+  b.textContent = icon + ' Tap to open teacher\'s ' + kind;
+  b.onclick = async () => {
+    b.disabled = true; b.textContent = 'Loading...';
+    try {
+      const u = TRACK_URL + (TRACK_URL.includes('?') ? '&' : '?') + 'action=media&email=' + encodeURIComponent(studentProfile.email) + '&secret=' + encodeURIComponent(doubtSecret()) + '&id=' + encodeURIComponent(d.id) + '&fid=' + encodeURIComponent(m.id);
+      const j = await (await fetch(u, { cache: 'no-store' })).json();
+      if (!j || !j.ok) throw 0;
+      const bin = atob(j.b64), arr = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      doubtMediaCache[m.id] = URL.createObjectURL(new Blob([arr], { type: j.mime })); show(doubtMediaCache[m.id]);
+    } catch (e) { b.disabled = false; b.textContent = 'Could not load - check internet and tap again'; }
+  };
+  wrap.appendChild(b); return wrap;
+}
+function renderMyDoubts(){
+  headerTitle.textContent = 'My Doubts';
+  const top = document.createElement('div');
+  top.style.cssText = 'display:flex;gap:8px;margin-bottom:12px;';
+  const askBtn = document.createElement('button'); askBtn.className = 'btn btn-primary'; askBtn.style.flex = '1'; askBtn.textContent = 'Ask a new doubt';
+  askBtn.onclick = () => { state.doubtContext = null; state.doubtReturnView = 'mydoubts'; doubtVoiceFile = null; doubtAttachFile = null; state.view = 'doubt'; render(); };
+  const refBtn = document.createElement('button'); refBtn.className = 'btn btn-secondary'; refBtn.style.flex = '1'; refBtn.textContent = 'Refresh replies';
+  refBtn.onclick = async () => { refBtn.textContent = 'Checking...'; await syncDoubts(); render(); };
+  top.append(askBtn, refBtn); app.appendChild(top);
+  const list = loadDoubts();
+  if (!list.length) {
+    const e = document.createElement('div'); e.className = 'question-card';
+    e.innerHTML = '<div class="question-text">No doubts yet.</div><div style="color:var(--muted);font-size:13px;">Tap "Ask a new doubt", or open any topic or solved question and choose "Ask the teacher". Your teacher\'s reply appears here, visible only to you, on this device.</div>';
+    app.appendChild(e); return;
+  }
+  list.forEach(d => {
+    const c = document.createElement('div'); c.className = 'question-card';
+    const ans = d.status === 'Answered';
+    const chip = ans ? '<span style="background:#e6f8ee;color:#1f9d55;border-radius:10px;padding:2px 9px;font-size:12px;font-weight:700;">Answered</span>'
+      : (d.status === 'Sending' ? '<span style="background:#fff3e0;color:#c77700;border-radius:10px;padding:2px 9px;font-size:12px;font-weight:700;">Sending...</span>'
+        : '<span style="background:#eaf1fb;color:#2e6fe0;border-radius:10px;padding:2px 9px;font-size:12px;font-weight:700;">Waiting for teacher</span>');
+    c.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:12px;color:var(--muted);">${dbEsc(new Date(d.ts).toLocaleString('en-IN'))}</span>${chip}</div>`
+      + (d.topic ? `<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">${dbEsc(d.subject)} &middot; ${dbEsc(d.topic)}${d.level ? ' &middot; Level ' + dbEsc(d.level) : ''}</div>` : '')
+      + (d.question ? `<div style="background:#fff3e0;border-radius:8px;padding:8px;font-size:13px;margin-bottom:8px;"><b>Question:</b> ${dbEsc(d.question)}</div>` : '')
+      + `<div style="font-size:14px;margin-bottom:8px;white-space:pre-wrap;"><b>Your doubt:</b> ${dbEsc(d.msg)}</div>`
+      + (ans ? `<div style="background:#e6f8ee;border-left:4px solid #1f9d55;border-radius:8px;padding:10px;font-size:14px;white-space:pre-wrap;"><b>Teacher:</b> ${dbEsc(d.reply)}</div>` : '');
+    // V129 NEW: teacher's voice / photo / video reply (loaded only when the student taps, private to this student)
+    if (ans && d.media && d.media.length) {
+      const mb = document.createElement('div'); mb.style.cssText = 'margin-top:8px;display:flex;flex-direction:column;gap:8px;';
+      d.media.forEach(m => mb.appendChild(makeMediaItem(d, m)));
+      c.appendChild(mb);
+    }
+    app.appendChild(c);
+  });
+  let ch = false; list.forEach(d => { if (d.status === 'Answered' && !d.seen) { d.seen = true; ch = true; } });
+  if (ch) saveDoubts(list);
+}
+
 // ---------- Ask a Doubt ----------
 // No backend exists yet (see Teacher app's Student Doubts tab), so this routes
 // the doubt straight to the teacher via WhatsApp or Email - channels that
@@ -2079,6 +2236,18 @@ function renderDoubtComposer(){
     }
   }
 
+  // V128 NEW: send inside the app (text only); the reply comes back to My Doubts
+  if (TRACK_URL) {
+    const inBtn = document.createElement('button');
+    inBtn.className = 'btn btn-primary full-width';
+    inBtn.textContent = 'Send to Teacher (in app)';
+    inBtn.onclick = () => sendDoubtInApp(msgBox, sendStatus);
+    card.appendChild(inBtn);
+    const alt = document.createElement('div');
+    alt.style.cssText = 'font-size:12px;color:var(--muted);margin:10px 0 8px;text-align:center;';
+    alt.textContent = 'Need to send a voice note or photo? Use WhatsApp or Email:';
+    card.appendChild(alt);
+  }
   const waBtn = document.createElement('button');
   waBtn.className = 'btn btn-primary full-width';
   waBtn.style.background = '#25D366';

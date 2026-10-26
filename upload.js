@@ -3779,3 +3779,143 @@ function buildConceptsTextBox(subtopic){
   }
   $('pyqToggle').addEventListener('click', () => { $('pyqBody').classList.toggle('open'); draw(); });
 })();
+
+// ---------- V128 NEW: Student Doubts (Menu 4) - read doubts from the Google Sheet and reply ----------
+(function(){
+  const KEY = 'eeeStudentsSheetSettings';
+  const $ = id => document.getElementById(id);
+  if (!$('dbtList')) return;
+  const box = $('dbtList'), msg = $('dbtMsg'), flt = $('dbtFilter');
+  let ALL = [];
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const cfg = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch { return {}; } };
+  async function load(){
+    const c = cfg();
+    if (!c.url || !c.key) { msg.textContent = 'First enter the Web App URL and secret key in Menu 5 (Students Using App) and tap Save & Refresh Count.'; return; }
+    msg.textContent = 'Loading...';
+    try {
+      const j = await (await fetch(c.url + (c.url.includes('?') ? '&' : '?') + 'action=doubts&key=' + encodeURIComponent(c.key), { cache: 'no-store' })).json();
+      if (!j.ok) { msg.textContent = j.error === 'key' ? 'Wrong secret key.' : 'Not ready: paste the new Code.gs into Apps Script and deploy a New version (README step 1).'; return; }
+      ALL = (j.doubts || []).slice().sort((a, b) => String(b.time).localeCompare(String(a.time)));
+      msg.textContent = ''; draw();
+    } catch (e) { msg.textContent = 'Could not reach the sheet. Check the URL, the deployment ("Anyone") and your internet.'; }
+  }
+  function draw(){
+    const open = ALL.filter(d => d.status !== 'Answered').length;
+    $('dbtCount').textContent = open + ' waiting / ' + (ALL.length - open) + ' answered';
+    const f = flt.value;
+    const list = ALL.filter(d => f === 'all' || (f === 'open' ? d.status !== 'Answered' : d.status === 'Answered'));
+    box.innerHTML = '';
+    if (!list.length) { box.innerHTML = '<div class="hint">Nothing here.</div>'; return; }
+    list.forEach(d => {
+      const c = document.createElement('div');
+      c.style.cssText = 'border:1px solid #d6dbe8;border-radius:12px;padding:10px;margin-bottom:10px;background:#fff;';
+      c.innerHTML = '<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#666;"><b style="color:#1a237e;">' + esc(d.name) + '</b><span>' + esc(d.time) + '</span></div>'
+        + '<div style="font-size:12px;color:#666;">' + esc(d.email) + '</div>'
+        + (d.topic ? '<div style="font-size:12px;color:#666;margin-top:4px;">' + esc(d.subject) + ' · ' + esc(d.topic) + (d.level ? ' · Level ' + esc(d.level) : '') + '</div>' : '')
+        + (d.question ? '<div style="background:#fff3e0;border-radius:8px;padding:6px 8px;font-size:12px;margin-top:6px;"><b>Question:</b> ' + esc(d.question) + '</div>' : '')
+        + '<div style="font-size:14px;margin:8px 0;white-space:pre-wrap;">' + esc(d.message) + '</div>';
+      const ta = document.createElement('textarea'); ta.value = d.reply || ''; ta.placeholder = 'Type your reply (only this student will see it)...';
+      ta.style.cssText = 'width:100%;min-height:70px;padding:8px;border:1px solid #d6dbe8;border-radius:8px;font-size:14px;box-sizing:border-box;';
+      // V129 NEW: voice / photo / video attachments for the reply
+      const files = [];   // {name, mime, blob}
+      const prev = document.createElement('div'); prev.style.cssText = 'display:flex;flex-direction:column;gap:6px;margin-top:6px;';
+      const old = (d.media && d.media.length) ? '<div style="font-size:12px;color:#1f9d55;margin-top:4px;">Already sent: ' + d.media.map(m => m.mime.split('/')[0]).join(', ') + ' (new files are added)</div>' : '';
+      const bar = document.createElement('div'); bar.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;';
+      const mk = (t) => { const x = document.createElement('button'); x.type = 'button'; x.className = 'btn btn-secondary'; x.style.fontSize = '12px'; x.textContent = t; return x; };
+      const recBtn = mk('\u{1F3A4} Record voice');
+      const phBtn = mk('\u{1F4F7} Photo'), vdBtn = mk('\u{1F3A5} Video'), flBtn = mk('\u{1F4CE} Attach file');
+      const st = document.createElement('span'); st.style.fontSize = '12px'; st.textContent = d.status === 'Answered' ? 'Answered ' + (d.repliedAt || '') : '';
+      const redraw = () => {
+        prev.innerHTML = '';
+        files.forEach((f, i) => {
+          const r = document.createElement('div'); r.style.cssText = 'display:flex;align-items:center;gap:6px;background:#f4f6fb;border-radius:8px;padding:6px;';
+          const u = URL.createObjectURL(f.blob);
+          const el = document.createElement(f.mime.startsWith('audio') ? 'audio' : (f.mime.startsWith('video') ? 'video' : 'img'));
+          el.src = u; if (el.tagName === 'IMG') el.style.cssText = 'height:56px;border-radius:6px;'; else { el.controls = true; el.style.cssText = el.tagName === 'VIDEO' ? 'height:90px;' : 'height:34px;max-width:220px;'; }
+          const info = document.createElement('span'); info.style.cssText = 'font-size:11px;flex:1;'; info.textContent = f.name + ' (' + (f.blob.size / 1048576).toFixed(1) + ' MB)';
+          const x = document.createElement('button'); x.type = 'button'; x.textContent = '\u2715'; x.style.cssText = 'border:0;background:#fde8e8;color:#c0392b;border-radius:6px;padding:4px 8px;'; x.onclick = () => { files.splice(i, 1); redraw(); };
+          r.append(el, info, x); prev.appendChild(r);
+        });
+      };
+      const addFile = async (blob, name) => {
+        let mime = (blob.type || '').split(';')[0], nm = name || 'file';
+        if (files.length >= 3) { st.textContent = 'Max 3 files per reply.'; return; }
+        if (mime.startsWith('image/') && mime !== 'image/png') {   // shrink phone photos (max 1280 px) so they send fast
+          try {
+            const bm = await createImageBitmap(blob), sc = Math.min(1, 1280 / Math.max(bm.width, bm.height));
+            const cv = document.createElement('canvas'); cv.width = Math.round(bm.width * sc); cv.height = Math.round(bm.height * sc);
+            cv.getContext('2d').drawImage(bm, 0, 0, cv.width, cv.height);
+            blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.85)); mime = 'image/jpeg'; nm = nm.replace(/\.\w+$/, '') + '.jpg';
+          } catch (e) {}
+        }
+        if (!/^(image\/(jpeg|png|webp)|audio\/|video\/(mp4|webm|quicktime))/.test(mime)) { st.textContent = 'File type not supported (use jpg/png, mp3/m4a/webm voice, mp4/webm video).'; return; }
+        if (blob.size > 6 * 1048576) { st.textContent = 'File over 6 MB. Record a shorter clip (video under about 40 sec) and try again.'; return; }
+        files.push({ name: nm, mime, blob }); st.textContent = ''; redraw();
+      };
+      const pick = (accept, capture) => { const i = document.createElement('input'); i.type = 'file'; i.accept = accept; if (capture) i.setAttribute('capture', capture); i.onchange = () => { if (i.files[0]) addFile(i.files[0], i.files[0].name); }; i.click(); };
+      phBtn.onclick = () => pick('image/*'); vdBtn.onclick = () => pick('video/*'); flBtn.onclick = () => pick('image/*,audio/*,video/*');
+      let rec = null, chunks = [];
+      recBtn.onclick = async () => {
+        if (rec) { rec.stop(); return; }
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          rec = new MediaRecorder(stream); chunks = [];
+          rec.ondataavailable = e => chunks.push(e.data);
+          rec.onstop = () => { stream.getTracks().forEach(t => t.stop()); const t = (rec.mimeType || 'audio/webm').split(';')[0]; rec = null; recBtn.textContent = '\u{1F3A4} Record voice'; addFile(new Blob(chunks, { type: t }), 'voice-' + Date.now() + '.' + (t.includes('mp4') ? 'm4a' : 'webm')); };
+          rec.start(); recBtn.textContent = '\u23F9 Stop recording';
+        } catch (e) { st.textContent = 'Microphone not allowed. Allow it in the browser, or use Attach file.'; }
+      };
+      bar.append(recBtn, phBtn, vdBtn, flBtn);
+      const row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:8px;';
+      const btn = document.createElement('button'); btn.className = 'btn btn-primary'; btn.style.fontSize = '13px'; btn.textContent = d.status === 'Answered' ? 'Update reply' : 'Send reply';
+      const toB64 = (blob) => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1]); fr.onerror = rej; fr.readAsDataURL(blob); });
+      btn.onclick = async () => {
+        const text = ta.value.trim(); if (!text && !files.length) { st.textContent = 'Type a reply or add a voice / photo / video first.'; return; }
+        const k = cfg(); btn.disabled = true; st.textContent = files.length ? 'Uploading (may take a few seconds)...' : 'Sending...';
+        try {
+          const media = []; for (const f of files) media.push({ name: f.name, mime: f.mime, b64: await toB64(f.blob) });
+          await fetch(k.url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'reply', key: k.key, id: d.id, reply: text, media }) });
+          await new Promise(r => setTimeout(r, files.length ? 4500 : 1800));
+          await load();
+        } catch (e) { st.textContent = 'Failed - check internet.'; btn.disabled = false; }
+      };
+      row.append(btn, st); c.append(ta); if (old) { const o = document.createElement('div'); o.innerHTML = old; c.append(o); } c.append(bar, prev, row); box.appendChild(c);
+    });
+  }
+  // V132 NEW: show / hide the whole Doubts feature for students (saved with Publish to GitHub, like the PYQ switch)
+  function paintMaster(){
+    const m = $('dbtMaster'), t = $('dbtMasterTxt'); if (!m || typeof DATA === 'undefined' || !DATA) return;
+    m.checked = DATA.doubtsEnabled === true;   // V133 NEW: default OFF
+    t.textContent = m.checked ? 'Student Doubts: ON (students can ask and see replies)' : 'Student Doubts: OFF (hidden from students)';
+    t.style.color = m.checked ? '#1b8a3a' : '#c0392b';
+  }
+  if ($('dbtMaster')) {
+    $('dbtMaster').addEventListener('change', () => {
+      DATA.doubtsEnabled = $('dbtMaster').checked; paintMaster(); pendingTopicChanges = true; updateExportBarVisibility();
+      $('dbtMasterMsg').textContent = 'Saved here. Tap Publish to GitHub to make it live for students.'; $('dbtMasterMsg').className = 'status-line ok';
+    });
+    setInterval(paintMaster, 1500);
+  }
+  $('dbtRefresh').addEventListener('click', load);
+  flt.addEventListener('change', draw);
+  const sel = $('teacherTabSelect');
+  if (sel) sel.addEventListener('change', () => { if (sel.value === 'doubts') load(); });
+  // V130 NEW: alert banner + count when students are waiting (checked on opening and every minute)
+  async function alertCheck(){
+    const c = cfg(); const app = $('appContent'); if (!c.url || !c.key || !app) return;
+    try {
+      const j = await (await fetch(c.url + (c.url.includes('?') ? '&' : '?') + 'action=doubts&key=' + encodeURIComponent(c.key), { cache: 'no-store' })).json();
+      if (!j.ok) return;
+      const n = (j.doubts || []).filter(d => d.status !== 'Answered').length;
+      let b = $('dbtAlert');
+      if (!b) { b = document.createElement('div'); b.id = 'dbtAlert'; b.style.cssText = 'margin:10px 12px;padding:12px;border-radius:12px;background:#fdecea;border:2px solid #d93025;color:#b3261e;font-weight:700;text-align:center;cursor:pointer;'; b.onclick = () => { sel.value = 'doubts'; sel.dispatchEvent(new Event('change')); window.scrollTo(0, 0); }; app.insertBefore(b, app.firstChild); }
+      b.style.display = n ? 'block' : 'none';
+      b.textContent = '\u{1F514} ' + n + ' student doubt' + (n > 1 ? 's' : '') + ' waiting for your reply - tap to open';
+      document.title = (n ? '(' + n + ') ' : '') + 'Teacher Upload';
+      const opt = sel && sel.querySelector('option[value="doubts"]'); if (opt) opt.textContent = '4. Student Doubts' + (n ? ' (' + n + ' new)' : '');
+    } catch (e) {}
+  }
+  alertCheck(); setInterval(alertCheck, 60000);
+  window.__dbtAlertCheck = alertCheck;
+})();

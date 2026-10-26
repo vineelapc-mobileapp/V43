@@ -415,18 +415,24 @@ textarea.raw-text{
   </div>
   <!-- ===== /TAB 3 ===== -->
 
-  <!-- ===== TAB 4: Student Doubts (needs backend) ===== -->
+  <!-- ===== TAB 4: Student Doubts (V128 NEW - in-app doubts through the Google Sheet) ===== -->
   <div id="tab4Panel" class="hidden">
     <div class="settings-panel">
-      <h3>Student Doubts — Not Available Yet</h3>
-      <div class="hint" style="margin-bottom:0;">
-        Same underlying reason as Student Marks: a message (with voice, photo,
-        PDF, or text) from a student's device needs somewhere to land that your
-        device can then read and reply to. That requires the same backend
-        (Firebase) mentioned in the Marks tab — once that's in place, this tab
-        and the marks tab can be built together, since they'd share the same
-        underlying setup.
+      <h3>Student Doubts</h3>
+      <div class="hint">Uses the same Web App URL and secret key as Menu 5 (set them there once). Each reply you send appears only to the student who asked.</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0;">
+        <select id="dbtFilter" style="padding:8px;border-radius:8px;border:1px solid #d6dbe8;font-weight:700;">
+          <option value="open">Waiting for reply</option>
+          <option value="answered">Answered</option>
+          <option value="all">All</option>
+        </select>
+        <button id="dbtRefresh" class="btn btn-primary" style="font-size:13px;">Refresh</button>
+        <b id="dbtCount" style="font-size:13px;"></b>
       </div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin:8px 0;padding:8px;border-radius:10px;background:#f4f6fb;"><input type="checkbox" id="dbtMaster"> <b id="dbtMasterTxt"></b></label>
+      <div id="dbtMasterMsg" class="status-line"></div>
+      <div id="dbtMsg" class="hint"></div>
+      <div id="dbtList"></div>
     </div>
   </div>
   <!-- ===== /TAB 4 ===== -->
