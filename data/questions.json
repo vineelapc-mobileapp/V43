@@ -8977,5 +8977,6 @@
       ]
     }
   ],
-  "pyqEnabled": false
+  "pyqEnabled": false,
+  "doubtsEnabled": true
 }
