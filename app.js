@@ -647,7 +647,7 @@ function renderAllConcepts(parent){
       const card = document.createElement('div');
       card.className = 'list-card concept-row';
       card.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>${st.name}</div><div class="meta">Quick Revision - Concepts &amp; Formulas</div></div></div><div>&#8250;</div>`;
-      card.onclick = () => openConcepts(st, sub);
+      card.onclick = () => openConcepts(st, sub, card);
       parent.appendChild(card);
     });
   });
@@ -681,7 +681,7 @@ function renderConceptSearchResults(parent, query){
       card.className = 'list-card concept-row';
       card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${topicNoHtml(sub, st)}${st.name}</div><div class="meta">${hasPdf ? 'Quick Revision - Concepts &amp; Formulas' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
       card.onclick = () => {
-        if (hasPdf) openConcepts(st, sub);
+        if (hasPdf) openConcepts(st, sub, card);
         else showToast('Concepts & Formulas not yet uploaded for this topic');
       };
       parent.appendChild(card);
@@ -904,7 +904,7 @@ function renderSubtopics(){
       if (url && visible) {
         const card = document.createElement('div');
         card.className = 'list-card';
-        card.innerHTML = `<div class="list-card-main">${iconBadge('stack', '#FCEEDD', '#B9661C')}<div><div>Class Work Book ${label} - Part ${part}</div><div class="meta">Tap to view or download</div></div></div><div>&#8250;</div>`;
+        card.innerHTML = `<div class="list-card-main">${iconBadge('stack', '#FCEEDD', '#B9661C')}<div><div>Class Work Book ${label} - Part ${part}</div><div class="meta">Tap to read here in the app</div></div></div><div>&#8250;</div>`;
         card.onclick = () => downloadClassworkPdf(subj, part, k);
         app.appendChild(card);
       }
@@ -921,7 +921,7 @@ function renderSubtopics(){
       const hasPdf = hasConcepts(st);
       card.innerHTML = `<div class="list-card-main">${iconBadge('doc', hasPdf ? '#E6F8EE' : '#F1F2F6', hasPdf ? '#1F9D55' : '#9AA3B5', 'sm')}<div><div>${topicNoHtml(state.subject, st)}${st.name}</div><div class="meta">${hasPdf ? 'Concepts & Formulas available' : 'Not uploaded yet'}</div></div></div><div>&#8250;</div>`;
       card.onclick = () => {
-        if (hasPdf) openConcepts(st, state.subject);
+        if (hasPdf) openConcepts(st, state.subject, card);
         else showToast('Concepts & Formulas not yet uploaded for this topic');
       };
     } else {
@@ -955,12 +955,14 @@ function conceptsFileUrl(st){
   return (st.conceptsPdfUrl && st.conceptsPdfVisible) ? st.conceptsPdfUrl : null;
 }
 function hasConcepts(st){ return hasConceptsText(st) || !!conceptsFileUrl(st); }
-function openConcepts(st, sub){
+function openConcepts(st, sub, anchor){
   if (hasConceptsText(st)) {
     if (sub) state.subject = sub;
     state.subtopic = st;
     state.view = 'conceptsText';
     render();
+  } else if (anchor) {
+    openPdfInline(anchor, conceptsFileUrl(st), 'Quick Revision - ' + st.name, st.name.replace(/[^a-z0-9]/gi, '_') + '_Concepts_Formulas.pdf');   // V136 NEW: opens inside the app
   } else {
     downloadConceptsPdf(st);
   }
@@ -1035,6 +1037,62 @@ async function downloadClassworkPdf(subject, part, k){
 // sees the actual storage URL (address bar or a raw browser error page),
 // and any failure is handled cleanly in-app instead of an ugly,
 // unbranded "site can't be reached" screen.
+
+// ---------- V136 NEW: read a PDF inside the app (same page, under the tapped card) ----------
+let pdfjsLibP = null;
+const PDF_POLY = "for(const C of [Map,WeakMap]){C.prototype.getOrInsert||(C.prototype.getOrInsert=function(k,v){this.has(k)||this.set(k,v);return this.get(k)});C.prototype.getOrInsertComputed||(C.prototype.getOrInsertComputed=function(k,f){this.has(k)||this.set(k,f(k));return this.get(k)})}Promise.withResolvers||(Promise.withResolvers=function(){let a,b;const p=new Promise((x,y)=>{a=x;b=y});return{promise:p,resolve:a,reject:b}});\n";
+function loadPdfJs(){
+  if (!pdfjsLibP) pdfjsLibP = (async () => {
+    // older phone browsers lack a few newer JavaScript functions pdf.js needs - add them (page + worker)
+    eval(PDF_POLY);
+    const w = await (await fetch('./libs/pdfjs/pdf.worker.min.mjs')).text();
+    const m = await import('./libs/pdfjs/pdf.min.mjs');
+    m.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([PDF_POLY + w], { type: 'text/javascript' }));
+    return m;
+  })();
+  return pdfjsLibP;
+}
+async function openPdfInline(anchor, url, title, filename){
+  if (!anchor || !url) return;
+  const old = anchor.nextElementSibling;
+  if (old && old.classList && old.classList.contains('pdf-inline')) { old.remove(); return; }   // tap again = close
+  document.querySelectorAll('.pdf-inline').forEach(x => x.remove());
+  const box = document.createElement('div'); box.className = 'pdf-inline';
+  box.style.cssText = 'margin:8px 0 14px;border:2px solid #2E6FE0;border-radius:14px;background:#fff;overflow:hidden;';
+  const bar = document.createElement('div'); bar.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 10px;background:#EAF1FB;position:sticky;top:0;z-index:5;';
+  const tt = document.createElement('div'); tt.style.cssText = 'flex:1;font-size:13px;font-weight:700;color:#16274A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'; tt.textContent = title;
+  const pg = document.createElement('span'); pg.style.cssText = 'font-size:12px;color:#5b6478;';
+  const dl = document.createElement('button'); dl.className = 'btn btn-secondary'; dl.style.cssText = 'font-size:12px;padding:6px 10px;'; dl.textContent = 'Download';
+  const cl = document.createElement('button'); cl.className = 'btn btn-secondary'; cl.style.cssText = 'font-size:12px;padding:6px 10px;'; cl.textContent = 'Close';
+  dl.onclick = () => downloadPdfSafely(url, filename); cl.onclick = () => box.remove();
+  bar.append(tt, pg, dl, cl);
+  const body = document.createElement('div'); body.style.cssText = 'max-height:75vh;overflow-y:auto;background:#eef1f7;padding:6px;-webkit-overflow-scrolling:touch;';
+  const msg = document.createElement('div'); msg.style.cssText = 'padding:18px;text-align:center;font-size:13px;color:#5b6478;'; msg.textContent = 'Loading...'; body.appendChild(msg);
+  box.append(bar, body); anchor.after(box);
+  setTimeout(() => box.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  try {
+    const lib = await loadPdfJs();
+    const buf = await (await fetch(url)).arrayBuffer();
+    const pdf = await lib.getDocument({ data: buf }).promise;
+    msg.remove(); pg.textContent = pdf.numPages + ' pages';
+    const width = Math.max(260, body.clientWidth - 12), dpr = Math.min(2, window.devicePixelRatio || 1);
+    const slots = [];
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const page = await pdf.getPage(n), vp0 = page.getViewport({ scale: 1 }), sc = width / vp0.width, vp = page.getViewport({ scale: sc });
+      const cv = document.createElement('canvas'); cv.style.cssText = 'display:block;width:100%;background:#fff;margin:0 0 8px;border-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.15);';
+      cv.width = Math.round(vp.width * dpr); cv.height = Math.round(vp.height * dpr); cv.style.aspectRatio = vp.width + ' / ' + vp.height;
+      body.appendChild(cv); slots.push({ cv, page, vp, done: false });
+    }
+    const draw = async (sl) => { if (sl.done) return; sl.done = true; await sl.page.render({ canvasContext: sl.cv.getContext('2d'), viewport: sl.page.getViewport({ scale: sl.vp.scale * dpr }) }).promise; };
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const sl = slots.find(x => x.cv === e.target); if (sl) draw(sl); } }), { root: body, rootMargin: '400px' });
+      slots.forEach(sl => io.observe(sl.cv));
+    } else { for (const sl of slots) await draw(sl); }
+  } catch (err) {
+    msg.textContent = 'Could not open here. Tap Download to save the PDF.'; if (!msg.isConnected) body.appendChild(msg);
+  }
+}
+
 async function downloadPdfSafely(url, filename){
   if (url.startsWith('data:')) {
     // Already local - nothing to fetch, nothing to fail.
@@ -1120,8 +1178,8 @@ function renderLevels(){
     const pdfCard = document.createElement('div');
     pdfCard.className = 'list-card';
     pdfCard.style.cssText = 'margin-top:14px;';
-    pdfCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>Quick Revision - Concepts &amp; Formulas</div><div class="meta">Tap to view or download</div></div></div><div>&#8250;</div>`;
-    pdfCard.onclick = () => openConcepts(state.subtopic, state.subject);
+    pdfCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#E6F8EE', '#1F9D55', 'sm')}<div><div>Quick Revision - Concepts &amp; Formulas</div><div class="meta">Tap to read here in the app</div></div></div><div>&#8250;</div>`;
+    pdfCard.onclick = () => openConcepts(state.subtopic, state.subject, pdfCard);
     app.appendChild(pdfCard);
   }
 
@@ -1132,7 +1190,7 @@ function renderLevels(){
     noteCard.className = 'list-card';
     noteCard.style.cssText = 'margin-top:14px;border:2px solid #2E6FE0;background:linear-gradient(135deg,#EAF1FB,#FFFFFF);';
     noteCard.innerHTML = `<div class="list-card-main">${iconBadge('doc', '#DCE8FB', '#2E6FE0', 'sm')}<div><div>Class Notes - BALAJI sir</div><div class="meta">${nt.pages} pages &nbsp;|&nbsp; PDF${nt.sizeMB ? ' &nbsp;|&nbsp; ' + nt.sizeMB + ' MB' : ''}</div></div></div><div>&#8250;</div>`;
-    noteCard.onclick = () => downloadPdfSafely(nt.file, state.subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_Class_Notes.pdf');
+    noteCard.onclick = () => openPdfInline(noteCard, nt.file, 'Class Notes - ' + state.subtopic.name, state.subtopic.name.replace(/[^a-z0-9]/gi, '_') + '_Class_Notes.pdf');   // V136 NEW: opens inside the app
     app.appendChild(noteCard);
   }
 
@@ -1976,8 +2034,9 @@ async function sendDoubtInApp(msgBox, statusEl){
   statusEl.textContent = 'Sending...';
   await postDoubt(d);
   showToast('Doubt sent to your teacher');
-  state.view = 'mydoubts'; render();
-  setTimeout(() => { syncDoubts().then(() => { if (state.view === 'mydoubts') render(); }); }, 4000);
+  state.doubtDraft = ''; window.__doubtSyncAt = Date.now();
+  state.view = 'doubt'; render();   // V135 NEW: stay on the Ask page; the reply shows below
+  setTimeout(() => { syncDoubts().then(() => { if (state.view === 'doubt') render(); }); }, 4000);
 }
 function appendDoubtsCard(parent){
   const n = newReplyCount();
@@ -2016,21 +2075,8 @@ function makeMediaItem(d, m){
   };
   wrap.appendChild(b); return wrap;
 }
-function renderMyDoubts(){
-  headerTitle.textContent = 'My Doubts';
-  const top = document.createElement('div');
-  top.style.cssText = 'display:flex;gap:8px;margin-bottom:12px;';
-  const askBtn = document.createElement('button'); askBtn.className = 'btn btn-primary'; askBtn.style.flex = '1'; askBtn.textContent = 'Ask a new doubt';
-  askBtn.onclick = () => { state.doubtContext = null; state.doubtReturnView = 'mydoubts'; doubtVoiceFile = null; doubtAttachFile = null; state.view = 'doubt'; render(); };
-  const refBtn = document.createElement('button'); refBtn.className = 'btn btn-secondary'; refBtn.style.flex = '1'; refBtn.textContent = 'Refresh replies';
-  refBtn.onclick = async () => { refBtn.textContent = 'Checking...'; await syncDoubts(); render(); };
-  top.append(askBtn, refBtn); app.appendChild(top);
-  const list = loadDoubts();
-  if (!list.length) {
-    const e = document.createElement('div'); e.className = 'question-card';
-    e.innerHTML = '<div class="question-text">No doubts yet.</div><div style="color:var(--muted);font-size:13px;">Tap "Ask a new doubt", or open any topic or solved question and choose "Ask the teacher". Your teacher\'s reply appears here, visible only to you, on this device.</div>';
-    app.appendChild(e); return;
-  }
+// V135 NEW: the cards (question, status, teacher reply, voice/photo/video) - used by My Doubts AND the Ask a Doubt page
+function appendDoubtCards(list, parent){
   list.forEach(d => {
     const c = document.createElement('div'); c.className = 'question-card';
     const ans = d.status === 'Answered';
@@ -2048,8 +2094,25 @@ function renderMyDoubts(){
       d.media.forEach(m => mb.appendChild(makeMediaItem(d, m)));
       c.appendChild(mb);
     }
-    app.appendChild(c);
+    parent.appendChild(c);
   });
+}
+function renderMyDoubts(){
+  headerTitle.textContent = 'My Doubts';
+  const top = document.createElement('div');
+  top.style.cssText = 'display:flex;gap:8px;margin-bottom:12px;';
+  const askBtn = document.createElement('button'); askBtn.className = 'btn btn-primary'; askBtn.style.flex = '1'; askBtn.textContent = 'Ask a new doubt';
+  askBtn.onclick = () => { state.doubtContext = null; state.doubtReturnView = 'mydoubts'; doubtVoiceFile = null; doubtAttachFile = null; state.view = 'doubt'; render(); };
+  const refBtn = document.createElement('button'); refBtn.className = 'btn btn-secondary'; refBtn.style.flex = '1'; refBtn.textContent = 'Refresh replies';
+  refBtn.onclick = async () => { refBtn.textContent = 'Checking...'; await syncDoubts(); render(); };
+  top.append(askBtn, refBtn); app.appendChild(top);
+  const list = loadDoubts();
+  if (!list.length) {
+    const e = document.createElement('div'); e.className = 'question-card';
+    e.innerHTML = '<div class="question-text">No doubts yet.</div><div style="color:var(--muted);font-size:13px;">Tap "Ask a new doubt", or open any topic or solved question and choose "Ask the teacher". Your teacher\'s reply appears here, visible only to you, on this device.</div>';
+    app.appendChild(e); return;
+  }
+  appendDoubtCards(list, app);
   let ch = false; list.forEach(d => { if (d.status === 'Answered' && !d.seen) { d.seen = true; ch = true; } });
   if (ch) saveDoubts(list);
 }
@@ -2105,75 +2168,10 @@ function renderDoubtComposer(){
   msgBox.className = 'raw-text';
   msgBox.style.minHeight = '90px';
   msgBox.placeholder = 'Type your doubt here - be specific about which part is confusing...';
+  msgBox.value = state.doubtDraft || ''; msgBox.addEventListener('input', () => { state.doubtDraft = msgBox.value; });   // V135 NEW: keep text if the page refreshes
   card.appendChild(msgBox);
 
-  // ---- Voice recording ----
-  const voiceRow = document.createElement('div');
-  voiceRow.style.marginBottom = '12px';
-  const recordBtn = document.createElement('button');
-  recordBtn.type = 'button';
-  recordBtn.className = 'btn btn-secondary';
-  recordBtn.textContent = '🎤 Record Voice Note';
-  const voiceStatus = document.createElement('div');
-  voiceStatus.style.cssText = 'font-size:12px;color:var(--muted);margin-top:6px;';
-
-  let isRecording = false;
-  recordBtn.onclick = async () => {
-    if (!isRecording) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        recordedChunks = [];
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
-        mediaRecorder.onstop = () => {
-          const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-          doubtVoiceFile = new File([blob], 'doubt-voice.webm', { type: 'audio/webm' });
-          voiceStatus.textContent = 'Voice note recorded (' + Math.round(blob.size / 1024) + ' KB). Tap Record again to re-record.';
-          stream.getTracks().forEach(t => t.stop());
-        };
-        mediaRecorder.start();
-        isRecording = true;
-        recordBtn.textContent = '⏹ Stop Recording';
-        voiceStatus.textContent = 'Recording...';
-      } catch (err) {
-        voiceStatus.textContent = 'Could not access microphone: ' + err.message;
-      }
-    } else {
-      mediaRecorder.stop();
-      isRecording = false;
-      recordBtn.textContent = '🎤 Record Voice Note';
-    }
-  };
-  voiceRow.appendChild(recordBtn);
-  voiceRow.appendChild(voiceStatus);
-  card.appendChild(voiceRow);
-
-  // ---- Attach photo/PDF ----
-  const attachRow = document.createElement('div');
-  attachRow.style.marginBottom = '14px';
-  const attachBtn = document.createElement('button');
-  attachBtn.type = 'button';
-  attachBtn.className = 'btn btn-secondary';
-  attachBtn.textContent = '📎 Attach Photo or PDF';
-  const attachInput = document.createElement('input');
-  attachInput.type = 'file';
-  attachInput.accept = '.pdf,.jpg,.jpeg,.png';
-  attachInput.style.display = 'none';
-  const attachStatus = document.createElement('div');
-  attachStatus.style.cssText = 'font-size:12px;color:var(--muted);margin-top:6px;';
-
-  attachBtn.onclick = () => attachInput.click();
-  attachInput.onchange = () => {
-    if (attachInput.files.length) {
-      doubtAttachFile = attachInput.files[0];
-      attachStatus.textContent = 'Attached: ' + doubtAttachFile.name;
-    }
-  };
-  attachRow.appendChild(attachBtn);
-  attachRow.appendChild(attachInput);
-  attachRow.appendChild(attachStatus);
-  card.appendChild(attachRow);
-
+  // V134 NEW: student voice note / photo attach removed - text-only doubts
   const sendStatus = document.createElement('div');
   sendStatus.style.cssText = 'font-size:13px;margin-bottom:10px;min-height:18px;';
   card.appendChild(sendStatus);
@@ -2236,32 +2234,32 @@ function renderDoubtComposer(){
     }
   }
 
-  // V128 NEW: send inside the app (text only); the reply comes back to My Doubts
+  // V134 NEW: only the in-app text doubt remains (WhatsApp / Email / voice / photo removed for students)
   if (TRACK_URL) {
     const inBtn = document.createElement('button');
     inBtn.className = 'btn btn-primary full-width';
-    inBtn.textContent = 'Send to Teacher (in app)';
+    inBtn.textContent = 'Send to Teacher';
     inBtn.onclick = () => sendDoubtInApp(msgBox, sendStatus);
     card.appendChild(inBtn);
-    const alt = document.createElement('div');
-    alt.style.cssText = 'font-size:12px;color:var(--muted);margin:10px 0 8px;text-align:center;';
-    alt.textContent = 'Need to send a voice note or photo? Use WhatsApp or Email:';
-    card.appendChild(alt);
+  } else {
+    sendStatus.textContent = 'Doubts are not available right now.';
   }
-  const waBtn = document.createElement('button');
-  waBtn.className = 'btn btn-primary full-width';
-  waBtn.style.background = '#25D366';
-  waBtn.textContent = 'Send via WhatsApp';
-  waBtn.onclick = () => sendDoubt('whatsapp');
-  card.appendChild(waBtn);
-
-  const emailBtn = document.createElement('button');
-  emailBtn.className = 'btn btn-secondary full-width';
-  emailBtn.style.marginTop = '10px';
-  emailBtn.textContent = 'Send via Email';
-  emailBtn.onclick = () => sendDoubt('email');
-  card.appendChild(emailBtn);
-
+  // V135 NEW: teacher replies on the SAME page, below the box
+  if (TRACK_URL) {
+    const hd = document.createElement('div'); hd.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px;';
+    hd.innerHTML = '<b style="font-size:14px;color:var(--navy,#1a2a5e);">Your doubts &amp; teacher replies</b>';
+    const rf = document.createElement('button'); rf.className = 'btn btn-secondary'; rf.style.cssText = 'font-size:12px;padding:6px 12px;'; rf.textContent = 'Refresh replies';
+    rf.onclick = async () => { rf.textContent = 'Checking...'; await syncDoubts(); if (state.view === 'doubt') render(); };
+    hd.appendChild(rf); card.appendChild(hd);
+    const holder = document.createElement('div'); card.appendChild(holder);
+    const all = loadDoubts();
+    if (!all.length) { holder.innerHTML = '<div style="color:var(--muted);font-size:13px;">No doubts yet. Your teacher\'s reply will appear here.</div>'; }
+    else { appendDoubtCards(all, holder); let ch = false; all.forEach(d => { if (d.status === 'Answered' && !d.seen) { d.seen = true; ch = true; } }); if (ch) saveDoubts(all); }
+    if (!window.__doubtSyncAt || Date.now() - window.__doubtSyncAt > 20000) {   // check for replies once per visit
+      window.__doubtSyncAt = Date.now(); const before = JSON.stringify(loadDoubts());
+      syncDoubts().then(() => { if (state.view === 'doubt' && JSON.stringify(loadDoubts()) !== before) render(); });
+    }
+  }
   app.appendChild(card);
 }
 
