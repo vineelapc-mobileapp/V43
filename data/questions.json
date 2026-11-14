@@ -1178,7 +1178,7 @@
               {
                 "id": "transmission_line_performance_l1_new1789995694875_0",
                 "type": "fill",
-                "question": "For a 400 km long tran smission line, the Series impedance is (0.0 + 0.5) ohms /km and the shunt admittance is (0.0 + j5.0) Micro mhos/km. The magnitude of the series impedance (in Q) of the equivalent Pie  circuit of the transmission line  is   [GATE-2014] |",
+                "question": "For a 400 km long tran smission line, the Series impedance is (0.0 + j 0.5) ohms /km and the shunt admittance is (0.0 + j5.0) Micro mhos/km. The magnitude of the series impedance (in ohms) of the equivalent Pie  circuit of the transmission line  is   [GATE-2014] |",
                 "questionImage": null,
                 "options": [],
                 "correctIndex": null,
