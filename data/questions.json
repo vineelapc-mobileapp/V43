@@ -3706,21 +3706,6 @@
                 "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959368/n0wom1gsq2plmxid81gy.png"
               },
               {
-                "id": "power_cables_l1_new1790959503042_0",
-                "type": "fill",
-                "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959391/qibujeeaezb8tbiuec9p.png",
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "watch solution",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": null
-              },
-              {
                 "id": "power_cables_l1_new1790959637980_0",
                 "type": "fill",
                 "question": "",
@@ -3752,21 +3737,6 @@
               },
               {
                 "id": "power_cables_l1_new1790959782018_0",
-                "type": "fill",
-                "question": "",
-                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959752/xdtq55nxmn0veeg7ogxs.png",
-                "options": [],
-                "correctIndex": null,
-                "correctAnswer": "watch solution",
-                "videoUrl": "PASTE_VIDEO_LINK_HERE",
-                "videoFile": null,
-                "videoReady": false,
-                "audioFile": null,
-                "explanation": "",
-                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959778/wu8vflqwjtbdwxonnthv.png"
-              },
-              {
-                "id": "power_cables_l1_new1790959807802_0",
                 "type": "fill",
                 "question": "",
                 "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1790959752/xdtq55nxmn0veeg7ogxs.png",
