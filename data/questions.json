@@ -3881,6 +3881,26 @@
                 "audioFile": null,
                 "explanation": "C = 0.25 × 20 = 5 μF per phase. Ic = 2π f C V_ph = 314.16 × 5 × 10⁻⁶ × (11 000/√3) = 314.16 × 5 × 10⁻⁶ × 6351 = 9.98 A. Using the line voltage in place of the phase voltage gives 17.3 A.\n\nWhy the other options?\n(a) ✘ 17.3 A: Uses the line voltage 11 kV instead of the phase voltage.\n(b) ✔ 9.98 A: correct answer.\n(c) ✘ 0.5 A: Is the current per km.\n(d) ✘ 99.8 A: Decimal slip, ten times too large.",
                 "explanationImage": null
+              },
+              {
+                "id": "power_cables_l2_new1794836356393_0",
+                "type": "mcq",
+                "question": "",
+                "questionImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1794836227/u09ypbyvmpzxr56w2r5r.jpg",
+                "options": [
+                  "41.44",
+                  "82.88",
+                  "31.7",
+                  "20.24"
+                ],
+                "correctIndex": 1,
+                "correctAnswer": "",
+                "videoUrl": "PASTE_VIDEO_LINK_HERE",
+                "videoFile": null,
+                "videoReady": false,
+                "audioFile": null,
+                "explanation": "Watch solution ",
+                "explanationImage": "https://res.cloudinary.com/fl9rh27m/image/upload/v1794836344/dyyjb2hjodvsja04yygb.jpg"
               }
             ]
           },
